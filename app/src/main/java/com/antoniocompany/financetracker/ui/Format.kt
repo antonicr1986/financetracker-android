@@ -25,6 +25,7 @@ private val dayMonthFormat = SimpleDateFormat("d MMM", LOCALE)
 
 private val monthParser = SimpleDateFormat("yyyy-MM", Locale.US)
 private val monthYearFormat = SimpleDateFormat("LLLL yyyy", LOCALE)
+private val shortMonthFormat = SimpleDateFormat("LLL", LOCALE)
 
 fun formatCurrency(amount: Double): String = currencyFormat.format(amount)
 
@@ -32,6 +33,14 @@ fun formatCurrency(amount: Double): String = currencyFormat.format(amount)
 fun formatShortDate(isoDate: String): String {
     val parsed = isoParser.parse(isoDate.take(10)) ?: return isoDate.take(10)
     return dayMonthFormat.format(parsed)
+}
+
+/** "2026-09" -> "sept". Para los chips, donde no cabe el mes entero. */
+fun formatShortMonth(monthKey: String): String {
+    val parsed = monthParser.parse(monthKey) ?: return monthKey
+    return shortMonthFormat.format(parsed)
+        .replace(".", "")
+        .replaceFirstChar { it.uppercase(LOCALE) }
 }
 
 /** "2026-09" -> "septiembre 2026". */

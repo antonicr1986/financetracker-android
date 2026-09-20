@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Plantilla de un chip de mes. Se infla una vez por mes disponible.
+
+  Existe como layout propio, y no se crea con Chip(context) en codigo, porque un
+  estilo de Material solo se aplica bien al inflar desde XML: creado a mano
+  saldria con la apariencia por defecto y no como chip de filtro.
+-->
+<com.google.android.material.chip.Chip
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Material3.Chip.Filter"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:checkable="true" />

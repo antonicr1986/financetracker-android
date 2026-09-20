@@ -18,6 +18,8 @@ import com.antoniocompany.financetracker.domain.transactionsOfMonth
 import com.antoniocompany.financetracker.ui.TransactionAdapter
 import com.antoniocompany.financetracker.ui.formatCurrency
 import com.antoniocompany.financetracker.ui.formatMonth
+import com.antoniocompany.financetracker.ui.formatShortMonth
+import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -37,6 +39,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var repository: TransactionRepository
 
     private val adapter = TransactionAdapter()
+
+    /** Historico completo. Los chips y los totales se derivan de aqui. */
+    private var allTransactions: List<TransactionDto> = emptyList()
+    private var selectedMonth: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +68,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.transactionsList.layoutManager = LinearLayoutManager(this)
         binding.transactionsList.adapter = adapter
+
+        binding.monthChips.setOnCheckedStateChangeListener { group, checkedIds ->
+            val checkedId = checkedIds.firstOrNull() ?: return@setOnCheckedStateChangeListener
+            val month = group.findViewById<Chip>(checkedId)?.tag as? String
+                ?: return@setOnCheckedStateChangeListener
+
+            // Al reconstruir los chips se marca uno y esto se dispara solo: sin
+            // la comprobacion se repintaria el mes que ya se esta viendo.
+            if (month != selectedMonth) {
+                selectedMonth = month
+                renderMonth(month)
+            }
+        }
 
         load()
     }
@@ -91,18 +110,61 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun render(all: List<TransactionDto>) {
-        val month = availableMonths(all).lastOrNull()
+        allTransactions = all
 
-        if (month == null) {
+        val months = availableMonths(all)
+
+        if (months.isEmpty()) {
+            binding.monthScroll.visibility = View.GONE
             binding.totalsRow.visibility = View.GONE
             binding.monthText.visibility = View.GONE
             showMessage(getString(R.string.dashboard_empty))
             return
         }
 
-        val ofMonth = transactionsOfMonth(all, month)
+        // Se conserva el mes que se estaba viendo si sigue existiendo; si no,
+        // se cae al mas reciente.
+        val month = selectedMonth.takeIf { it in months } ?: months.last()
+        selectedMonth = month
+
+        binding.monthScroll.visibility = View.VISIBLE
+        buildMonthChips(months, month)
+        renderMonth(month)
+    }
+
+    /**
+     * Un chip por mes con datos, del mas antiguo al mas reciente, y el elegido
+     * marcado. Se reconstruyen enteros en cada carga porque la lista de meses
+     * puede cambiar al anadir o quitar movimientos.
+     */
+    private fun buildMonthChips(months: List<String>, selected: String) {
+        binding.monthChips.removeAllViews()
+
+        months.forEach { month ->
+            val chip = layoutInflater
+                .inflate(R.layout.item_month_chip, binding.monthChips, false) as Chip
+
+            chip.id = View.generateViewId()
+            chip.text = formatShortMonth(month)
+            chip.tag = month
+            chip.isChecked = month == selected
+
+            binding.monthChips.addView(chip)
+        }
+
+        // El mes elegido suele ser el ultimo, que nace fuera de pantalla a la
+        // derecha. Se espera a que el grupo este medido para poder desplazarlo.
+        binding.monthScroll.post {
+            val checked = binding.monthChips.findViewById<Chip>(binding.monthChips.checkedChipId)
+            if (checked != null) binding.monthScroll.smoothScrollTo(checked.left, 0)
+        }
+    }
+
+    private fun renderMonth(month: String) {
+        val ofMonth = transactionsOfMonth(allTransactions, month)
         val summary = summaryOf(ofMonth)
 
+        showMessage(null)
         binding.monthText.visibility = View.VISIBLE
         binding.totalsRow.visibility = View.VISIBLE
         binding.monthText.text = formatMonth(month)
