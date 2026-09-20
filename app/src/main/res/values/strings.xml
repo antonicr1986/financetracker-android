@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">FinanceTracker</string>
+
+    <string name="login_subtitle">Accede para ver tus finanzas</string>
+    <string name="login_email">Correo electrónico</string>
+    <string name="login_password">Contraseña</string>
+    <string name="login_submit">Entrar</string>
+    <string name="login_submitting">Entrando…</string>
+    <string name="login_or">o</string>
+    <string name="login_demo">Entrar con la cuenta de demostración</string>
+    <string name="login_demo_hint">demo@financetracker.app / Demo1234!</string>
+    <string name="login_waking">El servidor estaba en reposo y está despertando. La primera entrada del día puede tardar unos segundos.</string>
+
+    <string name="error_fill_credentials">Introduce tu correo y tu contraseña.</string>
+    <string name="error_invalid_credentials">Correo o contraseña incorrectos.</string>
+    <string name="error_server">Error del servidor. Inténtalo más tarde.</string>
+    <string name="error_network">No se ha podido contactar con el servidor.</string>
+</resources>

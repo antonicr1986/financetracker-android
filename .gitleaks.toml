@@ -1,0 +1,19 @@
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  '''(?i)(^|/)build/''',
+  '''(?i)(^|/)\.gradle/''',
+  '''(?i)(^|/)gradle/wrapper/''',
+  '''(?i)\.md$''',
+  '''(?i)\.example($|\.)''',
+]
+
+# Las reglas por defecto detectan claves de proveedores conocidos, pero no una
+# credencial escrita a mano en el codigo. En un proyecto Android la fuga tiene
+# esta forma: una constante con el nombre delator y una cadena al lado.
+[[rules]]
+id = "hardcoded-credential-assignment"
+description = "Possible credential assigned in source code"
+regex = '''(?i)(?:val|var|String)\s+\w*(?:token|secret|password|apikey|api_key)\w*\s*[:=]\s*"[^"]{8,}"'''
