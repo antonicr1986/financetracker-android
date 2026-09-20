@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Los mismos colores, aclarados para que contrasten sobre fondo oscuro.
+         Android elige este fichero solo cuando el sistema esta en tema oscuro:
+         el codigo sigue pidiendo @color/income sin saber en cual esta. -->
+    <color name="income">#FF34D399</color>
+    <color name="expense">#FFFB7185</color>
+</resources>

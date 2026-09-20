@@ -15,4 +15,14 @@
     <string name="error_invalid_credentials">Correo o contraseña incorrectos.</string>
     <string name="error_server">Error del servidor. Inténtalo más tarde.</string>
     <string name="error_network">No se ha podido contactar con el servidor.</string>
+
+    <string name="dashboard_sign_out">Salir</string>
+    <string name="dashboard_income">Ingresos</string>
+    <string name="dashboard_expenses">Gastos</string>
+    <string name="dashboard_balance">Balance</string>
+    <string name="dashboard_empty">Todavía no tienes ningún movimiento.</string>
+    <string name="dashboard_no_category">Sin categoría</string>
+
+    <string name="error_load">No se han podido cargar los datos.</string>
+    <string name="error_session_expired">Tu sesión ha caducado. Vuelve a iniciar sesión.</string>
 </resources>

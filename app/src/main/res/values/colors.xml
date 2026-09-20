@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Verde para ingresos, rojo para saldo negativo. Los mismos tonos que
+         usa la version web, para que las dos aplicaciones se reconozcan. -->
+    <color name="income">#FF047857</color>
+    <color name="expense">#FFBE123C</color>
 </resources>
