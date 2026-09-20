@@ -58,6 +58,41 @@ jobs:
       - name: Test
         run: ./gradlew test
 
+      # Gradle dice "BUILD SUCCESSFUL" tanto si las pruebas pasan como si no se
+      # llegaron a ejecutar. Esto cuenta lo que hay en los informes y lo escribe
+      # en el resumen de la ejecucion, para que el numero se vea sin abrir logs.
+      - name: Summarise the test results
+        if: always()
+        run: |
+          total=0; failures=0; errors=0; skipped=0
+          for file in $(find app/build/test-results -name 'TEST-*.xml' 2>/dev/null); do
+            read -r t f e s <<< "$(sed -n 's/.*tests="\([0-9]*\)".*failures="\([0-9]*\)".*errors="\([0-9]*\)".*skipped="\([0-9]*\)".*/\1 \2 \3 \4/p' "$file" | head -1)"
+            total=$((total + ${t:-0}))
+            failures=$((failures + ${f:-0}))
+            errors=$((errors + ${e:-0}))
+            skipped=$((skipped + ${s:-0}))
+          done
+
+          echo "### Unit tests" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "$total run · $failures failed · $errors errored · $skipped skipped" >> "$GITHUB_STEP_SUMMARY"
+          echo "$total tests run, $failures failed, $errors errored, $skipped skipped"
+
+          # Cero pruebas es un fallo: significa que dejaron de ejecutarse y
+          # nadie se entero, que es peor que verlas en rojo.
+          if [ "$total" -eq 0 ]; then
+            echo "::error::No unit tests were executed"
+            exit 1
+          fi
+
+      - name: Upload the test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report
+          path: app/build/reports/tests/
+          if-no-files-found: ignore
+
       - name: Build
         run: ./gradlew assembleDebug
 
