@@ -1,9 +1,11 @@
 package com.antoniocompany.financetracker.data
 
+import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
 import com.antoniocompany.financetracker.data.model.PagedResult
 import com.antoniocompany.financetracker.data.model.TransactionDto
+import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -25,8 +27,17 @@ class TransactionRepositoryTest {
         var callCount = 0
             private set
 
+        // El resto del contrato existe porque la interfaz lo exige, no porque
+        // estas pruebas lo necesiten. Si alguna acaba llamandolas, el error
+        // dice exactamente que falta.
         override suspend fun login(body: LoginRequest): LoginResponse =
-            throw UnsupportedOperationException("El repositorio no inicia sesion")
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun createTransaction(body: TransactionInput): TransactionDto =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun getCategories(): List<CategoryDto> =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun getTransactions(
             pageNumber: Int,

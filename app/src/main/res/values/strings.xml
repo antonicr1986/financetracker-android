@@ -26,4 +26,24 @@
 
     <string name="error_load">No se han podido cargar los datos.</string>
     <string name="error_session_expired">Tu sesión ha caducado. Vuelve a iniciar sesión.</string>
+
+    <string name="new_transaction_title">Nuevo movimiento</string>
+    <string name="new_transaction_expense">Gasto</string>
+    <string name="new_transaction_income">Ingreso</string>
+    <string name="new_transaction_description">Concepto</string>
+    <string name="new_transaction_description_hint">Compra del mes</string>
+    <string name="new_transaction_amount">Importe</string>
+    <string name="new_transaction_date">Fecha</string>
+    <string name="new_transaction_category">Categoría</string>
+    <string name="new_transaction_pick_date">Elige una fecha</string>
+    <string name="new_transaction_save">Guardar</string>
+    <string name="new_transaction_saving">Guardando…</string>
+    <string name="new_transaction_saved">Movimiento guardado</string>
+    <string name="new_transaction_no_categories">No tienes ninguna categoría de este tipo. Créala primero desde la web.</string>
+
+    <string name="error_write_description">Escribe un concepto.</string>
+    <string name="error_amount_positive">El importe debe ser mayor que cero.</string>
+    <string name="error_choose_category">Elige una categoría.</string>
+    <string name="error_categories_failed">No se han podido cargar las categorías.</string>
+    <string name="error_save_failed">No se ha podido guardar el movimiento.</string>
 </resources>

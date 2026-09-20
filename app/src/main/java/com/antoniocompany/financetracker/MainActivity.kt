@@ -2,6 +2,7 @@ package com.antoniocompany.financetracker
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -44,6 +45,17 @@ class MainActivity : AppCompatActivity() {
     private var allTransactions: List<TransactionDto> = emptyList()
     private var selectedMonth: String? = null
 
+    /**
+     * El alta devuelve RESULT_OK cuando ha guardado. Se recarga entonces, y
+     * solo entonces: si el usuario se arrepiente y vuelve atras no tiene
+     * sentido volver a pedir los mismos datos.
+     */
+    private val newTransaction = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) load()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,6 +80,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.transactionsList.layoutManager = LinearLayoutManager(this)
         binding.transactionsList.adapter = adapter
+
+        binding.addButton.setOnClickListener {
+            newTransaction.launch(Intent(this, NewTransactionActivity::class.java))
+        }
 
         binding.swipeRefresh.setOnRefreshListener { load(fromSwipe = true) }
         binding.retryButton.setOnClickListener { load() }

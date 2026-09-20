@@ -2,7 +2,9 @@ package com.antoniocompany.financetracker.ui
 
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 /**
  * Formatos de la interfaz.
@@ -11,7 +13,7 @@ import java.util.Locale
  * lo estan. El dia que se anada ingles bastara con cambiar esta constante y
  * anadir un res/values-en, y las cifras y las fechas seguiran al idioma solas.
  */
-private val LOCALE: Locale = Locale("es", "ES")
+private val LOCALE: Locale = Locale.forLanguageTag("es-ES")
 
 private val currencyFormat: NumberFormat = NumberFormat.getCurrencyInstance(LOCALE)
 
@@ -27,7 +29,29 @@ private val monthParser = SimpleDateFormat("yyyy-MM", Locale.US)
 private val monthYearFormat = SimpleDateFormat("LLLL yyyy", LOCALE)
 private val shortMonthFormat = SimpleDateFormat("LLL", LOCALE)
 
+/**
+ * El selector de fecha de Material trabaja en UTC: devuelve la medianoche UTC
+ * del dia elegido. Formatear esos milisegundos con la zona del dispositivo
+ * restaria un dia a quien este al oeste de Greenwich, asi que este formateador
+ * va fijado a UTC. Es el mismo problema de siempre, por el otro lado.
+ */
+private val isoUtcFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+    timeZone = TimeZone.getTimeZone("UTC")
+}
+
+private val isoLocalFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
 fun formatCurrency(amount: Double): String = currencyFormat.format(amount)
+
+/** Hoy, en la zona del dispositivo, como "AAAA-MM-DD". */
+fun todayIso(): String = isoLocalFormat.format(Date())
+
+/** Milisegundos UTC del selector -> "AAAA-MM-DD". */
+fun utcMillisToIso(millis: Long): String = isoUtcFormat.format(Date(millis))
+
+/** "AAAA-MM-DD" -> milisegundos UTC, para abrir el selector en esa fecha. */
+fun isoToUtcMillis(iso: String): Long =
+    isoUtcFormat.parse(iso)?.time ?: System.currentTimeMillis()
 
 /** "2026-09-22T00:00:00" -> "22 sept". */
 fun formatShortDate(isoDate: String): String {
