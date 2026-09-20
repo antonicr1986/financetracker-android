@@ -1,9 +1,11 @@
 package com.antoniocompany.financetracker.data
 
+import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
 import com.antoniocompany.financetracker.data.model.PagedResult
 import com.antoniocompany.financetracker.data.model.TransactionDto
+import com.antoniocompany.financetracker.data.model.TransactionInput
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -30,4 +32,11 @@ interface FinanceTrackerApi {
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int
     ): PagedResult<TransactionDto>
+
+    @POST("api/Transactions")
+    suspend fun createTransaction(@Body body: TransactionInput): TransactionDto
+
+    /** Este si devuelve un array suelto, no un PagedResult. */
+    @GET("api/Categories")
+    suspend fun getCategories(): List<CategoryDto>
 }

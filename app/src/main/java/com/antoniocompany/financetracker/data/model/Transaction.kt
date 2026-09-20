@@ -27,6 +27,31 @@ data class TransactionDto(
     val categoryName: String?
 )
 
+/**
+ * Una categoria del usuario. El tipo importa: la API rechaza un gasto con
+ * categoria de ingresos, asi que el formulario solo ofrece las que encajan.
+ */
+data class CategoryDto(
+    val id: Int,
+    val name: String,
+    val type: TransactionType
+)
+
+/**
+ * Cuerpo de POST /api/Transactions.
+ *
+ * `date` viaja como "AAAA-MM-DD". La API lo recibe en un DateTime y lo
+ * interpreta a medianoche, que es justo lo que queremos: un movimiento tiene
+ * dia, no hora.
+ */
+data class TransactionInput(
+    val description: String,
+    val amount: Double,
+    val date: String,
+    val type: TransactionType,
+    val categoryId: Int
+)
+
 /** Envoltorio de los listados. Refleja PagedResult<T> de la API. */
 data class PagedResult<T>(
     val items: List<T>?,

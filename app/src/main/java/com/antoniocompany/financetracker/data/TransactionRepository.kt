@@ -1,6 +1,8 @@
 package com.antoniocompany.financetracker.data
 
+import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.TransactionDto
+import com.antoniocompany.financetracker.data.model.TransactionInput
 
 /**
  * Trae los movimientos del usuario.
@@ -26,6 +28,11 @@ class TransactionRepository(private val api: FinanceTrackerApi) {
 
         return all
     }
+
+    suspend fun create(input: TransactionInput): TransactionDto =
+        api.createTransaction(input)
+
+    suspend fun getCategories(): List<CategoryDto> = api.getCategories()
 
     private companion object {
         const val PAGE_SIZE = 100
