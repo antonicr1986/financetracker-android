@@ -22,6 +22,7 @@
     <string name="dashboard_balance">Balance</string>
     <string name="dashboard_empty">Todavía no tienes ningún movimiento.</string>
     <string name="dashboard_no_category">Sin categoría</string>
+    <string name="dashboard_retry">Reintentar</string>
 
     <string name="error_load">No se han podido cargar los datos.</string>
     <string name="error_session_expired">Tu sesión ha caducado. Vuelve a iniciar sesión.</string>

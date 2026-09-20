@@ -69,6 +69,9 @@ class MainActivity : AppCompatActivity() {
         binding.transactionsList.layoutManager = LinearLayoutManager(this)
         binding.transactionsList.adapter = adapter
 
+        binding.swipeRefresh.setOnRefreshListener { load(fromSwipe = true) }
+        binding.retryButton.setOnClickListener { load() }
+
         binding.monthChips.setOnCheckedStateChangeListener { group, checkedIds ->
             val checkedId = checkedIds.firstOrNull() ?: return@setOnCheckedStateChangeListener
             val month = group.findViewById<Chip>(checkedId)?.tag as? String
@@ -85,8 +88,13 @@ class MainActivity : AppCompatActivity() {
         load()
     }
 
-    private fun load() {
-        setLoading(true)
+    /**
+     * `fromSwipe` distingue las dos formas de recargar: al tirar hacia abajo ya
+     * hay una rueda girando arriba, y encender ademas la del centro se ve como
+     * si la pantalla se reiniciara.
+     */
+    private fun load(fromSwipe: Boolean = false) {
+        if (!fromSwipe) setLoading(true)
         showMessage(null)
 
         lifecycleScope.launch {
@@ -99,12 +107,13 @@ class MainActivity : AppCompatActivity() {
                     session.clear()
                     goToLogin()
                 } else {
-                    showMessage(getString(R.string.error_load))
+                    showMessage(getString(R.string.error_load), canRetry = true)
                 }
             } catch (error: IOException) {
-                showMessage(getString(R.string.error_load))
+                showMessage(getString(R.string.error_load), canRetry = true)
             } finally {
                 setLoading(false)
+                binding.swipeRefresh.isRefreshing = false
             }
         }
     }
@@ -194,9 +203,15 @@ class MainActivity : AppCompatActivity() {
         binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
-    private fun showMessage(message: String?) {
+    /**
+     * `canRetry` separa los dos mensajes que puede ver el usuario: un mes sin
+     * movimientos no es un fallo y no debe ofrecer un boton de reintentar, que
+     * sugeriria que algo ha ido mal.
+     */
+    private fun showMessage(message: String?, canRetry: Boolean = false) {
         binding.messageText.text = message.orEmpty()
         binding.messageText.visibility = if (message == null) View.GONE else View.VISIBLE
+        binding.retryButton.visibility = if (canRetry) View.VISIBLE else View.GONE
     }
 
     private fun goToLogin() {
