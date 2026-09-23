@@ -60,13 +60,15 @@
         </HorizontalScrollView>
 
         <!-- Tarjeta blanca sobre el fondo gris, como "Totales del mes" en la web. -->
+        <!-- El id va en la tarjeta: al ocultar los totales se oculta entera,
+             no queda un recuadro blanco vacio. -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/totalsRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
 
             <LinearLayout
-                android:id="@+id/totalsRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"

@@ -13,6 +13,7 @@ import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
 import com.antoniocompany.financetracker.databinding.ActivityNewTransactionBinding
+import com.antoniocompany.financetracker.ui.bind
 import com.antoniocompany.financetracker.ui.formatShortDate
 import com.antoniocompany.financetracker.ui.isoToUtcMillis
 import com.antoniocompany.financetracker.ui.todayIso
@@ -49,6 +50,8 @@ class NewTransactionActivity : AppCompatActivity() {
 
         binding = ActivityNewTransactionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.topBar.bind(this)
 
         repository = TransactionRepository(ApiClient.get(this))
 

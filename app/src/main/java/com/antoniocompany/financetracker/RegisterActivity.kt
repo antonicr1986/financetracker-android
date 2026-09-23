@@ -11,7 +11,7 @@ import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.databinding.ActivityRegisterBinding
-import com.antoniocompany.financetracker.ui.bindThemeToggle
+import com.antoniocompany.financetracker.ui.bind
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -41,8 +41,8 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.topBar.bindThemeToggle()
-        binding.topBar.signOutButton.visibility = View.GONE
+        // Sin sesion, "Salir" aparece deshabilitado.
+        binding.topBar.bind(this)
 
         binding.registerButton.setOnClickListener { register() }
 

@@ -34,11 +34,12 @@
         app:icon="@drawable/ic_theme_dark"
         app:iconGravity="textStart"
         app:iconPadding="0dp"
-        app:iconTint="?attr/colorOnSurface"
-        app:strokeColor="?attr/colorOutline" />
+        app:iconTint="@color/top_bar_button_content"
+        app:strokeColor="@color/top_bar_button_stroke" />
 
-    <!-- En la pantalla de acceso no hay sesion que cerrar: LoginActivity
-         lo oculta. Aqui iria tambien el selector de idioma mas adelante. -->
+    <!-- Siempre a la derecha del todo, como en la web. Sin sesion (login,
+         registro) aparece deshabilitado; lo decide TopBar.kt. El selector de
+         idioma iria a su izquierda mas adelante. -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signOutButton"
         style="@style/Widget.Material3.Button.OutlinedButton"
@@ -48,7 +49,7 @@
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="@string/dashboard_sign_out"
-        android:textColor="?attr/colorOnSurface"
+        android:textColor="@color/top_bar_button_content"
         app:cornerRadius="8dp"
-        app:strokeColor="?attr/colorOutline" />
+        app:strokeColor="@color/top_bar_button_stroke" />
 </LinearLayout>
