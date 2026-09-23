@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Textos en ingles. Android los usa cuando el idioma de la app es ingles;
+     para cualquier otro idioma se queda con values/strings.xml (espanol).
+     Mismas frases que la web en ingles (lib/i18n/messages.ts). -->
+<resources>
+    <string name="login_subtitle">Sign in to see your finances</string>
+    <string name="login_email">Email address</string>
+    <string name="login_password">Password</string>
+    <string name="login_submit">Sign in</string>
+    <string name="login_submitting">Signing in…</string>
+    <string name="login_or">or</string>
+    <string name="login_demo">Sign in with the demo account</string>
+    <string name="login_no_account">Don\'t have an account?</string>
+    <string name="login_create_account">Create one</string>
+    <string name="login_waking">The server was idle and is waking up. The first sign-in of the day can take a few seconds.</string>
+
+    <string name="register_title">Create account</string>
+    <string name="register_subtitle">Start tracking your finances</string>
+    <string name="register_name">Name</string>
+    <string name="register_password_hint">At least 6 characters</string>
+    <string name="register_confirm">Repeat the password</string>
+    <string name="register_submit">Create account</string>
+    <string name="register_submitting">Creating account…</string>
+    <string name="register_have_account">Already have an account?</string>
+    <string name="register_sign_in">Sign in</string>
+
+    <string name="error_fill_all">Fill in every field.</string>
+    <string name="error_invalid_email">Enter a valid email address.</string>
+    <string name="error_password_too_short">The password must be at least 6 characters long.</string>
+    <string name="error_passwords_dont_match">The two passwords do not match.</string>
+    <string name="error_email_already_exists">An account with that email already exists.</string>
+    <string name="error_create_account_failed">Could not create the account.</string>
+
+    <string name="error_fill_credentials">Enter your email and your password.</string>
+    <string name="error_invalid_credentials">Incorrect email or password.</string>
+    <string name="error_server">Server error. Please try again later.</string>
+    <string name="error_network">Could not reach the server.</string>
+
+    <string name="dashboard_sign_out">Sign out</string>
+    <string name="theme_toggle">Switch between light and dark theme</string>
+    <string name="dashboard_income">Income</string>
+    <string name="dashboard_expenses">Expenses</string>
+    <string name="dashboard_balance">Balance</string>
+    <string name="dashboard_empty">You have no transactions yet.</string>
+    <string name="dashboard_no_category">No category</string>
+    <string name="dashboard_retry">Retry</string>
+
+    <string name="error_load">Could not load the data.</string>
+    <string name="error_session_expired">Your session has expired. Please sign in again.</string>
+
+    <string name="new_transaction_title">New transaction</string>
+    <string name="new_transaction_expense">Expense</string>
+    <string name="new_transaction_income">Income</string>
+    <string name="new_transaction_description">Description</string>
+    <string name="new_transaction_description_hint">Monthly groceries</string>
+    <string name="new_transaction_amount">Amount</string>
+    <string name="new_transaction_date">Date</string>
+    <string name="new_transaction_category">Category</string>
+    <string name="new_transaction_pick_date">Pick a date</string>
+    <string name="new_transaction_save">Save</string>
+    <string name="new_transaction_saving">Saving…</string>
+    <string name="new_transaction_saved">Transaction saved</string>
+    <string name="new_transaction_no_categories">You have no categories of this type. Create one on the web first.</string>
+
+    <string name="error_write_description">Enter a description.</string>
+    <string name="error_amount_positive">The amount must be greater than zero.</string>
+    <string name="error_choose_category">Choose a category.</string>
+    <string name="error_categories_failed">Could not load the categories.</string>
+    <string name="error_save_failed">Could not save the transaction.</string>
+</resources>
