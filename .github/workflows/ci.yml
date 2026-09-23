@@ -65,8 +65,13 @@ jobs:
         if: always()
         run: |
           total=0; failures=0; errors=0; skipped=0
+          # Lee cada atributo por separado: Gradle los escribe en el orden
+          # tests, skipped, failures, errors, y una sola expresion que
+          # dependa del orden deja de coincidir y cuenta cero.
+          attr() { grep -o -m1 "<testsuite [^>]*" "$2" | grep -o "$1=\"[0-9]*\"" | grep -o '[0-9]*'; }
           for file in $(find app/build/test-results -name 'TEST-*.xml' 2>/dev/null); do
-            read -r t f e s <<< "$(sed -n 's/.*tests="\([0-9]*\)".*failures="\([0-9]*\)".*errors="\([0-9]*\)".*skipped="\([0-9]*\)".*/\1 \2 \3 \4/p' "$file" | head -1)"
+            t=$(attr tests "$file"); f=$(attr failures "$file")
+            e=$(attr errors "$file"); s=$(attr skipped "$file")
             total=$((total + ${t:-0}))
             failures=$((failures + ${f:-0}))
             errors=$((errors + ${e:-0}))
