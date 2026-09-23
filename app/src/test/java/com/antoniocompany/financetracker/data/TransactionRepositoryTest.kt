@@ -4,9 +4,11 @@ import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
 import com.antoniocompany.financetracker.data.model.PagedResult
+import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
+import com.antoniocompany.financetracker.data.model.UserDto
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -31,6 +33,9 @@ class TransactionRepositoryTest {
         // estas pruebas lo necesiten. Si alguna acaba llamandolas, el error
         // dice exactamente que falta.
         override suspend fun login(body: LoginRequest): LoginResponse =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun register(body: RegisterRequest): UserDto =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun createTransaction(body: TransactionInput): TransactionDto =
