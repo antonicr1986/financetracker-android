@@ -1,7 +1,47 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema oscuro: los mismos roles que values/themes.xml, con los tonos
+         que usa la web en modo .dark. -->
     <style name="Base.Theme.FinanceTracker" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- En oscuro los botones se invierten: claros sobre fondo oscuro. -->
+        <item name="colorPrimary">@color/slate_100</item>
+        <item name="colorOnPrimary">@color/slate_900</item>
+        <item name="colorPrimaryContainer">@color/slate_700</item>
+        <item name="colorOnPrimaryContainer">@color/slate_100</item>
+
+        <item name="colorSecondary">@color/slate_300</item>
+        <item name="colorOnSecondary">@color/slate_900</item>
+        <item name="colorSecondaryContainer">@color/slate_800</item>
+        <item name="colorOnSecondaryContainer">@color/slate_100</item>
+
+        <item name="colorTertiary">@color/slate_200</item>
+        <item name="colorOnTertiary">@color/slate_900</item>
+
+        <!-- Fondo slate-950, tarjetas slate-900. -->
+        <item name="android:colorBackground">@color/slate_950</item>
+        <item name="colorOnBackground">@color/slate_100</item>
+        <item name="colorSurface">@color/slate_900</item>
+        <item name="colorOnSurface">@color/slate_100</item>
+        <item name="colorSurfaceVariant">@color/slate_800</item>
+        <item name="colorOnSurfaceVariant">@color/slate_400</item>
+
+        <item name="colorSurfaceContainerLowest">@color/slate_950</item>
+        <item name="colorSurfaceContainerLow">@color/slate_900</item>
+        <item name="colorSurfaceContainer">@color/slate_900</item>
+        <item name="colorSurfaceContainerHigh">@color/slate_800</item>
+        <item name="colorSurfaceContainerHighest">@color/slate_800</item>
+
+        <item name="colorOutline">@color/slate_700</item>
+        <item name="colorOutlineVariant">@color/slate_800</item>
+
+        <!-- Errores: text-rose-300 sobre bg-rose-950. -->
+        <item name="colorError">@color/rose_300</item>
+        <item name="colorOnError">@color/rose_950</item>
+        <item name="colorErrorContainer">@color/rose_950</item>
+        <item name="colorOnErrorContainer">@color/rose_300</item>
+
+        <item name="android:statusBarColor">@color/slate_950</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <item name="materialCardViewStyle">@style/Widget.FinanceTracker.Card</item>
     </style>
 </resources>

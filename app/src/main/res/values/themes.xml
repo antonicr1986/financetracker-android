@@ -1,8 +1,61 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema claro con la paleta corporativa de la web (slate + rose).
+         Sin esto, Material 3 pinta botones, campos y barras con su morado
+         por defecto. La equivalencia con la web va al lado de cada rol. -->
     <style name="Base.Theme.FinanceTracker" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Botones y elementos principales: como bg-slate-900 de la web. -->
+        <item name="colorPrimary">@color/slate_900</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/slate_200</item>
+        <item name="colorOnPrimaryContainer">@color/slate_900</item>
+
+        <item name="colorSecondary">@color/slate_600</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/slate_100</item>
+        <item name="colorOnSecondaryContainer">@color/slate_900</item>
+
+        <item name="colorTertiary">@color/slate_700</item>
+        <item name="colorOnTertiary">@color/white</item>
+
+        <!-- Fondo de pantalla (bg-slate-200 de la web) y tarjetas/superficies (blanco). -->
+        <item name="android:colorBackground">@color/slate_200</item>
+        <item name="colorOnBackground">@color/slate_900</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/slate_900</item>
+        <item name="colorSurfaceVariant">@color/slate_100</item>
+        <item name="colorOnSurfaceVariant">@color/slate_500</item>
+
+        <!-- Superficies elevadas (tarjetas, menus, dialogos, barra inferior).
+             Fijadas a mano para que Material no las tinte de morado. -->
+        <item name="colorSurfaceContainerLowest">@color/white</item>
+        <item name="colorSurfaceContainerLow">@color/slate_50</item>
+        <item name="colorSurfaceContainer">@color/slate_100</item>
+        <item name="colorSurfaceContainerHigh">@color/slate_100</item>
+        <item name="colorSurfaceContainerHighest">@color/slate_200</item>
+
+        <!-- Bordes: border-slate-300 / border-slate-200. -->
+        <item name="colorOutline">@color/slate_300</item>
+        <item name="colorOutlineVariant">@color/slate_200</item>
+
+        <!-- Errores: text-rose-700 sobre bg-rose-50. -->
+        <item name="colorError">@color/rose_700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="colorErrorContainer">@color/rose_50</item>
+        <item name="colorOnErrorContainer">@color/rose_700</item>
+
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Todas las tarjetas como las de la web: blancas, esquinas redondeadas,
+             borde fino y sombra suave. -->
+        <item name="materialCardViewStyle">@style/Widget.FinanceTracker.Card</item>
+    </style>
+
+    <style name="Widget.FinanceTracker.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">1dp</item>
+        <item name="strokeColor">?attr/colorOutlineVariant</item>
+        <item name="strokeWidth">1dp</item>
     </style>
 
     <style name="Theme.FinanceTracker" parent="Base.Theme.FinanceTracker" />

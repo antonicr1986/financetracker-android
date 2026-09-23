@@ -7,4 +7,26 @@
          usa la version web, para que las dos aplicaciones se reconozcan. -->
     <color name="income">#FF047857</color>
     <color name="expense">#FFBE123C</color>
+
+    <!-- Paleta corporativa: la escala "slate" de Tailwind que usa la web.
+         Son colores fijos, iguales en claro y oscuro; que tono toca en cada
+         tema lo decide themes.xml, no este fichero. -->
+    <color name="slate_50">#FFF8FAFC</color>
+    <color name="slate_100">#FFF1F5F9</color>
+    <color name="slate_200">#FFE2E8F0</color>
+    <color name="slate_300">#FFCBD5E1</color>
+    <color name="slate_400">#FF94A3B8</color>
+    <color name="slate_500">#FF64748B</color>
+    <color name="slate_600">#FF475569</color>
+    <color name="slate_700">#FF334155</color>
+    <color name="slate_800">#FF1E293B</color>
+    <color name="slate_900">#FF0F172A</color>
+    <color name="slate_950">#FF020617</color>
+
+    <!-- Acentos de la web: rose para errores y avisos. -->
+    <color name="rose_50">#FFFFF1F2</color>
+    <color name="rose_300">#FFFDA4AF</color>
+    <color name="rose_600">#FFE11D48</color>
+    <color name="rose_700">#FFBE123C</color>
+    <color name="rose_950">#FF4C0519</color>
 </resources>
