@@ -7,6 +7,7 @@
 
     <application
         android:name=".FinanceTrackerApp"
+        android:localeConfig="@xml/locales_config"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -39,6 +40,17 @@
             android:name=".NewTransactionActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- Guarda el idioma elegido en la app en Android 12 y anteriores.
+             En 13+ lo guarda el sistema. -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
     </application>
 
 </manifest>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cabe "Sign out", el texto mas largo de los dos idiomas. -->
+    <dimen name="top_bar_sign_out_width">84dp</dimen>
+</resources>

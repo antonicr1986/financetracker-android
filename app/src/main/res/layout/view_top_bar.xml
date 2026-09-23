@@ -3,6 +3,7 @@
      cambio de tema y salir a la derecha. Se incluye en el panel y en el login. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:background="?attr/colorSurface"
@@ -16,8 +17,30 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/app_name"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textStyle="bold" />
+
+    <!-- Idioma: muestra solo el idioma al que se puede cambiar (EN si se ve
+         en espanol, ES si se ve en ingles), para ocupar poco en la barra. El
+         texto lo pone TopBar.kt; la logica esta en LanguagePreference. -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/languageButton"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:paddingHorizontal="10dp"
+        android:textColor="@color/top_bar_button_content"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"
+        app:strokeColor="@color/top_bar_button_stroke"
+        tools:text="🇺🇸 EN" />
 
     <!-- Boton cuadrado con borde, como el de la luna en la web.
          La logica esta en ThemePreference. -->
@@ -37,17 +60,22 @@
         app:iconTint="@color/top_bar_button_content"
         app:strokeColor="@color/top_bar_button_stroke" />
 
-    <!-- Siempre a la derecha del todo, como en la web. Sin sesion (login,
+    <!-- Ancho fijo: "Salir" y "Sign out" ocupan lo mismo y la barra no se
+         mueve al cambiar de idioma.
+         Siempre a la derecha del todo, como en la web. Sin sesion (login,
          registro) aparece deshabilitado; lo decide TopBar.kt. El selector de
-         idioma iria a su izquierda mas adelante. -->
+         idioma y el del tema van a su izquierda. -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signOutButton"
         style="@style/Widget.Material3.Button.OutlinedButton"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/top_bar_sign_out_width"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
+        android:maxLines="1"
+        android:minWidth="0dp"
+        android:paddingHorizontal="8dp"
         android:text="@string/dashboard_sign_out"
         android:textColor="@color/top_bar_button_content"
         app:cornerRadius="8dp"

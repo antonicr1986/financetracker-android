@@ -12,8 +12,26 @@ import com.antoniocompany.financetracker.databinding.ViewTopBarBinding
  * que la logica vive aqui y no repetida en cada Activity.
  */
 fun ViewTopBarBinding.bind(activity: Activity) {
+    bindLanguageToggle()
     bindThemeToggle()
     bindSignOut(activity)
+}
+
+/**
+ * El boton muestra el idioma al que se cambia, no el actual: en espanol pone
+ * "EN" y en ingles "ES". Asi ocupa un solo hueco en la barra.
+ */
+private fun ViewTopBarBinding.bindLanguageToggle() {
+    val toEnglish = LanguagePreference.current() == LanguagePreference.SPANISH
+    languageButton.setText(if (toEnglish) R.string.language_en else R.string.language_es)
+    languageButton.contentDescription = root.context.getString(
+        if (toEnglish) R.string.language_switch_to_en else R.string.language_switch_to_es
+    )
+    languageButton.setOnClickListener {
+        LanguagePreference.set(
+            if (toEnglish) LanguagePreference.ENGLISH else LanguagePreference.SPANISH
+        )
+    }
 }
 
 private fun ViewTopBarBinding.bindThemeToggle() {
