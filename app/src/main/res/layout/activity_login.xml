@@ -131,6 +131,30 @@
             android:layout_marginTop="8dp"
             android:text="@string/login_demo_hint"
             android:textAppearance="?attr/textAppearanceBodySmall" />
+
+        <!-- "¿No tienes cuenta? Crear cuenta": abre el registro. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_no_account"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/createAccountLink"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_create_account" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
 </LinearLayout>

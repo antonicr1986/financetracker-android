@@ -57,6 +57,12 @@ class LoginActivity : AppCompatActivity() {
         binding.demoButton.setOnClickListener {
             signIn(DEMO_EMAIL, DEMO_PASSWORD)
         }
+
+        // El login se queda debajo: "Entrar" en el registro solo tiene que
+        // cerrar esa pantalla para volver aqui.
+        binding.createAccountLink.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
     }
 
     private fun signIn(email: String, password: String) {
@@ -97,6 +103,7 @@ class LoginActivity : AppCompatActivity() {
         binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
         binding.signInButton.isEnabled = !loading
         binding.demoButton.isEnabled = !loading
+        binding.createAccountLink.isEnabled = !loading
         binding.signInButton.setText(
             if (loading) R.string.login_submitting else R.string.login_submit
         )
