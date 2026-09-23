@@ -43,5 +43,8 @@
         <item name="android:windowLightStatusBar">false</item>
 
         <item name="materialCardViewStyle">@style/Widget.FinanceTracker.Card</item>
+        <!-- Sin esto Material mezcla colorPrimary en las superficies con
+             sombra y las tarjetas salen grisaceas en vez de blancas. -->
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 </resources>

@@ -17,6 +17,7 @@
     <string name="error_network">No se ha podido contactar con el servidor.</string>
 
     <string name="dashboard_sign_out">Salir</string>
+    <string name="theme_toggle">Cambiar entre tema claro y oscuro</string>
     <string name="dashboard_income">Ingresos</string>
     <string name="dashboard_expenses">Gastos</string>
     <string name="dashboard_balance">Balance</string>

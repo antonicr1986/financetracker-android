@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barra superior blanca, como la cabecera de la web: nombre a la izquierda,
+     cambio de tema y salir a la derecha. Se incluye en el panel y en el login. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="?attr/colorSurface"
+    android:elevation="1dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/app_name"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textStyle="bold" />
+
+    <!-- Boton cuadrado con borde, como el de la luna en la web.
+         La logica esta en ThemePreference. -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/themeToggleButton"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:padding="0dp"
+        android:contentDescription="@string/theme_toggle"
+        app:cornerRadius="8dp"
+        app:icon="@drawable/ic_theme_dark"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="?attr/colorOnSurface"
+        app:strokeColor="?attr/colorOutline" />
+
+    <!-- En la pantalla de acceso no hay sesion que cerrar: LoginActivity
+         lo oculta. Aqui iria tambien el selector de idioma mas adelante. -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/signOutButton"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/dashboard_sign_out"
+        android:textColor="?attr/colorOnSurface"
+        app:cornerRadius="8dp"
+        app:strokeColor="?attr/colorOutline" />
+</LinearLayout>

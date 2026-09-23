@@ -8,32 +8,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
+
+        <!-- Barra superior compartida con la pantalla de acceso. -->
+        <include
+            android:id="@+id/topBar"
+            layout="@layout/view_top_bar" />
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        <!-- El correo pasa debajo de la barra: en el movil no cabe en la misma
+             linea que los botones sin cortarse. -->
+        <TextView
+            android:id="@+id/emailText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="demo@financetracker.app" />
 
-            <TextView
-                android:id="@+id/emailText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                tools:text="demo@financetracker.app" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/signOutButton"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dashboard_sign_out" />
-        </LinearLayout>
 
         <TextView
             android:id="@+id/monthText"
@@ -197,6 +197,7 @@
                     tools:listitem="@layout/item_transaction" />
             </com.google.android.material.card.MaterialCardView>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

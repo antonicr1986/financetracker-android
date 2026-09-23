@@ -48,6 +48,9 @@
         <!-- Todas las tarjetas como las de la web: blancas, esquinas redondeadas,
              borde fino y sombra suave. -->
         <item name="materialCardViewStyle">@style/Widget.FinanceTracker.Card</item>
+        <!-- Sin esto Material mezcla colorPrimary en las superficies con
+             sombra y las tarjetas salen grisaceas en vez de blancas. -->
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <style name="Widget.FinanceTracker.Card" parent="Widget.Material3.CardView.Elevated">

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sol: se muestra en tema oscuro, para pasar a claro. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M12,8a4,4 0,1 0,0 8a4,4 0,1 0,0 -8z M12,2v2 M12,20v2 M4.93,4.93l1.41,1.41 M17.66,17.66l1.41,1.41 M2,12h2 M20,12h2 M6.34,17.66l-1.41,1.41 M19.07,4.93l-1.41,1.41"
+        android:strokeColor="?attr/colorOnSurface"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+</vector>

@@ -17,6 +17,7 @@ import com.antoniocompany.financetracker.domain.availableMonths
 import com.antoniocompany.financetracker.domain.summaryOf
 import com.antoniocompany.financetracker.domain.transactionsOfMonth
 import com.antoniocompany.financetracker.ui.TransactionAdapter
+import com.antoniocompany.financetracker.ui.bindThemeToggle
 import com.antoniocompany.financetracker.ui.formatCurrency
 import com.antoniocompany.financetracker.ui.formatMonth
 import com.antoniocompany.financetracker.ui.formatShortMonth
@@ -73,7 +74,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.emailText.text = session.email.orEmpty()
 
-        binding.signOutButton.setOnClickListener {
+        binding.topBar.bindThemeToggle()
+
+        binding.topBar.signOutButton.setOnClickListener {
             session.clear()
             goToLogin()
         }
