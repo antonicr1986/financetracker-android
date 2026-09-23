@@ -7,10 +7,20 @@ data class LoginRequest(
 )
 
 /**
+ * Cuerpo de POST /api/Users/register. Mismos limites que RegisterUserDto en
+ * la API: nombre hasta 100, correo hasta 150 y contrasena de al menos 6.
+ */
+data class RegisterRequest(
+    val name: String,
+    val email: String,
+    val password: String
+)
+
+/**
  * Respuesta de POST /api/Users/login.
  *
- * El registro, en cambio, devuelve el usuario y no un token: si algun dia se
- * anade a la app habra que encadenar el login, como hace la web.
+ * El registro, en cambio, devuelve el usuario y no un token: despues de
+ * registrar hay que encadenar el login, como hace la web.
  */
 data class LoginResponse(
     val token: String,
