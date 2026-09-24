@@ -35,6 +35,7 @@ class SessionStore(context: Context) {
 
     fun clear() {
         prefs.edit().clear().apply()
+        DashboardCache.clear()
     }
 
     private companion object {

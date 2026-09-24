@@ -3,7 +3,6 @@ package com.antoniocompany.financetracker
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
@@ -23,7 +22,7 @@ import java.io.IOException
  * sin ensenarse. El boton de la cuenta de demostracion hace exactamente lo
  * mismo que el formulario, con unas credenciales publicas a proposito.
  */
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var session: SessionStore

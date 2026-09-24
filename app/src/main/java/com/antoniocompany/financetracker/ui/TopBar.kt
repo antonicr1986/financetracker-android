@@ -40,7 +40,9 @@ private fun ViewTopBarBinding.bindThemeToggle() {
     themeToggleButton.setIconResource(
         if (ThemePreference.isDark(context)) R.drawable.ic_theme_light else R.drawable.ic_theme_dark
     )
-    themeToggleButton.setOnClickListener { ThemePreference.toggle(context) }
+    themeToggleButton.setOnClickListener {
+        ThemePreference.toggle(context)
+    }
 }
 
 /**

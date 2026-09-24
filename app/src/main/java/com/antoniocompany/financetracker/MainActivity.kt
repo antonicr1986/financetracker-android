@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.antoniocompany.financetracker.data.ApiClient
+import com.antoniocompany.financetracker.data.DashboardCache
 import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.TransactionRepository
 import com.antoniocompany.financetracker.data.model.TransactionDto
@@ -34,7 +34,7 @@ import java.io.IOException
  * la version web. Filtrar en el servidor obligaria a una peticion por mes y no
  * dejaria saber de que meses hay datos sin preguntar.
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var session: SessionStore
@@ -95,11 +95,20 @@ class MainActivity : AppCompatActivity() {
             // la comprobacion se repintaria el mes que ya se esta viendo.
             if (month != selectedMonth) {
                 selectedMonth = month
+                DashboardCache.selectedMonth = month
                 renderMonth(month)
             }
         }
 
-        load()
+        // Si la pantalla viene de un cambio de tema o idioma y ya habia datos,
+        // se pintan al momento; en cualquier otro caso se piden a la API.
+        val cached = DashboardCache.transactions
+        if (restartedForLook && cached != null) {
+            selectedMonth = DashboardCache.selectedMonth
+            render(cached)
+        } else {
+            load()
+        }
     }
 
     /**
@@ -134,6 +143,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun render(all: List<TransactionDto>) {
         allTransactions = all
+        DashboardCache.transactions = all
 
         val months = availableMonths(all)
 
@@ -149,6 +159,7 @@ class MainActivity : AppCompatActivity() {
         // se cae al mas reciente.
         val month = selectedMonth.takeIf { it in months } ?: months.last()
         selectedMonth = month
+        DashboardCache.selectedMonth = month
 
         binding.monthScroll.visibility = View.VISIBLE
         buildMonthChips(months, month)

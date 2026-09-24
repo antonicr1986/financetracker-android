@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
@@ -30,7 +29,7 @@ import java.io.IOException
  * medio, y a pantalla completa no hay que pelearse con el teclado tapando lo
  * que se escribe.
  */
-class NewTransactionActivity : AppCompatActivity() {
+class NewTransactionActivity : BaseActivity() {
 
     private lateinit var binding: ActivityNewTransactionBinding
     private lateinit var repository: TransactionRepository
@@ -39,6 +38,9 @@ class NewTransactionActivity : AppCompatActivity() {
     private var selectedType = TransactionType.EXPENSE
     private var selectedCategory: CategoryDto? = null
     private var selectedDate = todayIso()
+
+    /** Categoria a recuperar cuando lleguen las categorias (tras reinicio). */
+    private var pendingCategoryId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +57,19 @@ class NewTransactionActivity : AppCompatActivity() {
 
         repository = TransactionRepository(ApiClient.get(this))
 
-        binding.typeGroup.check(R.id.expenseButton)
+        // Lo elegido antes de un reinicio (tema, idioma o giro del movil).
+        // Los textos de los campos los restaura Android solo; esto no.
+        savedInstanceState?.let { state ->
+            state.getString(KEY_DATE)?.let { selectedDate = it }
+            if (state.getString(KEY_TYPE) == TransactionType.INCOME.name) {
+                selectedType = TransactionType.INCOME
+            }
+            pendingCategoryId = state.getInt(KEY_CATEGORY, -1).takeIf { it != -1 }
+        }
+
+        binding.typeGroup.check(
+            if (selectedType == TransactionType.INCOME) R.id.incomeButton else R.id.expenseButton
+        )
         binding.typeGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked) return@addOnButtonCheckedListener
 
@@ -85,6 +99,10 @@ class NewTransactionActivity : AppCompatActivity() {
             try {
                 categories = repository.getCategories()
                 showCategoriesOfSelectedType()
+                pendingCategoryId?.let { id ->
+                    selectedCategory = categories.firstOrNull { it.id == id && it.type == selectedType }
+                    pendingCategoryId = null
+                }
             } catch (error: HttpException) {
                 showError(getString(R.string.error_categories_failed))
             } catch (error: IOException) {
@@ -208,5 +226,18 @@ class NewTransactionActivity : AppCompatActivity() {
     private fun showError(message: String?) {
         binding.errorText.text = message.orEmpty()
         binding.errorText.visibility = if (message == null) View.GONE else View.VISIBLE
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_DATE, selectedDate)
+        outState.putString(KEY_TYPE, selectedType.name)
+        selectedCategory?.let { outState.putInt(KEY_CATEGORY, it.id) }
+    }
+
+    private companion object {
+        const val KEY_DATE = "date"
+        const val KEY_TYPE = "type"
+        const val KEY_CATEGORY = "category"
     }
 }

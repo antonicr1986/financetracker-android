@@ -5,6 +5,8 @@
     <!-- La aplicacion no sirve de nada sin la API. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- configChanges uiMode|locale en cada pantalla: el tema y el idioma no
+         las recrean (eso parpadea); BaseActivity las reinicia con fundido. -->
     <application
         android:name=".FinanceTrackerApp"
         android:localeConfig="@xml/locales_config"
@@ -18,6 +20,7 @@
         android:theme="@style/Theme.FinanceTracker">
         <activity
             android:name=".LoginActivity"
+            android:configChanges="uiMode|locale|layoutDirection"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -29,15 +32,18 @@
 
         <activity
             android:name=".RegisterActivity"
+            android:configChanges="uiMode|locale|layoutDirection"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".MainActivity"
+            android:configChanges="uiMode|locale|layoutDirection"
             android:exported="false" />
 
         <activity
             android:name=".NewTransactionActivity"
+            android:configChanges="uiMode|locale|layoutDirection"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
