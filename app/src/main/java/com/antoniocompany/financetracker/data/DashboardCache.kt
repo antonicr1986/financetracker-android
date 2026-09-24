@@ -1,5 +1,6 @@
 package com.antoniocompany.financetracker.data
 
+import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.TransactionDto
 
 /**
@@ -14,9 +15,15 @@ import com.antoniocompany.financetracker.data.model.TransactionDto
 object DashboardCache {
     var transactions: List<TransactionDto>? = null
     var selectedMonth: String? = null
+    var budgets: List<BudgetDto>? = null
+
+    /** Si la tarjeta de presupuestos esta desplegada. Se recuerda en la sesion. */
+    var budgetsExpanded: Boolean = true
 
     fun clear() {
         transactions = null
         selectedMonth = null
+        budgets = null
+        budgetsExpanded = true
     }
 }

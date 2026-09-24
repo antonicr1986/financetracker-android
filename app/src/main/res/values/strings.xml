@@ -88,6 +88,14 @@
     <string name="error_category_exists">Ya tienes una categoría de este tipo con ese nombre.</string>
     <string name="error_create_category_failed">No se ha podido crear la categoría.</string>
 
+    <string name="budgets_title">Presupuestos</string>
+    <string name="budgets_summary">%1$d de %2$d dentro del límite</string>
+    <string name="budgets_all_categories">Todas las categorías</string>
+    <string name="budgets_spent_of">%1$s de %2$s</string>
+    <string name="budgets_remaining">Quedan %1$s</string>
+    <string name="budgets_exceeded">Te has pasado %1$s</string>
+    <string name="budgets_toggle">Mostrar u ocultar los presupuestos</string>
+
     <string name="error_write_description">Escribe un concepto.</string>
     <string name="error_amount_positive">El importe debe ser mayor que cero.</string>
     <string name="error_choose_category">Elige una categoría.</string>

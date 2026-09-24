@@ -5,4 +5,12 @@
          el codigo sigue pidiendo @color/income sin saber en cual esta. -->
     <color name="income">#FF34D399</color>
     <color name="expense">#FFFB7185</color>
+
+    <!-- Presupuestos en oscuro: un tono mas claro, como la web. -->
+    <color name="budget_bar_ok">#FF10B981</color>      <!-- emerald-500 -->
+    <color name="budget_bar_warning">#FFFBBF24</color> <!-- amber-400 -->
+    <color name="budget_bar_over">#FFF43F5E</color>    <!-- rose-500 -->
+    <color name="budget_text_ok">#FF34D399</color>     <!-- emerald-400 -->
+    <color name="budget_text_warning">#FFFBBF24</color><!-- amber-400 -->
+    <color name="budget_text_over">#FFFB7185</color>   <!-- rose-400 -->
 </resources>

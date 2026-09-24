@@ -84,6 +84,14 @@
     <string name="error_category_exists">You already have a category of this type with that name.</string>
     <string name="error_create_category_failed">Could not create the category.</string>
 
+    <string name="budgets_title">Budgets</string>
+    <string name="budgets_summary">%1$d of %2$d within limit</string>
+    <string name="budgets_all_categories">All categories</string>
+    <string name="budgets_spent_of">%1$s of %2$s</string>
+    <string name="budgets_remaining">%1$s left</string>
+    <string name="budgets_exceeded">%1$s over</string>
+    <string name="budgets_toggle">Show or hide the budgets</string>
+
     <string name="error_write_description">Enter a description.</string>
     <string name="error_amount_positive">The amount must be greater than zero.</string>
     <string name="error_choose_category">Choose a category.</string>

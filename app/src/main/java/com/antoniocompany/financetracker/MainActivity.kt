@@ -11,9 +11,16 @@ import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.DashboardCache
 import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.TransactionRepository
+import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.TransactionDto
+import com.antoniocompany.financetracker.databinding.ItemBudgetBinding
 import com.antoniocompany.financetracker.databinding.ActivityMainBinding
+import com.antoniocompany.financetracker.domain.BudgetTone
 import com.antoniocompany.financetracker.domain.availableMonths
+import com.antoniocompany.financetracker.domain.budgetPercentage
+import com.antoniocompany.financetracker.domain.budgetTone
+import com.antoniocompany.financetracker.domain.budgetsOfMonth
+import com.antoniocompany.financetracker.domain.budgetsWithinLimit
 import com.antoniocompany.financetracker.domain.summaryOf
 import com.antoniocompany.financetracker.domain.transactionsOfMonth
 import com.antoniocompany.financetracker.ui.TransactionAdapter
@@ -47,6 +54,9 @@ class MainActivity : BaseActivity() {
 
     /** Historico completo. Los chips y los totales se derivan de aqui. */
     private var allTransactions: List<TransactionDto> = emptyList()
+
+    /** Todos los meses; se filtran al pintar. Se piden aparte de los movimientos. */
+    private var allBudgets: List<BudgetDto> = emptyList()
     private var selectedMonth: String? = null
 
     /**
@@ -112,9 +122,16 @@ class MainActivity : BaseActivity() {
 
         // Si la pantalla viene de un cambio de tema o idioma y ya habia datos,
         // se pintan al momento; en cualquier otro caso se piden a la API.
+        binding.budgetsHeader.setOnClickListener {
+            DashboardCache.budgetsExpanded = !DashboardCache.budgetsExpanded
+            applyBudgetsExpanded()
+        }
+        applyBudgetsExpanded()
+
         val cached = DashboardCache.transactions
         if (restartedForLook && cached != null) {
             selectedMonth = DashboardCache.selectedMonth
+            allBudgets = DashboardCache.budgets.orEmpty()
             render(cached)
         } else {
             load()
@@ -129,6 +146,7 @@ class MainActivity : BaseActivity() {
     private fun load(fromSwipe: Boolean = false) {
         if (!fromSwipe) setLoading(true)
         showMessage(null)
+        loadBudgets()
 
         lifecycleScope.launch {
             try {
@@ -149,6 +167,73 @@ class MainActivity : BaseActivity() {
                 binding.swipeRefresh.isRefreshing = false
             }
         }
+    }
+
+    /**
+     * Los presupuestos van en su propia peticion, en paralelo con los
+     * movimientos. Si fallan, el panel sigue funcionando sin la tarjeta: son
+     * un complemento, no lo principal. Un 401 lo gestiona la carga de
+     * movimientos, que lleva al acceso.
+     */
+    private fun loadBudgets() {
+        lifecycleScope.launch {
+            try {
+                allBudgets = repository.getBudgets()
+                DashboardCache.budgets = allBudgets
+            } catch (error: HttpException) {
+                allBudgets = emptyList()
+            } catch (error: IOException) {
+                allBudgets = emptyList()
+            }
+            selectedMonth?.let { renderBudgets(it) }
+        }
+    }
+
+    /** Tarjeta de presupuestos del mes. Oculta si ese mes no tiene ninguno. */
+    private fun renderBudgets(month: String) {
+        val ofMonth = budgetsOfMonth(allBudgets, month)
+        binding.budgetsCard.visibility = if (ofMonth.isEmpty()) View.GONE else View.VISIBLE
+        if (ofMonth.isEmpty()) return
+
+        binding.budgetsSummary.text =
+            getString(R.string.budgets_summary, budgetsWithinLimit(ofMonth), ofMonth.size)
+
+        binding.budgetsList.removeAllViews()
+        ofMonth.forEach { budget ->
+            val row = ItemBudgetBinding.inflate(layoutInflater, binding.budgetsList, false)
+            val percentage = budgetPercentage(budget)
+            val (bar, text) = when (budgetTone(percentage)) {
+                BudgetTone.OVER -> R.color.budget_bar_over to R.color.budget_text_over
+                BudgetTone.WARNING -> R.color.budget_bar_warning to R.color.budget_text_warning
+                BudgetTone.ON_TRACK -> R.color.budget_bar_ok to R.color.budget_text_ok
+            }
+
+            row.budgetName.text = budget.name
+            row.budgetCategory.text =
+                budget.categoryName ?: getString(R.string.budgets_all_categories)
+            row.budgetSpent.text = getString(
+                R.string.budgets_spent_of,
+                formatCurrency(budget.spentAmount),
+                formatCurrency(budget.amount)
+            )
+            row.budgetBar.progress = percentage.coerceIn(0, 100)
+            row.budgetBar.setIndicatorColor(ContextCompat.getColor(this, bar))
+            row.budgetPercent.text = "$percentage%"
+            row.budgetPercent.setTextColor(ContextCompat.getColor(this, text))
+            row.budgetRemaining.text = if (budget.remainingAmount < 0) {
+                getString(R.string.budgets_exceeded, formatCurrency(-budget.remainingAmount))
+            } else {
+                getString(R.string.budgets_remaining, formatCurrency(budget.remainingAmount))
+            }
+
+            binding.budgetsList.addView(row.root)
+        }
+    }
+
+    private fun applyBudgetsExpanded() {
+        val expanded = DashboardCache.budgetsExpanded
+        binding.budgetsList.visibility = if (expanded) View.VISIBLE else View.GONE
+        binding.budgetsChevron.rotation = if (expanded) 0f else 180f
     }
 
     private fun render(all: List<TransactionDto>) {
@@ -232,6 +317,7 @@ class MainActivity : BaseActivity() {
         )
 
         adapter.submitList(ofMonth)
+        renderBudgets(month)
     }
 
     private fun setLoading(loading: Boolean) {

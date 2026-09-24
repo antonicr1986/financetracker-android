@@ -29,4 +29,14 @@
     <color name="rose_600">#FFE11D48</color>
     <color name="rose_700">#FFBE123C</color>
     <color name="rose_950">#FF4C0519</color>
+
+    <!-- Barra de los presupuestos, como en la web: verde, ambar al 80 % y
+         rojo al 100 %. El porcentaje va escrito al lado: el color refuerza,
+         no es la unica pista. -->
+    <color name="budget_bar_ok">#FF059669</color>      <!-- emerald-600 -->
+    <color name="budget_bar_warning">#FFF59E0B</color> <!-- amber-500 -->
+    <color name="budget_bar_over">#FFE11D48</color>    <!-- rose-600 -->
+    <color name="budget_text_ok">#FF047857</color>     <!-- emerald-700 -->
+    <color name="budget_text_warning">#FFB45309</color><!-- amber-700 -->
+    <color name="budget_text_over">#FFBE123C</color>   <!-- rose-700 -->
 </resources>

@@ -1,5 +1,6 @@
 package com.antoniocompany.financetracker.data
 
+import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.LoginRequest
@@ -60,6 +61,13 @@ interface FinanceTrackerApi {
     /** Este si devuelve un array suelto, no un PagedResult. */
     @GET("api/Categories")
     suspend fun getCategories(): List<CategoryDto>
+
+    /**
+     * Todos los presupuestos de todos los meses: la API no admite filtro. El
+     * panel se queda con los del mes que se ve. Array suelto, sin paginar.
+     */
+    @GET("api/Budgets")
+    suspend fun getBudgets(): List<BudgetDto>
 
     /** Devuelve la categoria creada (201), con su id. */
     @POST("api/Categories")

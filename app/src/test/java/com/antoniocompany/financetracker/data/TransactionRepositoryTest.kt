@@ -1,5 +1,6 @@
 package com.antoniocompany.financetracker.data
 
+import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.LoginRequest
@@ -46,6 +47,9 @@ class TransactionRepositoryTest {
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun deleteTransaction(id: Int) =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun getBudgets(): List<BudgetDto> =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun createCategory(body: CategoryInput): CategoryDto =
