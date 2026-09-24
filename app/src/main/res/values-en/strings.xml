@@ -62,6 +62,18 @@
     <string name="new_transaction_saved">Transaction saved</string>
     <string name="new_transaction_no_categories">You have no categories of this type. Create one on the web first.</string>
 
+    <string name="edit_transaction_title">Edit transaction</string>
+    <string name="edit_transaction_saved">Transaction updated</string>
+    <string name="edit_transaction_delete">Delete transaction</string>
+    <string name="edit_transaction_deleting">Deleting…</string>
+    <string name="edit_transaction_deleted">Transaction deleted</string>
+    <string name="edit_transaction_confirm_title">Delete this transaction?</string>
+    <string name="edit_transaction_confirm_message">“%1$s” will be deleted. This cannot be undone.</string>
+    <string name="edit_transaction_confirm_delete">Delete</string>
+    <string name="edit_transaction_cancel">Cancel</string>
+    <string name="error_delete_failed">Could not delete the transaction.</string>
+    <string name="error_transaction_gone">This transaction no longer exists.</string>
+
     <string name="error_write_description">Enter a description.</string>
     <string name="error_amount_positive">The amount must be greater than zero.</string>
     <string name="error_choose_category">Choose a category.</string>

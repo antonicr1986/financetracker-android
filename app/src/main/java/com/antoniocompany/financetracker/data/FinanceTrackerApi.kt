@@ -9,8 +9,11 @@ import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.UserDto
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -44,6 +47,14 @@ interface FinanceTrackerApi {
 
     @POST("api/Transactions")
     suspend fun createTransaction(@Body body: TransactionInput): TransactionDto
+
+    /** Mismo cuerpo que el alta. Responde 204 sin contenido; 404 si no existe. */
+    @PUT("api/Transactions/{id}")
+    suspend fun updateTransaction(@Path("id") id: Int, @Body body: TransactionInput)
+
+    /** Responde 204 sin contenido; 404 si no existe. */
+    @DELETE("api/Transactions/{id}")
+    suspend fun deleteTransaction(@Path("id") id: Int)
 
     /** Este si devuelve un array suelto, no un PagedResult. */
     @GET("api/Categories")

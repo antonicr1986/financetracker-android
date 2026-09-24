@@ -40,7 +40,10 @@ class MainActivity : BaseActivity() {
     private lateinit var session: SessionStore
     private lateinit var repository: TransactionRepository
 
-    private val adapter = TransactionAdapter()
+    /** Pulsar un movimiento lo abre en la misma pantalla del alta, para editar o borrar. */
+    private val adapter = TransactionAdapter { transaction ->
+        editTransaction.launch(NewTransactionActivity.editIntent(this, transaction))
+    }
 
     /** Historico completo. Los chips y los totales se derivan de aqui. */
     private var allTransactions: List<TransactionDto> = emptyList()
@@ -52,6 +55,13 @@ class MainActivity : BaseActivity() {
      * sentido volver a pedir los mismos datos.
      */
     private val newTransaction = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) load()
+    }
+
+    /** Igual que el alta: si se guardo o se borro, se recarga. */
+    private val editTransaction = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) load()

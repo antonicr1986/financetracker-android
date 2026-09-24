@@ -19,7 +19,10 @@ import com.google.android.material.color.MaterialColors
  * DiffUtil de abajo y anima solo lo que cambia. La alternativa,
  * notifyDataSetChanged(), redibuja todo y pierde la posicion del scroll.
  */
-class TransactionAdapter : ListAdapter<TransactionDto, TransactionAdapter.ViewHolder>(DIFF) {
+class TransactionAdapter(
+    /** Al pulsar una fila: el panel abre ese movimiento para editarlo. */
+    private val onClick: (TransactionDto) -> Unit
+) : ListAdapter<TransactionDto, TransactionAdapter.ViewHolder>(DIFF) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemTransactionBinding.inflate(
@@ -31,7 +34,9 @@ class TransactionAdapter : ListAdapter<TransactionDto, TransactionAdapter.ViewHo
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val transaction = getItem(position)
+        holder.bind(transaction)
+        holder.itemView.setOnClickListener { onClick(transaction) }
     }
 
     class ViewHolder(

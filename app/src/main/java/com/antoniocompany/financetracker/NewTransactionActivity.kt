@@ -1,5 +1,7 @@
 package com.antoniocompany.financetracker
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -9,15 +11,18 @@ import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.TransactionRepository
 import com.antoniocompany.financetracker.data.model.CategoryDto
+import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
 import com.antoniocompany.financetracker.databinding.ActivityNewTransactionBinding
+import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
 import com.antoniocompany.financetracker.ui.formatShortDate
 import com.antoniocompany.financetracker.ui.isoToUtcMillis
 import com.antoniocompany.financetracker.ui.todayIso
 import com.antoniocompany.financetracker.ui.utcMillisToIso
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -42,6 +47,14 @@ class NewTransactionActivity : BaseActivity() {
     /** Categoria a recuperar cuando lleguen las categorias (tras reinicio). */
     private var pendingCategoryId: Int? = null
 
+    /**
+     * Id del movimiento que se edita, o null si es un alta. La misma pantalla
+     * sirve para las dos cosas: los campos y las reglas son identicos.
+     */
+    private val editingId: Int? by lazy {
+        intent.getIntExtra(EXTRA_ID, -1).takeIf { it != -1 }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,6 +69,16 @@ class NewTransactionActivity : BaseActivity() {
         binding.topBar.bind(this)
 
         repository = TransactionRepository(ApiClient.get(this))
+
+        if (editingId != null) {
+            binding.titleText.setText(R.string.edit_transaction_title)
+            binding.deleteButton.visibility = View.VISIBLE
+            binding.deleteButton.setOnClickListener { confirmDelete() }
+
+            // Solo la primera vez: tras un reinicio los campos ya traen lo que
+            // el usuario hubiera cambiado, y eso manda sobre el original.
+            if (savedInstanceState == null) prefillFromIntent()
+        }
 
         // Lo elegido antes de un reinicio (tema, idioma o giro del movil).
         // Los textos de los campos los restaura Android solo; esto no.
@@ -101,6 +124,7 @@ class NewTransactionActivity : BaseActivity() {
                 showCategoriesOfSelectedType()
                 pendingCategoryId?.let { id ->
                     selectedCategory = categories.firstOrNull { it.id == id && it.type == selectedType }
+                    selectedCategory?.let { binding.categoryInput.setText(it.name, false) }
                     pendingCategoryId = null
                 }
             } catch (error: HttpException) {
@@ -185,21 +209,22 @@ class NewTransactionActivity : BaseActivity() {
         showError(null)
         setSaving(true)
 
+        val input = TransactionInput(
+            description = description,
+            amount = amount!!,
+            date = selectedDate,
+            type = selectedType,
+            categoryId = category!!.id
+        )
+        val id = editingId
+
         lifecycleScope.launch {
             try {
-                repository.create(
-                    TransactionInput(
-                        description = description,
-                        amount = amount!!,
-                        date = selectedDate,
-                        type = selectedType,
-                        categoryId = category!!.id
-                    )
-                )
+                if (id == null) repository.create(input) else repository.update(id, input)
 
                 Toast.makeText(
                     this@NewTransactionActivity,
-                    R.string.new_transaction_saved,
+                    if (id == null) R.string.new_transaction_saved else R.string.edit_transaction_saved,
                     Toast.LENGTH_SHORT
                 ).show()
 
@@ -207,7 +232,13 @@ class NewTransactionActivity : BaseActivity() {
                 setResult(RESULT_OK)
                 finish()
             } catch (error: HttpException) {
-                showError(getString(R.string.error_save_failed))
+                // 404 al editar: lo borraron desde otro sitio (la web, otro movil).
+                showError(
+                    getString(
+                        if (error.code() == 404) R.string.error_transaction_gone
+                        else R.string.error_save_failed
+                    )
+                )
             } catch (error: IOException) {
                 showError(getString(R.string.error_save_failed))
             } finally {
@@ -216,8 +247,78 @@ class NewTransactionActivity : BaseActivity() {
         }
     }
 
+    /** Rellena el formulario con el movimiento que se va a editar. */
+    private fun prefillFromIntent() {
+        binding.descriptionInput.setText(intent.getStringExtra(EXTRA_DESCRIPTION))
+
+        // Sin simbolo de moneda ni separador de miles: es un campo para
+        // escribir, no para leer. Con coma en espanol, que es lo que se teclea.
+        val amount = java.math.BigDecimal(intent.getDoubleExtra(EXTRA_AMOUNT, 0.0).toString())
+            .stripTrailingZeros()
+            .toPlainString()
+        binding.amountInput.setText(
+            if (LanguagePreference.current() == LanguagePreference.SPANISH) amount.replace(".", ",") else amount
+        )
+
+        intent.getStringExtra(EXTRA_DATE)?.let { selectedDate = it.take(10) }
+        if (intent.getStringExtra(EXTRA_TYPE) == TransactionType.INCOME.name) {
+            selectedType = TransactionType.INCOME
+        }
+        pendingCategoryId = intent.getIntExtra(EXTRA_CATEGORY, -1).takeIf { it != -1 }
+    }
+
+    /** Borrar no se puede deshacer: se pregunta antes. */
+    private fun confirmDelete() {
+        val description = binding.descriptionInput.text?.toString().orEmpty()
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.edit_transaction_confirm_title)
+            .setMessage(getString(R.string.edit_transaction_confirm_message, description))
+            .setNegativeButton(R.string.edit_transaction_cancel, null)
+            .setPositiveButton(R.string.edit_transaction_confirm_delete) { _, _ -> delete() }
+            .show()
+    }
+
+    private fun delete() {
+        val id = editingId ?: return
+        showError(null)
+        setDeleting(true)
+
+        lifecycleScope.launch {
+            try {
+                repository.delete(id)
+                finishAfterDelete(R.string.edit_transaction_deleted)
+            } catch (error: HttpException) {
+                if (error.code() == 404) {
+                    // Ya estaba borrado: el resultado es el que se queria.
+                    finishAfterDelete(R.string.error_transaction_gone)
+                } else {
+                    showError(getString(R.string.error_delete_failed))
+                }
+            } catch (error: IOException) {
+                showError(getString(R.string.error_delete_failed))
+            } finally {
+                setDeleting(false)
+            }
+        }
+    }
+
+    private fun finishAfterDelete(message: Int) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        setResult(RESULT_OK)
+        finish()
+    }
+
+    private fun setDeleting(deleting: Boolean) {
+        binding.deleteButton.isEnabled = !deleting
+        binding.saveButton.isEnabled = !deleting
+        binding.deleteButton.setText(
+            if (deleting) R.string.edit_transaction_deleting else R.string.edit_transaction_delete
+        )
+    }
+
     private fun setSaving(saving: Boolean) {
         binding.saveButton.isEnabled = !saving
+        binding.deleteButton.isEnabled = !saving
         binding.saveButton.setText(
             if (saving) R.string.new_transaction_saving else R.string.new_transaction_save
         )
@@ -235,9 +336,30 @@ class NewTransactionActivity : BaseActivity() {
         selectedCategory?.let { outState.putInt(KEY_CATEGORY, it.id) }
     }
 
-    private companion object {
-        const val KEY_DATE = "date"
-        const val KEY_TYPE = "type"
-        const val KEY_CATEGORY = "category"
+    companion object {
+        private const val KEY_DATE = "date"
+        private const val KEY_TYPE = "type"
+        private const val KEY_CATEGORY = "category"
+
+        private const val EXTRA_ID = "id"
+        private const val EXTRA_DESCRIPTION = "description"
+        private const val EXTRA_AMOUNT = "amount"
+        private const val EXTRA_DATE = "date"
+        private const val EXTRA_TYPE = "type"
+        private const val EXTRA_CATEGORY = "categoryId"
+
+        /**
+         * Abre la pantalla en modo edicion. Se pasa el movimiento entero en
+         * lugar de solo el id: ya esta cargado en el panel, y asi el formulario
+         * aparece relleno al instante, sin otra peticion a la API.
+         */
+        fun editIntent(context: Context, transaction: TransactionDto): Intent =
+            Intent(context, NewTransactionActivity::class.java)
+                .putExtra(EXTRA_ID, transaction.id)
+                .putExtra(EXTRA_DESCRIPTION, transaction.description)
+                .putExtra(EXTRA_AMOUNT, transaction.amount)
+                .putExtra(EXTRA_DATE, transaction.date)
+                .putExtra(EXTRA_TYPE, transaction.type.name)
+                .putExtra(EXTRA_CATEGORY, transaction.categoryId ?: -1)
     }
 }

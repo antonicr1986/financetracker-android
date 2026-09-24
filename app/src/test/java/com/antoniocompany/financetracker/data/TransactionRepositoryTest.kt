@@ -41,6 +41,12 @@ class TransactionRepositoryTest {
         override suspend fun createTransaction(body: TransactionInput): TransactionDto =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
+        override suspend fun updateTransaction(id: Int, body: TransactionInput) =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun deleteTransaction(id: Int) =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
         override suspend fun getCategories(): List<CategoryDto> =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 

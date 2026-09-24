@@ -66,6 +66,18 @@
     <string name="new_transaction_saved">Movimiento guardado</string>
     <string name="new_transaction_no_categories">No tienes ninguna categoría de este tipo. Créala primero desde la web.</string>
 
+    <string name="edit_transaction_title">Editar movimiento</string>
+    <string name="edit_transaction_saved">Movimiento actualizado</string>
+    <string name="edit_transaction_delete">Eliminar movimiento</string>
+    <string name="edit_transaction_deleting">Eliminando…</string>
+    <string name="edit_transaction_deleted">Movimiento eliminado</string>
+    <string name="edit_transaction_confirm_title">¿Eliminar este movimiento?</string>
+    <string name="edit_transaction_confirm_message">«%1$s» se eliminará. No se puede deshacer.</string>
+    <string name="edit_transaction_confirm_delete">Eliminar</string>
+    <string name="edit_transaction_cancel">Cancelar</string>
+    <string name="error_delete_failed">No se ha podido eliminar el movimiento.</string>
+    <string name="error_transaction_gone">Este movimiento ya no existe.</string>
+
     <string name="error_write_description">Escribe un concepto.</string>
     <string name="error_amount_positive">El importe debe ser mayor que cero.</string>
     <string name="error_choose_category">Elige una categoría.</string>
