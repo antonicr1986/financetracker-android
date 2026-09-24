@@ -89,5 +89,22 @@
         <item name="hintTextColor">?attr/colorOnSurfaceVariant</item>
     </style>
 
+    <!-- Chips de mes como los botones "Abr", "May"... de la web: esquinas de
+         8, sin el check de Material, y el elegido relleno. -->
+    <style name="Widget.FinanceTracker.MonthChip" parent="Widget.Material3.Chip.Filter">
+        <item name="checkedIconVisible">false</item>
+        <item name="chipBackgroundColor">@color/month_chip_background</item>
+        <item name="chipStrokeColor">@color/month_chip_stroke</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@color/month_chip_text</item>
+        <item name="android:textStyle">bold</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.FinanceTracker.Rounded8</item>
+    </style>
+
+    <style name="ShapeAppearance.FinanceTracker.Rounded8" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
     <style name="Theme.FinanceTracker" parent="Base.Theme.FinanceTracker" />
 </resources>

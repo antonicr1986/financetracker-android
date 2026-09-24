@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mes elegido relleno (slate-900 en claro, slate-100 en oscuro, via
+     colorPrimary); los demas con el fondo de la tarjeta. Como la web. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/colorPrimary" android:state_checked="true" />
+    <item android:color="?attr/colorSurface" />
+</selector>
