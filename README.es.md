@@ -33,6 +33,8 @@ servicio y la base de datos — la pantalla lo explica mientras espera.
 - **Alta de un movimiento**, con selector de fecha nativo y un desplegable de
   categorias filtrado por el tipo elegido: la API rechaza un gasto con
   categoria de ingresos, asi que ni se ofrece.
+- **Editar y borrar un movimiento**: al pulsarlo se abre relleno en el mismo
+  formulario; borrar pide confirmacion antes.
 - **Deslizar para recargar**, y boton de reintentar cuando la carga falla.
 - **La misma estetica que el cliente web**: la paleta slate de Tailwind
   llevada a los roles de Material 3, tarjetas blancas sobre fondo gris y una
@@ -48,7 +50,6 @@ servicio y la base de datos — la pantalla lo explica mientras espera.
 El cliente completo es el web. Este es deliberadamente mas pequeno, construido
 alrededor de lo que un movil hace bien: consultar rapido y anotar en el momento.
 
-- Se pueden crear movimientos, pero no editarlos ni borrarlos.
 - No hay presupuestos, ni filtros, ni desglose por categoria.
 - Las categorias tienen que existir ya: la aplicacion las ofrece pero no puede
   crear ninguna.
