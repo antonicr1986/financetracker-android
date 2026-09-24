@@ -106,5 +106,19 @@
         <item name="cornerSize">8dp</item>
     </style>
 
+    <!-- Boton "+": la accion principal, oscuro como "Nuevo movimiento" en la
+         web (slate-900 en claro, slate-100 en oscuro) y con esquinas de 12. -->
+    <style name="Widget.FinanceTracker.Fab" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="tint">?attr/colorOnPrimary</item>
+        <item name="rippleColor">?attr/colorOnPrimary</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.FinanceTracker.Rounded12</item>
+    </style>
+
+    <style name="ShapeAppearance.FinanceTracker.Rounded12" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
     <style name="Theme.FinanceTracker" parent="Base.Theme.FinanceTracker" />
 </resources>
