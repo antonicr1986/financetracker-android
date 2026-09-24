@@ -2,6 +2,7 @@ package com.antoniocompany.financetracker.ui
 
 import androidx.appcompat.app.AppCompatDelegate
 import java.text.NumberFormat
+import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.Currency
 import java.util.Date
@@ -16,8 +17,9 @@ import java.util.TimeZone
  * el euro, y en-GB lo escribe "€1,234.56", que es lo natural para un europeo
  * leyendo en ingles.
  */
-private val SPANISH: Locale = Locale.forLanguageTag("es-ES")
-private val ENGLISH: Locale = Locale.forLanguageTag("en-GB")
+/** Publicos para que las pruebas puedan fijar el idioma. */
+val SPANISH_LOCALE: Locale = Locale.forLanguageTag("es-ES")
+val ENGLISH_LOCALE: Locale = Locale.forLanguageTag("en-GB")
 private val EURO: Currency = Currency.getInstance("EUR")
 
 /**
@@ -28,12 +30,12 @@ private val EURO: Currency = Currency.getInstance("EUR")
 private fun uiLocale(): Locale {
     val chosen = AppCompatDelegate.getApplicationLocales()
     val language = if (!chosen.isEmpty) chosen[0]?.language else Locale.getDefault().language
-    return if (language == "en") ENGLISH else SPANISH
+    return if (language == "en") ENGLISH_LOCALE else SPANISH_LOCALE
 }
 
 /**
  * Los formateadores de un idioma, creados una vez y reutilizados. Se piden
- * en cada llamada a traves de formats(), asi que al cambiar de idioma se
+ * en cada llamada a traves de formats(locale), asi que al cambiar de idioma se
  * pasa a usar los del otro sin tener que reiniciar nada.
  *
  * SimpleDateFormat y no java.time porque este proyecto tiene minSdk 24 y
@@ -50,10 +52,8 @@ private class LocaleFormats(val locale: Locale) {
 
 private val formatsCache = mutableMapOf<Locale, LocaleFormats>()
 
-private fun formats(): LocaleFormats {
-    val locale = uiLocale()
-    return formatsCache.getOrPut(locale) { LocaleFormats(locale) }
-}
+private fun formats(locale: Locale): LocaleFormats =
+    formatsCache.getOrPut(locale) { LocaleFormats(locale) }
 
 private val isoParser = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 private val monthParser = SimpleDateFormat("yyyy-MM", Locale.US)
@@ -70,7 +70,21 @@ private val isoUtcFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
 
 private val isoLocalFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-fun formatCurrency(amount: Double): String = formats().currency.format(amount)
+/**
+ * parse() de SimpleDateFormat no devuelve null ante un texto que no es una
+ * fecha: lanza ParseException, y la app se cerraria. Esta version si devuelve
+ * null, que es lo que el resto del fichero espera. Lo destapo FormatTest.
+ */
+private fun SimpleDateFormat.parseOrNull(text: String): Date? =
+    parse(text, ParsePosition(0))
+
+
+/**
+ * Cada formato acepta el idioma como parametro opcional: la app usa el de la
+ * interfaz y las pruebas fijan uno concreto sin depender del dispositivo.
+ */
+fun formatCurrency(amount: Double, locale: Locale = uiLocale()): String =
+    formats(locale).currency.format(amount)
 
 /** Hoy, en la zona del dispositivo, como "AAAA-MM-DD". */
 fun todayIso(): String = isoLocalFormat.format(Date())
@@ -80,27 +94,27 @@ fun utcMillisToIso(millis: Long): String = isoUtcFormat.format(Date(millis))
 
 /** "AAAA-MM-DD" -> milisegundos UTC, para abrir el selector en esa fecha. */
 fun isoToUtcMillis(iso: String): Long =
-    isoUtcFormat.parse(iso)?.time ?: System.currentTimeMillis()
+    isoUtcFormat.parseOrNull(iso)?.time ?: System.currentTimeMillis()
 
 /** "2026-09-22T00:00:00" -> "22 sept" / "22 Sept". */
-fun formatShortDate(isoDate: String): String {
-    val parsed = isoParser.parse(isoDate.take(10)) ?: return isoDate.take(10)
-    return formats().dayMonth.format(parsed)
+fun formatShortDate(isoDate: String, locale: Locale = uiLocale()): String {
+    val parsed = isoParser.parseOrNull(isoDate.take(10)) ?: return isoDate.take(10)
+    return formats(locale).dayMonth.format(parsed)
 }
 
 /** "2026-09" -> "Sept". Para los chips, donde no cabe el mes entero. */
-fun formatShortMonth(monthKey: String): String {
-    val parsed = monthParser.parse(monthKey) ?: return monthKey
-    val f = formats()
+fun formatShortMonth(monthKey: String, locale: Locale = uiLocale()): String {
+    val parsed = monthParser.parseOrNull(monthKey) ?: return monthKey
+    val f = formats(locale)
     return f.shortMonth.format(parsed)
         .replace(".", "")
         .replaceFirstChar { it.uppercase(f.locale) }
 }
 
 /** "2026-09" -> "Septiembre 2026" / "September 2026". */
-fun formatMonth(monthKey: String): String {
-    val parsed = monthParser.parse(monthKey) ?: return monthKey
-    val f = formats()
+fun formatMonth(monthKey: String, locale: Locale = uiLocale()): String {
+    val parsed = monthParser.parseOrNull(monthKey) ?: return monthKey
+    val f = formats(locale)
     return f.monthYear.format(parsed)
         .replaceFirstChar { it.uppercase(f.locale) }
 }

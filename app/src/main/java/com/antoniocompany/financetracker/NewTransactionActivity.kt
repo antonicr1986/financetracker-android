@@ -17,6 +17,9 @@ import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
 import com.antoniocompany.financetracker.databinding.ActivityNewTransactionBinding
 import com.antoniocompany.financetracker.databinding.DialogNewCategoryBinding
+import com.antoniocompany.financetracker.domain.formatAmountForInput
+import com.antoniocompany.financetracker.domain.isDuplicateCategoryName
+import com.antoniocompany.financetracker.domain.parseAmount
 import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
 import com.antoniocompany.financetracker.ui.formatShortDate
@@ -184,11 +187,7 @@ class NewTransactionActivity : BaseActivity() {
     private fun save() {
         val description = binding.descriptionInput.text?.toString()?.trim().orEmpty()
 
-        // La coma es lo que teclea cualquiera en espanol; toDouble() solo
-        // entiende el punto.
-        val amount = binding.amountInput.text?.toString()
-            ?.replace(",", ".")
-            ?.toDoubleOrNull()
+        val amount = parseAmount(binding.amountInput.text?.toString())
 
         val category = selectedCategory
 
@@ -278,7 +277,7 @@ class NewTransactionActivity : BaseActivity() {
                     return@setOnClickListener
                 }
                 // Evita duplicados evidentes sin gastar una peticion.
-                if (categories.any { it.type == type && it.name.equals(name, ignoreCase = true) }) {
+                if (isDuplicateCategoryName(categories, name, type)) {
                     dialogBinding.nameLayout.error = getString(R.string.error_category_exists)
                     return@setOnClickListener
                 }
@@ -331,13 +330,11 @@ class NewTransactionActivity : BaseActivity() {
     private fun prefillFromIntent() {
         binding.descriptionInput.setText(intent.getStringExtra(EXTRA_DESCRIPTION))
 
-        // Sin simbolo de moneda ni separador de miles: es un campo para
-        // escribir, no para leer. Con coma en espanol, que es lo que se teclea.
-        val amount = java.math.BigDecimal(intent.getDoubleExtra(EXTRA_AMOUNT, 0.0).toString())
-            .stripTrailingZeros()
-            .toPlainString()
         binding.amountInput.setText(
-            if (LanguagePreference.current() == LanguagePreference.SPANISH) amount.replace(".", ",") else amount
+            formatAmountForInput(
+                intent.getDoubleExtra(EXTRA_AMOUNT, 0.0),
+                decimalComma = LanguagePreference.current() == LanguagePreference.SPANISH
+            )
         )
 
         intent.getStringExtra(EXTRA_DATE)?.let { selectedDate = it.take(10) }

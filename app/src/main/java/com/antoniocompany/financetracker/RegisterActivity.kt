@@ -2,7 +2,6 @@ package com.antoniocompany.financetracker
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
@@ -10,6 +9,8 @@ import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.databinding.ActivityRegisterBinding
+import com.antoniocompany.financetracker.domain.RegistrationProblem
+import com.antoniocompany.financetracker.domain.validateRegistration
 import com.antoniocompany.financetracker.ui.bind
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -57,12 +58,12 @@ class RegisterActivity : BaseActivity() {
 
         // Los errores evidentes se detectan aqui, sin gastar una peticion.
         // Son las mismas reglas que valida la API en RegisterUserDto.
-        val problem = when {
-            name.isEmpty() || email.isEmpty() || password.isEmpty() -> R.string.error_fill_all
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> R.string.error_invalid_email
-            password.length < MIN_PASSWORD_LENGTH -> R.string.error_password_too_short
-            password != confirmation -> R.string.error_passwords_dont_match
-            else -> null
+        val problem = when (validateRegistration(name, email, password, confirmation)) {
+            RegistrationProblem.MISSING_FIELDS -> R.string.error_fill_all
+            RegistrationProblem.INVALID_EMAIL -> R.string.error_invalid_email
+            RegistrationProblem.PASSWORD_TOO_SHORT -> R.string.error_password_too_short
+            RegistrationProblem.PASSWORDS_DONT_MATCH -> R.string.error_passwords_dont_match
+            null -> null
         }
         if (problem != null) {
             showError(getString(problem))
@@ -145,7 +146,6 @@ class RegisterActivity : BaseActivity() {
     }
 
     private companion object {
-        const val MIN_PASSWORD_LENGTH = 6
         const val WAKING_NOTICE_DELAY_MS = 4_000L
     }
 }

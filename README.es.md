@@ -114,12 +114,19 @@ no lo reinicie.
 
 ## 🧪 Pruebas
 
-`./gradlew test` — 10 pruebas unitarias, sin emulador.
+`./gradlew test` — 32 pruebas unitarias, sin emulador.
 
 Seis cubren las derivaciones por mes. Cuatro cubren el bucle de paginacion
 contra una API falsa, incluido el caso que el mundo real esconde: con menos de
 100 movimientos nunca se pide la segunda pagina, asi que un fallo ahi solo
 apareceria el dia que un usuario acumulara datos.
+
+Once cubren las reglas de los formularios (registro, importes con coma o punto,
+categorias repetidas), siete los formatos de cada idioma (`€12,345.60` frente a
+`12.345,60 €`, siempre en euros), y cuatro comprueban que las llamadas nuevas a
+la API salen con el metodo, la ruta y el cuerpo que espera la API de .NET —
+contra un interceptor de OkHttp en lugar de un servidor, asi que no necesitan
+red.
 
 ## 🔄 Automatizacion
 

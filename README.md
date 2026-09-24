@@ -112,12 +112,18 @@ preferences file, separate from the session, so signing out does not reset it.
 
 ## 🧪 Tests
 
-`./gradlew test` — 10 unit tests, no emulator needed.
+`./gradlew test` — 32 unit tests, no emulator needed.
 
 Six cover the month derivations. Four cover the paging loop against a fake API,
 including the case the real world hides: with fewer than 100 transactions the
 second page is never requested, so a bug there would only surface once a user
 accumulated data.
+
+Eleven cover the form rules (registration, amounts typed with a comma or a dot,
+duplicate categories), seven the formats in each language (`€12,345.60` versus
+`12.345,60 €`, always in euros), and four check that the new API calls leave
+with the method, path and body the .NET API expects — against an OkHttp
+interceptor instead of a server, so they need no network.
 
 ## 🔄 Automation
 
