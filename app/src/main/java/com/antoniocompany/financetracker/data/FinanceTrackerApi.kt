@@ -1,6 +1,7 @@
 package com.antoniocompany.financetracker.data
 
 import com.antoniocompany.financetracker.data.model.BudgetDto
+import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.LoginRequest
@@ -68,6 +69,17 @@ interface FinanceTrackerApi {
      */
     @GET("api/Budgets")
     suspend fun getBudgets(): List<BudgetDto>
+
+    /**
+     * Devuelve el presupuesto creado (201). 400 con category_not_found o
+     * category_type_mismatch si la categoria no existe o es del otro tipo.
+     */
+    @POST("api/Budgets")
+    suspend fun createBudget(@Body body: BudgetInput): BudgetDto
+
+    /** 204 sin contenido; 404 si no existe; mismos 400 que el alta. */
+    @PUT("api/Budgets/{id}")
+    suspend fun updateBudget(@Path("id") id: Int, @Body body: BudgetInput)
 
     /** Devuelve la categoria creada (201), con su id. */
     @POST("api/Categories")

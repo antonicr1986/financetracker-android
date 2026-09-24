@@ -94,6 +94,21 @@
     <string name="budgets_spent_of">%1$s de %2$s</string>
     <string name="budgets_remaining">Quedan %1$s</string>
     <string name="budgets_exceeded">Te has pasado %1$s</string>
+    <string name="budgets_empty">No tienes ningún presupuesto para este mes.</string>
+    <string name="budgets_new">Nuevo presupuesto</string>
+    <string name="budget_title_new">Nuevo presupuesto</string>
+    <string name="budget_title_edit">Editar presupuesto</string>
+    <string name="budget_name">Nombre</string>
+    <string name="budget_name_hint">Gastos de casa</string>
+    <string name="budget_amount">Límite</string>
+    <string name="budget_month">Mes</string>
+    <string name="budget_category">Categoría</string>
+    <string name="budget_saved">Presupuesto guardado</string>
+    <string name="budget_updated">Presupuesto actualizado</string>
+    <string name="error_write_budget_name">Escribe un nombre para el presupuesto.</string>
+    <string name="error_save_budget_failed">No se ha podido guardar el presupuesto.</string>
+    <string name="error_budget_category_invalid">La categoría ya no existe o no es de este tipo.</string>
+    <string name="error_budget_gone">Este presupuesto ya no existe.</string>
     <string name="budgets_toggle">Mostrar u ocultar los presupuestos</string>
 
     <string name="error_write_description">Escribe un concepto.</string>

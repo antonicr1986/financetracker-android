@@ -37,6 +37,12 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".BudgetActivity"
+            android:configChanges="uiMode|locale|layoutDirection"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".MainActivity"
             android:configChanges="uiMode|locale|layoutDirection"
             android:exported="false" />

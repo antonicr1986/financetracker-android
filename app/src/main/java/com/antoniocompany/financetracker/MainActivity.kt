@@ -70,6 +70,13 @@ class MainActivity : BaseActivity() {
         if (result.resultCode == RESULT_OK) load()
     }
 
+    /** Alta o edicion de un presupuesto: al volver con cambios, se recarga. */
+    private val budgetForm = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) loadBudgets()
+    }
+
     /** Igual que el alta: si se guardo o se borro, se recarga. */
     private val editTransaction = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -127,6 +134,9 @@ class MainActivity : BaseActivity() {
             applyBudgetsExpanded()
         }
         applyBudgetsExpanded()
+        binding.newBudgetButton.setOnClickListener {
+            selectedMonth?.let { budgetForm.launch(BudgetActivity.newIntent(this, it)) }
+        }
 
         val cached = DashboardCache.transactions
         if (restartedForLook && cached != null) {
@@ -189,14 +199,19 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    /** Tarjeta de presupuestos del mes. Oculta si ese mes no tiene ninguno. */
+    /**
+     * Tarjeta de presupuestos del mes. Sin presupuestos se ve igual, con el
+     * aviso y el boton para crear uno, como en la web.
+     */
     private fun renderBudgets(month: String) {
         val ofMonth = budgetsOfMonth(allBudgets, month)
-        binding.budgetsCard.visibility = if (ofMonth.isEmpty()) View.GONE else View.VISIBLE
-        if (ofMonth.isEmpty()) return
-
-        binding.budgetsSummary.text =
+        binding.budgetsCard.visibility = View.VISIBLE
+        binding.budgetsEmpty.visibility = if (ofMonth.isEmpty()) View.VISIBLE else View.GONE
+        binding.budgetsSummary.text = if (ofMonth.isEmpty()) {
+            ""
+        } else {
             getString(R.string.budgets_summary, budgetsWithinLimit(ofMonth), ofMonth.size)
+        }
 
         binding.budgetsList.removeAllViews()
         ofMonth.forEach { budget ->
@@ -226,13 +241,16 @@ class MainActivity : BaseActivity() {
                 getString(R.string.budgets_remaining, formatCurrency(budget.remainingAmount))
             }
 
+            row.root.setOnClickListener {
+                budgetForm.launch(BudgetActivity.editIntent(this, budget))
+            }
             binding.budgetsList.addView(row.root)
         }
     }
 
     private fun applyBudgetsExpanded() {
         val expanded = DashboardCache.budgetsExpanded
-        binding.budgetsList.visibility = if (expanded) View.VISIBLE else View.GONE
+        binding.budgetsBody.visibility = if (expanded) View.VISIBLE else View.GONE
         binding.budgetsChevron.rotation = if (expanded) 0f else 180f
     }
 
@@ -245,6 +263,7 @@ class MainActivity : BaseActivity() {
         if (months.isEmpty()) {
             binding.monthScroll.visibility = View.GONE
             binding.totalsRow.visibility = View.GONE
+            binding.budgetsCard.visibility = View.GONE
             binding.monthText.visibility = View.GONE
             showMessage(getString(R.string.dashboard_empty))
             return

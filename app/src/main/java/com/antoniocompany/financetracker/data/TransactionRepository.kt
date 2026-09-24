@@ -1,6 +1,7 @@
 package com.antoniocompany.financetracker.data
 
 import com.antoniocompany.financetracker.data.model.BudgetDto
+import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.TransactionDto
@@ -42,6 +43,10 @@ class TransactionRepository(private val api: FinanceTrackerApi) {
     suspend fun getCategories(): List<CategoryDto> = api.getCategories()
 
     suspend fun getBudgets(): List<BudgetDto> = api.getBudgets()
+
+    suspend fun createBudget(input: BudgetInput): BudgetDto = api.createBudget(input)
+
+    suspend fun updateBudget(id: Int, input: BudgetInput) = api.updateBudget(id, input)
 
     suspend fun createCategory(input: CategoryInput): CategoryDto = api.createCategory(input)
 

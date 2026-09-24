@@ -90,6 +90,21 @@
     <string name="budgets_spent_of">%1$s of %2$s</string>
     <string name="budgets_remaining">%1$s left</string>
     <string name="budgets_exceeded">%1$s over</string>
+    <string name="budgets_empty">You have no budgets for this month.</string>
+    <string name="budgets_new">New budget</string>
+    <string name="budget_title_new">New budget</string>
+    <string name="budget_title_edit">Edit budget</string>
+    <string name="budget_name">Name</string>
+    <string name="budget_name_hint">Household</string>
+    <string name="budget_amount">Limit</string>
+    <string name="budget_month">Month</string>
+    <string name="budget_category">Category</string>
+    <string name="budget_saved">Budget saved</string>
+    <string name="budget_updated">Budget updated</string>
+    <string name="error_write_budget_name">Enter a name for the budget.</string>
+    <string name="error_save_budget_failed">Could not save the budget.</string>
+    <string name="error_budget_category_invalid">The category no longer exists or is not of this type.</string>
+    <string name="error_budget_gone">This budget no longer exists.</string>
     <string name="budgets_toggle">Show or hide the budgets</string>
 
     <string name="error_write_description">Enter a description.</string>

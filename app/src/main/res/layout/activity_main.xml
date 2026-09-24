@@ -144,8 +144,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Presupuestos del mes, como en la web. Plegable desde la cabecera
-             para que no le quite sitio a la lista de movimientos. Se oculta
-             entera si el mes no tiene presupuestos. -->
+             para que no le quite sitio a la lista de movimientos. -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/budgetsCard"
             android:layout_width="match_parent"
@@ -196,14 +195,43 @@
                         app:tint="?attr/colorOnSurfaceVariant" />
                 </LinearLayout>
 
-                <!-- Las filas se anaden desde MainActivity (item_budget.xml). -->
+                <!-- Lo que se pliega: la lista, el aviso de vacio y el boton. -->
                 <LinearLayout
-                    android:id="@+id/budgetsList"
+                    android:id="@+id/budgetsBody"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingHorizontal="16dp"
-                    android:paddingBottom="8dp" />
+                    android:paddingBottom="12dp">
+
+                    <!-- Las filas se anaden desde MainActivity (item_budget.xml). -->
+                    <LinearLayout
+                        android:id="@+id/budgetsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <TextView
+                        android:id="@+id/budgetsEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/budgets_empty"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:visibility="gone" />
+
+                    <!-- A la derecha y con borde, como "Nuevo presupuesto" en la web. -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/newBudgetButton"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/budgets_new"
+                        android:textColor="?attr/colorOnSurface"
+                        app:strokeColor="?attr/colorOutline" />
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
