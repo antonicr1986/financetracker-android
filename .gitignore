@@ -13,3 +13,10 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Claves de firma. Viven fuera del repo y en los secretos de GitHub; esto es
+# la red por si alguien copia una aqui por error.
+*.jks
+*.keystore
+*.b64
+keystore.properties
