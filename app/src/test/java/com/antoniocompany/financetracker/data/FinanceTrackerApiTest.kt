@@ -1,5 +1,6 @@
 package com.antoniocompany.financetracker.data
 
+import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.data.model.TransactionInput
@@ -14,6 +15,7 @@ import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Retrofit
@@ -92,6 +94,49 @@ class FinanceTrackerApiTest {
     }
 
     @Test
+    fun `a budget for all categories is sent without categoryId`() = runBlocking {
+        api(201, BUDGET_JSON).createBudget(
+            BudgetInput("Casa", 300.0, month = 9, year = 2026, type = TransactionType.EXPENSE, categoryId = null)
+        )
+
+        assertEquals("POST", lastRequest!!.method)
+        assertEquals("/api/Budgets", lastRequest!!.url.encodedPath)
+        assertTrue(lastBody, lastBody.contains("\"month\":9"))
+        // Gson omite los null: la API lo recibe como "todas las categorias".
+        assertFalse(lastBody, lastBody.contains("categoryId"))
+    }
+
+    @Test
+    fun `update budget puts it on its own id`() = runBlocking {
+        api(204).updateBudget(
+            5,
+            BudgetInput("Casa", 300.0, month = 9, year = 2026, type = TransactionType.EXPENSE, categoryId = 4)
+        )
+
+        assertEquals("PUT", lastRequest!!.method)
+        assertEquals("/api/Budgets/5", lastRequest!!.url.encodedPath)
+        assertTrue(lastBody, lastBody.contains("\"categoryId\":4"))
+    }
+
+    @Test
+    fun `delete budget sends DELETE and accepts an empty 204`() = runBlocking {
+        api(204).deleteBudget(5)
+
+        assertEquals("DELETE", lastRequest!!.method)
+        assertEquals("/api/Budgets/5", lastRequest!!.url.encodedPath)
+    }
+
+    @Test
+    fun `budgets are read with the figures the API computes`() = runBlocking {
+        val budgets = api(200, "[$BUDGET_JSON]").getBudgets()
+
+        assertEquals("GET", lastRequest!!.method)
+        assertEquals("/api/Budgets", lastRequest!!.url.encodedPath)
+        assertEquals(166.67, budgets.single().usagePercentage, 0.001)
+        assertEquals(null, budgets.single().categoryId)
+    }
+
+    @Test
     fun `create category posts name and type and reads the new id`() = runBlocking {
         val created = api(201, """{"id":12,"name":"Regalos","type":"Income"}""")
             .createCategory(CategoryInput("Regalos", TransactionType.INCOME))
@@ -101,5 +146,11 @@ class FinanceTrackerApiTest {
         assertTrue(lastBody, lastBody.contains("\"type\":\"Income\""))
         assertEquals(12, created.id)
         assertEquals(TransactionType.INCOME, created.type)
+    }
+
+    private companion object {
+        const val BUDGET_JSON = """{"id":5,"name":"Casa","amount":300,"spentAmount":500,
+            "remainingAmount":-200,"usagePercentage":166.67,"month":9,"year":2026,
+            "type":"Expense","categoryId":null,"categoryName":null}"""
     }
 }

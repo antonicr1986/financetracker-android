@@ -48,6 +48,8 @@ class TransactionRepository(private val api: FinanceTrackerApi) {
 
     suspend fun updateBudget(id: Int, input: BudgetInput) = api.updateBudget(id, input)
 
+    suspend fun deleteBudget(id: Int) = api.deleteBudget(id)
+
     suspend fun createCategory(input: CategoryInput): CategoryDto = api.createCategory(input)
 
     private companion object {

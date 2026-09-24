@@ -35,6 +35,11 @@ servicio y la base de datos — la pantalla lo explica mientras espera.
   categoria de ingresos, asi que ni se ofrece.
 - **Editar y borrar un movimiento**: al pulsarlo se abre relleno en el mismo
   formulario; borrar pide confirmacion antes.
+- **Presupuestos del mes** en el panel, como en el cliente web: lo gastado de lo
+  previsto, una barra que pasa a ambar al 80 % y a rojo al 100 %, y lo que
+  queda o lo que se ha pasado. Se crean, editan y borran, para una categoria o
+  para todas las de un tipo. Las cifras las calcula la API; la app solo elige
+  las del mes.
 - **Crear una categoria desde el formulario**, del tipo elegido, que queda
   seleccionada: el mismo flujo que el cliente web.
 - **Deslizar para recargar**, y boton de reintentar cuando la carga falla.
@@ -52,8 +57,8 @@ servicio y la base de datos — la pantalla lo explica mientras espera.
 El cliente completo es el web. Este es deliberadamente mas pequeno, construido
 alrededor de lo que un movil hace bien: consultar rapido y anotar en el momento.
 
-- No hay presupuestos, ni filtros, ni desglose por categoria. Las categorias
-  se pueden crear, pero no renombrar ni borrar.
+- No hay filtros ni desglose por categoria. Las categorias se pueden crear,
+  pero no renombrar ni borrar.
 
 ## 🧰 Stack
 
@@ -114,16 +119,18 @@ no lo reinicie.
 
 ## 🧪 Pruebas
 
-`./gradlew test` — 32 pruebas unitarias, sin emulador.
+`./gradlew test` — 44 pruebas unitarias, sin emulador.
 
 Seis cubren las derivaciones por mes. Cuatro cubren el bucle de paginacion
 contra una API falsa, incluido el caso que el mundo real esconde: con menos de
 100 movimientos nunca se pide la segunda pagina, asi que un fallo ahi solo
 apareceria el dia que un usuario acumulara datos.
 
-Once cubren las reglas de los formularios (registro, importes con coma o punto,
+Ocho cubren los presupuestos (cuales se ven en cada mes, los cortes de color
+del 80 % y el 100 %, el selector de meses al cruzar de año). Once cubren las
+reglas de los formularios (registro, importes con coma o punto,
 categorias repetidas), siete los formatos de cada idioma (`€12,345.60` frente a
-`12.345,60 €`, siempre en euros), y cuatro comprueban que las llamadas nuevas a
+`12.345,60 €`, siempre en euros), y ocho comprueban que las llamadas a
 la API salen con el metodo, la ruta y el cuerpo que espera la API de .NET —
 contra un interceptor de OkHttp en lugar de un servidor, asi que no necesitan
 red.

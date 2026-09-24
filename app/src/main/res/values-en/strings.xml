@@ -105,6 +105,12 @@
     <string name="error_save_budget_failed">Could not save the budget.</string>
     <string name="error_budget_category_invalid">The category no longer exists or is not of this type.</string>
     <string name="error_budget_gone">This budget no longer exists.</string>
+    <string name="budget_delete">Delete budget</string>
+    <string name="budget_deleting">Deleting…</string>
+    <string name="budget_deleted">Budget deleted</string>
+    <string name="budget_confirm_title">Delete this budget?</string>
+    <string name="budget_confirm_message">“%1$s” will be deleted. Your transactions are not affected.</string>
+    <string name="error_delete_budget_failed">Could not delete the budget.</string>
     <string name="budgets_toggle">Show or hide the budgets</string>
 
     <string name="error_write_description">Enter a description.</string>

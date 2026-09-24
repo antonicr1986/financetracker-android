@@ -22,6 +22,7 @@ import com.antoniocompany.financetracker.domain.parseAmount
 import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
 import com.antoniocompany.financetracker.ui.formatMonth
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -66,6 +67,8 @@ class BudgetActivity : BaseActivity() {
 
         if (editingId != null) {
             binding.titleText.setText(R.string.budget_title_edit)
+            binding.deleteButton.visibility = View.VISIBLE
+            binding.deleteButton.setOnClickListener { confirmDelete() }
             if (savedInstanceState == null) prefillFromIntent()
         }
 
@@ -201,6 +204,52 @@ class BudgetActivity : BaseActivity() {
         }
     }
 
+    /** Borrar no se puede deshacer: se pregunta antes. */
+    private fun confirmDelete() {
+        val name = binding.nameInput.text?.toString().orEmpty()
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.budget_confirm_title)
+            .setMessage(getString(R.string.budget_confirm_message, name))
+            .setNegativeButton(R.string.edit_transaction_cancel, null)
+            .setPositiveButton(R.string.edit_transaction_confirm_delete) { _, _ -> delete() }
+            .show()
+    }
+
+    private fun delete() {
+        val id = editingId ?: return
+        showError(null)
+        setDeleting(true)
+
+        lifecycleScope.launch {
+            try {
+                repository.deleteBudget(id)
+                finishAfterDelete(R.string.budget_deleted)
+            } catch (error: HttpException) {
+                // Ya estaba borrado desde otro sitio: el resultado es el buscado.
+                if (error.code() == 404) finishAfterDelete(R.string.error_budget_gone)
+                else showError(getString(R.string.error_delete_budget_failed))
+            } catch (error: IOException) {
+                showError(getString(R.string.error_delete_budget_failed))
+            } finally {
+                setDeleting(false)
+            }
+        }
+    }
+
+    private fun finishAfterDelete(message: Int) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        setResult(RESULT_OK)
+        finish()
+    }
+
+    private fun setDeleting(deleting: Boolean) {
+        binding.deleteButton.isEnabled = !deleting
+        binding.saveButton.isEnabled = !deleting
+        binding.deleteButton.setText(
+            if (deleting) R.string.budget_deleting else R.string.budget_delete
+        )
+    }
+
     private fun describe(error: HttpException): Int {
         if (error.code() == 404) return R.string.error_budget_gone
         val body = runCatching { error.response()?.errorBody()?.string() }.getOrNull().orEmpty()
@@ -213,6 +262,7 @@ class BudgetActivity : BaseActivity() {
 
     private fun setSaving(saving: Boolean) {
         binding.saveButton.isEnabled = !saving
+        binding.deleteButton.isEnabled = !saving
         binding.saveButton.setText(
             if (saving) R.string.new_transaction_saving else R.string.new_transaction_save
         )

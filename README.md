@@ -35,6 +35,10 @@ service and the database wake up — the screen says so while it waits.
   an income category, so it is never offered.
 - **Editing and deleting a transaction**: tapping one opens it prefilled in the
   same form; deleting asks for confirmation first.
+- **Monthly budgets** on the dashboard, like the web client: spent of total, a
+  bar that turns amber at 80% and red at 100%, and what is left or over. They
+  can be created, edited and deleted, for one category or for all of a type.
+  The API computes the figures; the app only picks the month's.
 - **Creating a category from the form**, of the chosen type, which is then
   selected — the same flow as the web client.
 - **Pull to refresh**, and a retry button when loading fails.
@@ -51,8 +55,8 @@ service and the database wake up — the screen says so while it waits.
 The web client is the complete one. This one is deliberately smaller, built
 around what a phone is good at: checking quickly and recording on the spot.
 
-- No budgets, no filters and no breakdown by category. Categories can be
-  created, but not renamed or deleted.
+- No filters and no breakdown by category. Categories can be created, but
+  not renamed or deleted.
 
 ## 🧰 Stack
 
@@ -112,16 +116,17 @@ preferences file, separate from the session, so signing out does not reset it.
 
 ## 🧪 Tests
 
-`./gradlew test` — 32 unit tests, no emulator needed.
+`./gradlew test` — 44 unit tests, no emulator needed.
 
 Six cover the month derivations. Four cover the paging loop against a fake API,
 including the case the real world hides: with fewer than 100 transactions the
 second page is never requested, so a bug there would only surface once a user
 accumulated data.
 
-Eleven cover the form rules (registration, amounts typed with a comma or a dot,
+Eight cover the budgets (which month's are shown, the 80% and 100% colour
+thresholds, the month picker across a year boundary). Eleven cover the form rules (registration, amounts typed with a comma or a dot,
 duplicate categories), seven the formats in each language (`€12,345.60` versus
-`12.345,60 €`, always in euros), and four check that the new API calls leave
+`12.345,60 €`, always in euros), and eight check that the API calls leave
 with the method, path and body the .NET API expects — against an OkHttp
 interceptor instead of a server, so they need no network.
 

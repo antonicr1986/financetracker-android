@@ -81,6 +81,10 @@ interface FinanceTrackerApi {
     @PUT("api/Budgets/{id}")
     suspend fun updateBudget(@Path("id") id: Int, @Body body: BudgetInput)
 
+    /** 204 sin contenido; 404 si no existe. */
+    @DELETE("api/Budgets/{id}")
+    suspend fun deleteBudget(@Path("id") id: Int)
+
     /** Devuelve la categoria creada (201), con su id. */
     @POST("api/Categories")
     suspend fun createCategory(@Body body: CategoryInput): CategoryDto
