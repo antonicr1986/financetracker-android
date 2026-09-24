@@ -23,6 +23,8 @@ service and the database wake up — the screen says so while it waits.
 ## ✨ What it does
 
 - **Sign-in with JWT**, with one-tap entry into the demo account.
+- **Account registration**, validated like the web client, which then signs in
+  with the same credentials and opens the dashboard.
 - **Month selector**: a chip per month that has data, so the whole history is
   reachable and not just the current month.
 - **Totals for the selected month** — income, expenses and balance — derived on
@@ -32,7 +34,13 @@ service and the database wake up — the screen says so while it waits.
   dropdown filtered by the chosen type: the API rejects an expense filed under
   an income category, so it is never offered.
 - **Pull to refresh**, and a retry button when loading fails.
-- **Light and dark themes**, following the system.
+- **The same look as the web client**: Tailwind's slate palette mapped onto the
+  Material 3 roles, white cards on a grey background, and a shared top bar on
+  every screen.
+- **Light and dark themes**, switched from the top bar and remembered; until
+  one is chosen the app follows the system.
+- **Spanish and English**, switched from the top bar. Texts, dates and amounts
+  follow the language (`es-ES` / `en-GB`, always in euros), as in the web client.
 
 ## 🚧 What it does not do
 
@@ -42,8 +50,6 @@ around what a phone is good at: checking quickly and recording on the spot.
 - Transactions can be created, but not edited or deleted.
 - No budgets, no filters and no breakdown by category.
 - Categories have to exist already — the app offers them but cannot create one.
-- Spanish only. Android's resource system would make `values-en` cheap, but it
-  is not done.
 
 ## 🧰 Stack
 
@@ -59,8 +65,9 @@ around what a phone is good at: checking quickly and recording on the spot.
       data/           Retrofit client, session and repository
         model/        The API DTOs
       domain/         Month grouping and totals — pure Kotlin
-      ui/             Adapter and formats
-      LoginActivity, MainActivity, NewTransactionActivity
+      ui/             Top bar, theme, language, adapter and formats
+      BaseActivity    Theme and language switching without flashing
+      LoginActivity, RegisterActivity, MainActivity, NewTransactionActivity
 
 `domain/` holds no reference to Android on purpose. That is what lets its tests
 run on the JVM in milliseconds, with no emulator, and it is the same split the
@@ -85,6 +92,20 @@ that the token expires in 60 minutes.
 yet, so it is a wrong password. On the dashboard there was a token and the API
 refused it, so the session expired and the user goes back to sign in. Same
 status code, two messages.
+
+**Theme and language changes do not recreate the screen.** Android applies them
+with `recreate()`, which removes the old window before the new one is drawn —
+that gap is a visible flash. The activities declare `uiMode|locale` in
+`configChanges`, so Android only notifies them, and `BaseActivity` restarts the
+screen with a system cross-fade, carrying its saved state in the intent. The
+dashboard reuses the transactions it already had instead of calling the API
+again.
+
+**The language uses AppCompat per-app locales.** The choice is stored by the
+system on Android 13+ (it also shows in the system app settings) and by
+`AppLocalesMetadataHolderService` on older versions, so the app keeps no copy
+of it. The theme, which has no system equivalent, is kept in its own
+preferences file, separate from the session, so signing out does not reset it.
 
 ## 🧪 Tests
 

@@ -23,6 +23,8 @@ servicio y la base de datos — la pantalla lo explica mientras espera.
 ## ✨ Que hace
 
 - **Acceso con JWT**, con entrada directa a la cuenta de demostracion.
+- **Registro de cuenta**, validado igual que en el cliente web; despues inicia
+  sesion con los mismos datos y abre el panel.
 - **Selector de meses**: un chip por cada mes con datos, de modo que el
   historico entero esta a mano y no solo el mes en curso.
 - **Totales del mes elegido** — ingresos, gastos y balance — derivados en el
@@ -32,7 +34,14 @@ servicio y la base de datos — la pantalla lo explica mientras espera.
   categorias filtrado por el tipo elegido: la API rechaza un gasto con
   categoria de ingresos, asi que ni se ofrece.
 - **Deslizar para recargar**, y boton de reintentar cuando la carga falla.
-- **Tema claro y oscuro**, siguiendo al del sistema.
+- **La misma estetica que el cliente web**: la paleta slate de Tailwind
+  llevada a los roles de Material 3, tarjetas blancas sobre fondo gris y una
+  barra superior comun en todas las pantallas.
+- **Tema claro y oscuro**, que se cambia desde la barra superior y se recuerda;
+  mientras no se elige ninguno, sigue al del sistema.
+- **Espanol e ingles**, que se cambian desde la barra superior. Los textos, las
+  fechas y los importes siguen al idioma (`es-ES` / `en-GB`, siempre en euros),
+  igual que en el cliente web.
 
 ## 🚧 Que no hace
 
@@ -43,8 +52,6 @@ alrededor de lo que un movil hace bien: consultar rapido y anotar en el momento.
 - No hay presupuestos, ni filtros, ni desglose por categoria.
 - Las categorias tienen que existir ya: la aplicacion las ofrece pero no puede
   crear ninguna.
-- Solo en espanol. El sistema de recursos de Android haria barato un
-  `values-en`, pero no esta hecho.
 
 ## 🧰 Stack
 
@@ -60,8 +67,9 @@ alrededor de lo que un movil hace bien: consultar rapido y anotar en el momento.
       data/           Cliente de Retrofit, sesion y repositorio
         model/        Los DTOs de la API
       domain/         Agrupacion por mes y totales — Kotlin puro
-      ui/             Adaptador y formatos
-      LoginActivity, MainActivity, NewTransactionActivity
+      ui/             Barra superior, tema, idioma, adaptador y formatos
+      BaseActivity    Cambio de tema e idioma sin parpadeo
+      LoginActivity, RegisterActivity, MainActivity, NewTransactionActivity
 
 `domain/` no tiene ni una referencia a Android, y es a proposito. Eso es lo que
 permite que sus pruebas corran en la JVM en milisegundos y sin emulador, y es la
@@ -87,6 +95,20 @@ segundo la mitigacion real es que el token caduca en 60 minutos.
 habia sesion, asi que es una contrasena incorrecta. En el panel si habia token y
 la API lo ha rechazado, asi que la sesion ha caducado y se vuelve al acceso.
 Mismo codigo de estado, dos mensajes.
+
+**Cambiar de tema o de idioma no recrea la pantalla.** Android los aplica con
+`recreate()`, que quita la ventana vieja antes de dibujar la nueva, y ese hueco
+se ve como un parpadeo. Las pantallas declaran `uiMode|locale` en
+`configChanges`, asi que Android solo les avisa, y `BaseActivity` las reinicia
+con un fundido del sistema, llevando su estado guardado en el intent. El panel
+reutiliza los movimientos que ya tenia en lugar de volver a llamar a la API.
+
+**El idioma usa los idiomas por aplicacion de AppCompat.** Lo guarda el sistema
+en Android 13+ (y aparece tambien en los ajustes de la aplicacion) y
+`AppLocalesMetadataHolderService` en versiones anteriores, asi que la app no
+guarda copia propia. El tema, que no tiene equivalente en el sistema, va en su
+propio fichero de preferencias, separado de la sesion, para que cerrar sesion
+no lo reinicie.
 
 ## 🧪 Pruebas
 
