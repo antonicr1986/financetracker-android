@@ -3,6 +3,7 @@
 **English** · [Español](README.es.md)
 
 [![CI](https://img.shields.io/github/actions/workflow/status/antonicr1986/financetracker-android/ci.yml?branch=main&style=for-the-badge&label=CI&logo=githubactions&logoColor=white)](https://github.com/antonicr1986/financetracker-android/actions)
+[![Release](https://img.shields.io/github/v/release/antonicr1986/financetracker-android?style=for-the-badge&logo=android&logoColor=white)](https://github.com/antonicr1986/financetracker-android/releases/latest)
 ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-24%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 
@@ -19,6 +20,10 @@ There is a **public demo account**, the same one the web client uses, reachable
 in one tap from the sign-in screen. The API sleeps after 20 minutes of
 inactivity, so the first sign-in of the day takes a few seconds while the app
 service and the database wake up — the screen says so while it waits.
+
+**[Download the latest APK](https://github.com/antonicr1986/financetracker-android/releases/latest)**
+— signed, for Android 7.0 or later. Installing it needs "install unknown apps"
+allowed for the browser or file manager you open it from.
 
 ## ✨ What it does
 
@@ -57,6 +62,29 @@ around what a phone is good at: checking quickly and recording on the spot.
 
 - No filters and no breakdown by category. Categories can be created, but
   not renamed or deleted.
+
+## 🖼️ Preview
+
+The dashboard in light and dark themes: the month's totals, the budgets with
+how much of each is spent, and the transactions.
+
+<p>
+  <img src="screenshots/dashboard-light.png" alt="Dashboard in light mode" width="260">
+  <img src="screenshots/dashboard-dark.png" alt="Dashboard in dark mode" width="260">
+</p>
+
+Recording a transaction and a budget, with the same form for creating and
+editing.
+
+<p>
+  <img src="screenshots/new-transaction.png" alt="Recording a transaction" width="260">
+  <img src="screenshots/budget.png" alt="Editing a budget" width="260">
+</p>
+
+The sign-in screen, with one-tap entry into the demo account and the language
+and theme switches in the top bar.
+
+<img src="screenshots/login.png" alt="Sign in screen" width="260">
 
 ## 🧰 Stack
 
@@ -134,6 +162,12 @@ interceptor instead of a server, so they need no network.
 
 - **CI** on every push and pull request: secret scanning, unit tests and a
   debug APK, downloadable from the run itself.
+- **Release** on every version tag (`v1.2.3`): runs the tests, signs the APK
+  with a key kept in the repository secrets, verifies the signature with
+  `apksigner`, and publishes a GitHub Release with the APK and a changelog
+  since the previous tag. The version name and code come from the tag, so the
+  number is never edited by hand. The key is written to the runner's temporary
+  folder only for that run and removed afterwards.
 - **Secret scanning** with gitleaks across the full history, with the same
   configuration as the other repositories in this project.
 - The JDK is pinned to the one the project is developed with, so the CI and the

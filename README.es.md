@@ -3,6 +3,7 @@
 [English](README.md) · **Español**
 
 [![CI](https://img.shields.io/github/actions/workflow/status/antonicr1986/financetracker-android/ci.yml?branch=main&style=for-the-badge&label=CI&logo=githubactions&logoColor=white)](https://github.com/antonicr1986/financetracker-android/actions)
+[![Release](https://img.shields.io/github/v/release/antonicr1986/financetracker-android?style=for-the-badge&logo=android&logoColor=white)](https://github.com/antonicr1986/financetracker-android/releases/latest)
 ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-24%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 
@@ -19,6 +20,11 @@ Hay una **cuenta de demostracion publica**, la misma que usa el cliente web, a
 un toque desde la pantalla de acceso. La API se duerme tras 20 minutos sin uso,
 asi que la primera entrada del dia tarda unos segundos mientras despiertan el
 servicio y la base de datos — la pantalla lo explica mientras espera.
+
+**[Descargar el ultimo APK](https://github.com/antonicr1986/financetracker-android/releases/latest)**
+— firmado, para Android 7.0 o superior. Para instalarlo hay que permitir
+"instalar aplicaciones desconocidas" al navegador o gestor de archivos desde el
+que se abra.
 
 ## ✨ Que hace
 
@@ -59,6 +65,29 @@ alrededor de lo que un movil hace bien: consultar rapido y anotar en el momento.
 
 - No hay filtros ni desglose por categoria. Las categorias se pueden crear,
   pero no renombrar ni borrar.
+
+## 🖼️ Vista previa
+
+El panel en tema claro y oscuro: los totales del mes, los presupuestos con lo
+gastado de cada uno, y los movimientos.
+
+<p>
+  <img src="screenshots/dashboard-light.png" alt="Panel en tema claro" width="260">
+  <img src="screenshots/dashboard-dark.png" alt="Panel en tema oscuro" width="260">
+</p>
+
+El alta de un movimiento y de un presupuesto, con el mismo formulario para crear
+y para editar.
+
+<p>
+  <img src="screenshots/new-transaction.png" alt="Alta de un movimiento" width="260">
+  <img src="screenshots/budget.png" alt="Edicion de un presupuesto" width="260">
+</p>
+
+La pantalla de acceso, con entrada en un toque a la cuenta de demostracion y el
+cambio de idioma y de tema en la barra superior.
+
+<img src="screenshots/login.png" alt="Pantalla de acceso" width="260">
 
 ## 🧰 Stack
 
@@ -139,6 +168,12 @@ red.
 
 - **CI** en cada push y pull request: escaneo de secretos, pruebas unitarias y
   un APK de depuracion, descargable desde la propia ejecucion.
+- **Release** en cada etiqueta de version (`v1.2.3`): ejecuta las pruebas, firma
+  el APK con una clave guardada en los secretos del repositorio, comprueba la
+  firma con `apksigner` y publica una Release de GitHub con el APK y el
+  changelog desde la etiqueta anterior. El nombre y el codigo de version salen
+  de la etiqueta, asi que el numero nunca se edita a mano. La clave solo existe
+  en la carpeta temporal del runner durante esa ejecucion y se borra al final.
 - **Escaneo de secretos** con gitleaks sobre el historial completo, con la misma
   configuracion que los demas repositorios de este proyecto.
 - El JDK esta fijado al mismo con el que se desarrolla, de modo que el CI y el
