@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Borde de las cajas de texto, como en la web: slate-300 (slate-700 en
+     oscuro, via colorOutline) y slate-500 con el foco. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/slate_500" android:state_focused="true" />
+    <item android:alpha="0.38" android:color="?attr/colorOutline" android:state_enabled="false" />
+    <item android:color="?attr/colorOutline" />
+</selector>
