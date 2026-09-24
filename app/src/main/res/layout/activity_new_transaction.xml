@@ -126,6 +126,20 @@
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Crear una categoria sin salir del formulario, como en la web. Se
+             crea del tipo elegido arriba y queda seleccionada. -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/newCategoryButton"
+            style="@style/Widget.Material3.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/new_category"
+            android:textColor="?attr/colorOnSurface"
+            app:icon="@drawable/ic_add"
+            app:iconSize="18dp"
+            app:iconTint="?attr/colorOnSurface" />
+
         <TextView
             android:id="@+id/errorText"
             android:layout_width="match_parent"

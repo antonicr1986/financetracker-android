@@ -11,10 +11,12 @@ import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.TransactionRepository
 import com.antoniocompany.financetracker.data.model.CategoryDto
+import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
 import com.antoniocompany.financetracker.databinding.ActivityNewTransactionBinding
+import com.antoniocompany.financetracker.databinding.DialogNewCategoryBinding
 import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
 import com.antoniocompany.financetracker.ui.formatShortDate
@@ -113,6 +115,7 @@ class NewTransactionActivity : BaseActivity() {
         showDate()
         binding.dateInput.setOnClickListener { pickDate() }
         binding.saveButton.setOnClickListener { save() }
+        binding.newCategoryButton.setOnClickListener { showNewCategoryDialog() }
 
         loadCategories()
     }
@@ -243,6 +246,83 @@ class NewTransactionActivity : BaseActivity() {
                 showError(getString(R.string.error_save_failed))
             } finally {
                 setSaving(false)
+            }
+        }
+    }
+
+    /**
+     * Dialogo para crear una categoria del tipo elegido. El boton "Crear" no
+     * cierra el dialogo por su cuenta: si falta el nombre o la API lo rechaza,
+     * el error se ve dentro del dialogo y lo escrito no se pierde.
+     */
+    private fun showNewCategoryDialog() {
+        val dialogBinding = DialogNewCategoryBinding.inflate(layoutInflater)
+        val type = selectedType
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle(
+                if (type == TransactionType.INCOME) R.string.new_category_title_income
+                else R.string.new_category_title_expense
+            )
+            .setView(dialogBinding.root)
+            .setNegativeButton(R.string.edit_transaction_cancel, null)
+            .setPositiveButton(R.string.new_category_create, null)
+            .create()
+
+        dialog.setOnShowListener {
+            dialogBinding.nameInput.requestFocus()
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val name = dialogBinding.nameInput.text?.toString()?.trim().orEmpty()
+                if (name.isEmpty()) {
+                    dialogBinding.nameLayout.error = getString(R.string.error_write_category_name)
+                    return@setOnClickListener
+                }
+                // Evita duplicados evidentes sin gastar una peticion.
+                if (categories.any { it.type == type && it.name.equals(name, ignoreCase = true) }) {
+                    dialogBinding.nameLayout.error = getString(R.string.error_category_exists)
+                    return@setOnClickListener
+                }
+                dialogBinding.nameLayout.error = null
+                createCategory(name, type, dialog, dialogBinding)
+            }
+        }
+        dialog.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        dialog.show()
+    }
+
+    private fun createCategory(
+        name: String,
+        type: TransactionType,
+        dialog: androidx.appcompat.app.AlertDialog,
+        dialogBinding: DialogNewCategoryBinding
+    ) {
+        val createButton = dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+        createButton.isEnabled = false
+
+        lifecycleScope.launch {
+            try {
+                val created = repository.createCategory(CategoryInput(name, type))
+                categories = categories + created
+
+                // Queda elegida si sigue siendo del tipo que hay en pantalla.
+                if (created.type == selectedType) {
+                    showCategoriesOfSelectedType()
+                    selectedCategory = created
+                    binding.categoryInput.setText(created.name, false)
+                    showError(null)
+                }
+                Toast.makeText(
+                    this@NewTransactionActivity,
+                    R.string.new_category_created,
+                    Toast.LENGTH_SHORT
+                ).show()
+                dialog.dismiss()
+            } catch (error: HttpException) {
+                dialogBinding.nameLayout.error = getString(R.string.error_create_category_failed)
+            } catch (error: IOException) {
+                dialogBinding.nameLayout.error = getString(R.string.error_create_category_failed)
+            } finally {
+                createButton.isEnabled = true
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.antoniocompany.financetracker.data
 
 import com.antoniocompany.financetracker.data.model.CategoryDto
+import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 
@@ -38,6 +39,8 @@ class TransactionRepository(private val api: FinanceTrackerApi) {
     suspend fun delete(id: Int) = api.deleteTransaction(id)
 
     suspend fun getCategories(): List<CategoryDto> = api.getCategories()
+
+    suspend fun createCategory(input: CategoryInput): CategoryDto = api.createCategory(input)
 
     private companion object {
         const val PAGE_SIZE = 100

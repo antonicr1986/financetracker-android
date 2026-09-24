@@ -1,6 +1,7 @@
 package com.antoniocompany.financetracker.data
 
 import com.antoniocompany.financetracker.data.model.CategoryDto
+import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
 import com.antoniocompany.financetracker.data.model.PagedResult
@@ -59,4 +60,8 @@ interface FinanceTrackerApi {
     /** Este si devuelve un array suelto, no un PagedResult. */
     @GET("api/Categories")
     suspend fun getCategories(): List<CategoryDto>
+
+    /** Devuelve la categoria creada (201), con su id. */
+    @POST("api/Categories")
+    suspend fun createCategory(@Body body: CategoryInput): CategoryDto
 }

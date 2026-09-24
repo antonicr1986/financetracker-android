@@ -52,6 +52,12 @@ data class TransactionInput(
     val categoryId: Int
 )
 
+/** Cuerpo de POST /api/Categories. La API limita el nombre a 100 caracteres. */
+data class CategoryInput(
+    val name: String,
+    val type: TransactionType
+)
+
 /** Envoltorio de los listados. Refleja PagedResult<T> de la API. */
 data class PagedResult<T>(
     val items: List<T>?,

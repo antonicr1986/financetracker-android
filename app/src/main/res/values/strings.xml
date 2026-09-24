@@ -64,7 +64,7 @@
     <string name="new_transaction_save">Guardar</string>
     <string name="new_transaction_saving">Guardando…</string>
     <string name="new_transaction_saved">Movimiento guardado</string>
-    <string name="new_transaction_no_categories">No tienes ninguna categoría de este tipo. Créala primero desde la web.</string>
+    <string name="new_transaction_no_categories">No tienes ninguna categoría de este tipo. Crea una con «Nueva categoría».</string>
 
     <string name="edit_transaction_title">Editar movimiento</string>
     <string name="edit_transaction_saved">Movimiento actualizado</string>
@@ -77,6 +77,16 @@
     <string name="edit_transaction_cancel">Cancelar</string>
     <string name="error_delete_failed">No se ha podido eliminar el movimiento.</string>
     <string name="error_transaction_gone">Este movimiento ya no existe.</string>
+
+    <string name="new_category">Nueva categoría</string>
+    <string name="new_category_title_expense">Nueva categoría de gasto</string>
+    <string name="new_category_title_income">Nueva categoría de ingreso</string>
+    <string name="new_category_name">Nombre de la categoría</string>
+    <string name="new_category_create">Crear</string>
+    <string name="new_category_created">Categoría creada</string>
+    <string name="error_write_category_name">Escribe un nombre para la categoría.</string>
+    <string name="error_category_exists">Ya tienes una categoría de este tipo con ese nombre.</string>
+    <string name="error_create_category_failed">No se ha podido crear la categoría.</string>
 
     <string name="error_write_description">Escribe un concepto.</string>
     <string name="error_amount_positive">El importe debe ser mayor que cero.</string>

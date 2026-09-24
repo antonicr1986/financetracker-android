@@ -35,6 +35,8 @@ service and the database wake up — the screen says so while it waits.
   an income category, so it is never offered.
 - **Editing and deleting a transaction**: tapping one opens it prefilled in the
   same form; deleting asks for confirmation first.
+- **Creating a category from the form**, of the chosen type, which is then
+  selected — the same flow as the web client.
 - **Pull to refresh**, and a retry button when loading fails.
 - **The same look as the web client**: Tailwind's slate palette mapped onto the
   Material 3 roles, white cards on a grey background, and a shared top bar on
@@ -49,8 +51,8 @@ service and the database wake up — the screen says so while it waits.
 The web client is the complete one. This one is deliberately smaller, built
 around what a phone is good at: checking quickly and recording on the spot.
 
-- No budgets, no filters and no breakdown by category.
-- Categories have to exist already — the app offers them but cannot create one.
+- No budgets, no filters and no breakdown by category. Categories can be
+  created, but not renamed or deleted.
 
 ## 🧰 Stack
 
