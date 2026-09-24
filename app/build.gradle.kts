@@ -2,6 +2,18 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+/*
+ * Version y firma llegan del workflow de Release como variables de entorno.
+ * En local no existen: se compila la version 1.0 y la release sale sin
+ * firmar, que es lo correcto, porque la clave no debe estar en el repo.
+ *
+ * VERSION_NAME sale de la etiqueta (v1.2.3 -> "1.2.3") y VERSION_CODE se
+ * deriva de ella, porque Android exige que crezca en cada actualizacion.
+ */
+val releaseVersionName: String = System.getenv("VERSION_NAME") ?: "1.0"
+val releaseVersionCode: Int = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+val keystorePath: String? = System.getenv("ANDROID_KEYSTORE_PATH")
+
 android {
     namespace = "com.antoniocompany.financetracker"
     compileSdk {
@@ -12,8 +24,8 @@ android {
         applicationId = "com.antoniocompany.financetracker"
         minSdk = 24
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = releaseVersionCode
+        versionName = releaseVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -27,8 +39,23 @@ android {
         )
     }
 
+    signingConfigs {
+        // Solo existe si el workflow ha dejado el keystore en disco.
+        if (keystorePath != null) {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (keystorePath != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             optimization {
                 enable = false
             }
