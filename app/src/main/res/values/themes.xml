@@ -48,6 +48,8 @@
         <!-- Todas las tarjetas como las de la web: blancas, esquinas redondeadas,
              borde fino y sombra suave. -->
         <item name="materialCardViewStyle">@style/Widget.FinanceTracker.Card</item>
+        <item name="materialButtonStyle">@style/Widget.FinanceTracker.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.FinanceTracker.Button.Outlined</item>
         <!-- Sin esto Material mezcla colorPrimary en las superficies con
              sombra y las tarjetas salen grisaceas en vez de blancas. -->
         <item name="elevationOverlayEnabled">false</item>
@@ -118,6 +120,26 @@
     <style name="ShapeAppearance.FinanceTracker.Rounded12" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">12dp</item>
+    </style>
+
+    <!-- Botones con esquinas de 8, como los de la web (rounded-lg), en vez
+         de la pildora de Material 3. Los rellenos y los de borde se aplican
+         desde el tema; los de texto y los de borde de los layouts apuntan
+         aqui. -->
+    <style name="Widget.FinanceTracker.Button" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.FinanceTracker.Rounded8</item>
+    </style>
+
+    <style name="Widget.FinanceTracker.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.FinanceTracker.Rounded8</item>
+    </style>
+
+    <style name="Widget.FinanceTracker.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.FinanceTracker.Rounded8</item>
+    </style>
+
+    <style name="Widget.FinanceTracker.Button.Text.Icon" parent="Widget.Material3.Button.TextButton.Icon">
+        <item name="shapeAppearance">@style/ShapeAppearance.FinanceTracker.Rounded8</item>
     </style>
 
     <style name="Theme.FinanceTracker" parent="Base.Theme.FinanceTracker" />

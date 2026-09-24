@@ -43,7 +43,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/expenseButton"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.FinanceTracker.Button.Outlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -51,7 +51,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/incomeButton"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.FinanceTracker.Button.Outlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -130,7 +130,7 @@
              crea del tipo elegido arriba y queda seleccionada. -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/newCategoryButton"
-            style="@style/Widget.Material3.Button.TextButton.Icon"
+            style="@style/Widget.FinanceTracker.Button.Text.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -161,7 +161,7 @@
              pide confirmacion antes de borrar. -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteButton"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.FinanceTracker.Button.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
