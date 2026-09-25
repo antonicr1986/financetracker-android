@@ -19,8 +19,9 @@ import com.antoniocompany.financetracker.ui.ThemePreference
  * vieja antes de tener lista la nueva: ese hueco es el parpadeo. Aqui las
  * pantallas declaran en el manifiesto que gestionan uiMode y locale ellas
  * mismas, asi que Android no las recrea: avisa con onConfigurationChanged y
- * la pantalla se reinicia sola con un fundido. El sistema funde las dos
- * ventanas y la vieja no desaparece hasta que la nueva se ha dibujado.
+ * la pantalla se reinicia sola, sin animacion (overridePendingTransition(0,
+ * 0)): la vieja no desaparece hasta que la nueva esta dibujada, y sin
+ * fundido de por medio el cambio se ve instantaneo.
  *
  * El estado de la pantalla (lo escrito en los campos, etc.) viaja en el
  * Intent y se restaura como si Android la hubiera recreado.
@@ -55,6 +56,12 @@ abstract class BaseActivity : AppCompatActivity() {
     /** Si el teclado estaba abierto antes del reinicio, para no cerrarlo ni abrirlo de mas. */
     private var wasKeyboardVisible = false
 
+    /**
+     * Para pedir el teclado una sola vez al recuperar el foco, no cada vez
+     * que la ventana gana el foco (tambien pasa al volver de segundo plano).
+     */
+    private var keyboardRestorePending = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val carried = intent.getBundleExtra(EXTRA_STATE)
         intent.removeExtra(EXTRA_STATE)
@@ -73,11 +80,25 @@ abstract class BaseActivity : AppCompatActivity() {
         pendingViewState?.let { window.restoreHierarchyState(it) }
         pendingViewState = null
 
-        // Si el campo que tenia el foco lo recupera, Android entiende que hay
-        // que abrir el teclado. Eso es lo que queremos SI ya estaba abierto
-        // (se deja el foco puesto y la ventana lo abre sola al mostrarse). Si
-        // no lo estaba, se quita el foco para que no salte de la nada.
-        if (restartedForLook && !wasKeyboardVisible) hideKeyboardAndClearFocus()
+        // Si el campo que tenia el foco lo recupera, Android decide solo si
+        // hace falta teclado, y esa decision no siempre coincide con lo que
+        // habia antes: a veces se ve un parpadeo de cerrar y volver a abrir.
+        // Si no estaba abierto, se quita el foco. Si lo estaba, no se toca
+        // aqui: se pide explicitamente en onWindowFocusChanged, que es el
+        // primer momento en que la ventana nueva tiene el foco de verdad.
+        if (restartedForLook) {
+            if (wasKeyboardVisible) keyboardRestorePending = true
+            else hideKeyboardAndClearFocus()
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (!hasFocus || !keyboardRestorePending) return
+        keyboardRestorePending = false
+        val focused = currentFocus ?: return
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.showSoftInput(focused, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun hideKeyboardAndClearFocus() {
@@ -124,8 +145,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
         startActivity(restart)
         finish()
+        // Sin fundido: un cambio de tema en el movil se espera instantaneo,
+        // no una animacion que se note. El fundido (fade_in/fade_out) ya no
+        // hace falta para evitar el hueco: eso lo resuelve configChanges +
+        // el propio startActivity, que no quita la ventana vieja hasta que
+        // la nueva esta dibujada.
         @Suppress("DEPRECATION")
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        overridePendingTransition(0, 0)
     }
 
     private fun currentLook(): String =
