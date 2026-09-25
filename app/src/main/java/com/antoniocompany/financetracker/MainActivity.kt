@@ -162,11 +162,11 @@ class MainActivity : BaseActivity() {
             try {
                 render(repository.getAll())
             } catch (error: HttpException) {
-                // Aqui un 401 si es una sesion caducada: habia token y la API
+                // Aquí un 401 si es una sesion caducada: había token y la API
                 // lo ha rechazado. Se borra y se vuelve al acceso.
                 if (error.code() == 401) {
                     session.clear()
-                    goToLogin()
+                    goToLogin(sessionExpired = true)
                 } else {
                     showMessage(getString(R.string.error_load), canRetry = true)
                 }
@@ -354,8 +354,18 @@ class MainActivity : BaseActivity() {
         binding.retryButton.visibility = if (canRetry) View.VISIBLE else View.GONE
     }
 
-    private fun goToLogin() {
-        startActivity(Intent(this, LoginActivity::class.java))
+    private fun goToLogin(sessionExpired: Boolean = false) {
+        val intent = Intent(this, LoginActivity::class.java)
+        if (sessionExpired) intent.putExtra(EXTRA_SESSION_EXPIRED, true)
+        startActivity(intent)
         finish()
+    }
+
+    companion object {
+        /**
+         * Distingue un 401 real (sesion caducada) de un cierre de sesion
+         * normal, para que el login pueda avisar con el mensaje adecuado.
+         */
+        const val EXTRA_SESSION_EXPIRED = "com.antoniocompany.financetracker.SESSION_EXPIRED"
     }
 }

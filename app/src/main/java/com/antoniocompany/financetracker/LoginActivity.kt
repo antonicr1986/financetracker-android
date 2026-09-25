@@ -46,6 +46,16 @@ class LoginActivity : BaseActivity() {
         // Sin sesion, "Salir" aparece deshabilitado.
         binding.topBar.bind(this)
 
+        // Si venimos aquí porque la API devolvió 401 (token caducado a los
+        // 60 minutos, sin refresh token), avisamos en vez de dejar que
+        // parezca un cierre de sesión cualquiera. Se consume una sola vez:
+        // si luego se cambia de tema o idioma y la pantalla se reinicia, no
+        // vuelve a aparecer.
+        if (intent.getBooleanExtra(MainActivity.EXTRA_SESSION_EXPIRED, false)) {
+            intent.removeExtra(MainActivity.EXTRA_SESSION_EXPIRED)
+            showError(getString(R.string.error_session_expired))
+        }
+
         binding.signInButton.setOnClickListener {
             signIn(
                 binding.emailInput.text?.toString()?.trim().orEmpty(),
