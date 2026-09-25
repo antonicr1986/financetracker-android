@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FinanceTracker</string>
+    <string name="app_name" translatable="false">FinanceTracker</string>
 
     <string name="login_subtitle">Accede para ver tus finanzas</string>
     <string name="login_email">Correo electrónico</string>
@@ -10,7 +10,7 @@
     <string name="login_demo">Entrar con la cuenta de demostración</string>
     <string name="login_no_account">¿No tienes cuenta?</string>
     <string name="login_create_account">Crear cuenta</string>
-    <string name="login_demo_hint">demo@financetracker.app / Demo1234!</string>
+    <string name="login_demo_hint" translatable="false">demo@financetracker.app / Demo1234!</string>
     <string name="login_waking">El servidor estaba en reposo y está despertando. La primera entrada del día puede tardar unos segundos.</string>
 
     <!-- Registro: mismos textos que la web (lib/i18n/messages.ts). -->
@@ -48,6 +48,21 @@
     <string name="dashboard_empty">Todavía no tienes ningún movimiento.</string>
     <string name="dashboard_no_category">Sin categoría</string>
     <string name="dashboard_retry">Reintentar</string>
+
+    <string name="filters_search">Buscar concepto...</string>
+    <string name="filters_search_label">Buscar por concepto</string>
+    <string name="filters_type_label">Tipo de movimiento</string>
+    <string name="filters_category_label">Categoría</string>
+    <string name="filters_all_types">Todos</string>
+    <string name="filters_all_categories">Todas las categorías</string>
+    <string name="filters_no_category">Sin categoría</string>
+    <string name="filters_clear">Limpiar</string>
+    <string name="filters_title">Filtros</string>
+    <string name="filters_toggle">Mostrar u ocultar los filtros</string>
+    <string name="dashboard_showing">Mostrando %1$d de %2$d movimientos del mes.</string>
+    <string name="dashboard_no_matches">Ningún movimiento coincide con los filtros.</string>
+    <string name="dashboard_movement_count">%1$d movimientos</string>
+    <string name="dashboard_movement_count_one">1 movimiento</string>
 
     <string name="error_load">No se han podido cargar los datos.</string>
     <string name="error_session_expired">Tu sesión ha caducado. Vuelve a iniciar sesión.</string>
