@@ -33,6 +33,9 @@ object DashboardCache {
      */
     var filtersExpanded: Boolean = false
 
+    /** Si la tarjeta de "Gastos por categoria" esta desplegada. */
+    var breakdownExpanded: Boolean = true
+
     fun clear() {
         transactions = null
         selectedMonth = null
@@ -42,5 +45,6 @@ object DashboardCache {
         filterCategory = null
         filterSearch = ""
         filtersExpanded = false
+        breakdownExpanded = true
     }
 }

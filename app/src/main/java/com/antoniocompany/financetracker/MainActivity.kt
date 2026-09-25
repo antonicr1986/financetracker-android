@@ -17,10 +17,12 @@ import com.antoniocompany.financetracker.data.TransactionRepository
 import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionType
+import com.antoniocompany.financetracker.databinding.ItemBreakdownBinding
 import com.antoniocompany.financetracker.databinding.ItemBudgetBinding
 import com.antoniocompany.financetracker.databinding.ActivityMainBinding
 import com.antoniocompany.financetracker.domain.BudgetTone
 import com.antoniocompany.financetracker.domain.availableMonths
+import com.antoniocompany.financetracker.domain.breakdownOf
 import com.antoniocompany.financetracker.domain.budgetPercentage
 import com.antoniocompany.financetracker.domain.budgetTone
 import com.antoniocompany.financetracker.domain.budgetsOfMonth
@@ -159,6 +161,12 @@ class MainActivity : BaseActivity() {
         binding.newBudgetButton.setOnClickListener {
             selectedMonth?.let { budgetForm.launch(BudgetActivity.newIntent(this, it)) }
         }
+
+        binding.breakdownHeader.setOnClickListener {
+            DashboardCache.breakdownExpanded = !DashboardCache.breakdownExpanded
+            applyBreakdownExpanded()
+        }
+        applyBreakdownExpanded()
 
         binding.filtersHeader.setOnClickListener {
             DashboardCache.filtersExpanded = !DashboardCache.filtersExpanded
@@ -306,6 +314,49 @@ class MainActivity : BaseActivity() {
         binding.budgetsChevron.rotation = if (expanded) 0f else 180f
     }
 
+    /**
+     * "Gastos por categoria" del mes: solo gastos, de mayor a menor, con una
+     * barra proporcional al gasto mas alto (ese llega al 100%). Sin gastos
+     * se ve igual, con el aviso, como en la web.
+     */
+    private fun renderBreakdown(month: String) {
+        val ofMonth = transactionsOfMonth(allTransactions, month)
+        val breakdown = breakdownOf(ofMonth, noCategoryLabel)
+
+        binding.breakdownCard.visibility = View.VISIBLE
+        binding.breakdownEmpty.visibility = if (breakdown.isEmpty()) View.VISIBLE else View.GONE
+        binding.breakdownSummary.text = if (breakdown.isEmpty()) {
+            getString(R.string.breakdown_no_expenses)
+        } else {
+            getString(
+                R.string.breakdown_summary,
+                breakdown.first().categoryName,
+                formatCurrency(breakdown.first().amount)
+            )
+        }
+
+        val maxAmount = breakdown.maxOfOrNull { it.amount } ?: 0.0
+
+        binding.breakdownList.removeAllViews()
+        breakdown.forEach { item ->
+            val row = ItemBreakdownBinding.inflate(layoutInflater, binding.breakdownList, false)
+            row.breakdownCategory.text = item.categoryName
+            row.breakdownAmount.text = formatCurrency(item.amount)
+            row.breakdownBar.progress = if (maxAmount > 0) {
+                ((item.amount / maxAmount) * 100).toInt().coerceIn(0, 100)
+            } else {
+                0
+            }
+            binding.breakdownList.addView(row.root)
+        }
+    }
+
+    private fun applyBreakdownExpanded() {
+        val expanded = DashboardCache.breakdownExpanded
+        binding.breakdownBody.visibility = if (expanded) View.VISIBLE else View.GONE
+        binding.breakdownChevron.rotation = if (expanded) 0f else 180f
+    }
+
     private fun applyFiltersExpanded() {
         val expanded = DashboardCache.filtersExpanded
         binding.filtersBody.visibility = if (expanded) View.VISIBLE else View.GONE
@@ -322,6 +373,7 @@ class MainActivity : BaseActivity() {
             binding.monthScroll.visibility = View.GONE
             binding.totalsRow.visibility = View.GONE
             binding.budgetsCard.visibility = View.GONE
+            binding.breakdownCard.visibility = View.GONE
             binding.monthText.visibility = View.GONE
             showMessage(getString(R.string.dashboard_empty))
             return
@@ -397,6 +449,7 @@ class MainActivity : BaseActivity() {
         if (ofMonth.isNotEmpty()) updateCategoryFilterOptions(month, ofMonth)
         applyFilters(month)
         renderBudgets(month)
+        renderBreakdown(month)
     }
 
     /**

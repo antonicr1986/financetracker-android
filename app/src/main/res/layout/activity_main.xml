@@ -255,6 +255,88 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
+                    <!-- Gastos por categoria del mes, como en la web: solo gastos,
+                         de mayor a menor, con una barra proporcional al lado de cada
+                         uno. Plegable, con la categoria de mas gasto en el resumen. -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/breakdownCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/breakdownHeader"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?attr/selectableItemBackground"
+                                android:contentDescription="@string/breakdown_toggle"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:padding="16dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/breakdown_title"
+                                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/breakdownSummary"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="8dp"
+                                    android:gravity="end"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    tools:text="Mayor: Supermercado (300,00 €)" />
+
+                                <ImageView
+                                    android:id="@+id/breakdownChevron"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginStart="8dp"
+                                    android:importantForAccessibility="no"
+                                    android:src="@drawable/ic_chevron"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+                            </LinearLayout>
+
+                            <!-- Lo que se pliega: las filas (item_breakdown.xml) o el aviso de vacio. -->
+                            <LinearLayout
+                                android:id="@+id/breakdownBody"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="16dp"
+                                android:paddingBottom="12dp">
+
+                                <LinearLayout
+                                    android:id="@+id/breakdownList"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical" />
+
+                                <TextView
+                                    android:id="@+id/breakdownEmpty"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/breakdown_empty"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    android:visibility="gone" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
                     <!-- Filtros de la lista de movimientos, en cliente sobre los del mes ya
                          cargado, igual que en la web. Plegable como los presupuestos: el
                          desplegable de categoria nunca ocupa mas de una linea (ellipsize). -->

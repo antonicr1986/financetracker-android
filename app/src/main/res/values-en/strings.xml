@@ -55,6 +55,12 @@
     <string name="filters_clear">Clear</string>
     <string name="filters_title">Filters</string>
     <string name="filters_toggle">Show or hide the filters</string>
+
+    <string name="breakdown_title">Expenses by category</string>
+    <string name="breakdown_toggle">Show or hide the breakdown by category</string>
+    <string name="breakdown_summary">Largest: %1$s (%2$s)</string>
+    <string name="breakdown_no_expenses">No expenses</string>
+    <string name="breakdown_empty">No expenses recorded this month.</string>
     <string name="dashboard_showing">Showing %1$d of %2$d transactions this month.</string>
     <string name="dashboard_no_matches">No transaction matches the filters.</string>
     <string name="dashboard_movement_count">%1$d transactions</string>

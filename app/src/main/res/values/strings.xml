@@ -59,6 +59,12 @@
     <string name="filters_clear">Limpiar</string>
     <string name="filters_title">Filtros</string>
     <string name="filters_toggle">Mostrar u ocultar los filtros</string>
+
+    <string name="breakdown_title">Gastos por categoría</string>
+    <string name="breakdown_toggle">Mostrar u ocultar el desglose por categoría</string>
+    <string name="breakdown_summary">Mayor: %1$s (%2$s)</string>
+    <string name="breakdown_no_expenses">Sin gastos</string>
+    <string name="breakdown_empty">No hay gastos registrados este mes.</string>
     <string name="dashboard_showing">Mostrando %1$d de %2$d movimientos del mes.</string>
     <string name="dashboard_no_matches">Ningún movimiento coincide con los filtros.</string>
     <string name="dashboard_movement_count">%1$d movimientos</string>
