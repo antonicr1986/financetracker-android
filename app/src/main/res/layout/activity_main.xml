@@ -15,284 +15,453 @@
             android:id="@+id/topBar"
             layout="@layout/view_top_bar" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-        <!-- El correo pasa debajo de la barra: en el movil no cabe en la misma
-             linea que los botones sin cortarse. -->
-        <TextView
-            android:id="@+id/emailText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text="demo@financetracker.app" />
-
-
-        <TextView
-            android:id="@+id/monthText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAppearance="?attr/textAppearanceHeadlineSmall"
-            tools:text="septiembre 2026" />
-
-        <HorizontalScrollView
-            android:id="@+id/monthScroll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:scrollbars="none">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/monthChips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:singleLine="true"
-                app:singleSelection="true"
-                app:selectionRequired="true" />
-        </HorizontalScrollView>
-
-        <!-- Tarjeta blanca sobre el fondo gris, como "Totales del mes" en la web. -->
-        <!-- El id va en la tarjeta: al ocultar los totales se oculta entera,
-             no queda un recuadro blanco vacio. -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/totalsRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/dashboard_income"
-                        android:textAppearance="?attr/textAppearanceLabelMedium" />
-
-                    <TextView
-                        android:id="@+id/incomeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textStyle="bold"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        tools:text="2.280,00 €" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/dashboard_expenses"
-                        android:textAppearance="?attr/textAppearanceLabelMedium" />
-
-                    <TextView
-                        android:id="@+id/expenseText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textStyle="bold"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        tools:text="1.433,55 €" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/dashboard_balance"
-                        android:textAppearance="?attr/textAppearanceLabelMedium" />
-
-                    <TextView
-                        android:id="@+id/balanceText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textStyle="bold"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        tools:text="846,45 €" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Presupuestos del mes, como en la web. Plegable desde la cabecera
-             para que no le quite sitio a la lista de movimientos. -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/budgetsCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/budgetsHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:contentDescription="@string/budgets_toggle"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/budgets_title"
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/budgetsSummary"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:gravity="end"
-                        android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        tools:text="1 de 2 dentro del límite" />
-
-                    <ImageView
-                        android:id="@+id/budgetsChevron"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="8dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/ic_chevron"
-                        app:tint="?attr/colorOnSurfaceVariant" />
-                </LinearLayout>
-
-                <!-- Lo que se pliega: la lista, el aviso de vacio y el boton. -->
-                <LinearLayout
-                    android:id="@+id/budgetsBody"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="16dp"
-                    android:paddingBottom="12dp">
-
-                    <!-- Las filas se anaden desde MainActivity (item_budget.xml). -->
-                    <LinearLayout
-                        android:id="@+id/budgetsList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-
-                    <TextView
-                        android:id="@+id/budgetsEmpty"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/budgets_empty"
-                        android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:visibility="gone" />
-
-                    <!-- A la derecha y con borde, como "Nuevo presupuesto" en la web. -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/newBudgetButton"
-                        style="@style/Widget.FinanceTracker.Button.Outlined"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/budgets_new"
-                        android:textColor="?attr/colorOnSurface"
-                        app:strokeColor="?attr/colorOutline" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            android:indeterminate="true"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/messageText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:visibility="gone"
-            tools:text="Todavía no tienes ningún movimiento." />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/retryButton"
-            style="@style/Widget.FinanceTracker.Button.Outlined"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:text="@string/dashboard_retry"
-            android:visibility="gone" />
-
         <!--
-          El SwipeRefreshLayout solo admite un hijo y tiene que poder desplazarse,
-          de ahi que envuelva solo a la lista y no al panel entero. El gesto de
-          tirar hacia abajo se hace sobre los movimientos, que es donde la gente lo
-          intenta.
+          Toda la pantalla se desplaza en bloque -totales, presupuestos,
+          filtros y movimientos-, no solo la lista de antes: por eso el
+          SwipeRefreshLayout envuelve un NestedScrollView y no solo el
+          RecyclerView. La lista renuncia a su propio scroll
+          (nestedScrollingEnabled = false, en MainActivity) y crece con su
+          contenido; quien desplaza toda la pantalla es el NestedScrollView.
         -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="16dp">
+            android:layout_weight="1">
 
-            <!-- La lista de movimientos, tambien en su tarjeta blanca. -->
-            <com.google.android.material.card.MaterialCardView
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:fillViewport="true">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/transactionsList"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="88dp"
-                    android:clipToPadding="false"
-                    tools:listitem="@layout/item_transaction" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="96dp">
+
+                    <!-- El correo pasa debajo de la barra: en el movil no cabe en la misma
+                         linea que los botones sin cortarse. -->
+                    <TextView
+                        android:id="@+id/emailText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        tools:text="demo@financetracker.app" />
+
+                    <TextView
+                        android:id="@+id/monthText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                        tools:text="septiembre 2026" />
+
+                    <HorizontalScrollView
+                        android:id="@+id/monthScroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:scrollbars="none">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/monthChips"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:singleLine="true"
+                            app:singleSelection="true"
+                            app:selectionRequired="true" />
+                    </HorizontalScrollView>
+
+                    <!-- Tarjeta blanca sobre el fondo gris, como "Totales del mes" en la web. -->
+                    <!-- El id va en la tarjeta: al ocultar los totales se oculta entera,
+                         no queda un recuadro blanco vacio. -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/totalsRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp"
+                            android:orientation="horizontal"
+                            android:baselineAligned="false">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/dashboard_income"
+                                    android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                                <TextView
+                                    android:id="@+id/incomeText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:textStyle="bold"
+                                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                                    tools:text="2.280,00 €" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/dashboard_expenses"
+                                    android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                                <TextView
+                                    android:id="@+id/expenseText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:textStyle="bold"
+                                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                                    tools:text="1.433,55 €" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/dashboard_balance"
+                                    android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                                <TextView
+                                    android:id="@+id/balanceText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:textStyle="bold"
+                                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                                    tools:text="846,45 €" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Presupuestos del mes, como en la web. Plegable desde la cabecera
+                         para que no le quite sitio a lo demas. -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/budgetsCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/budgetsHeader"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?attr/selectableItemBackground"
+                                android:contentDescription="@string/budgets_toggle"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:padding="16dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/budgets_title"
+                                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/budgetsSummary"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="8dp"
+                                    android:gravity="end"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    tools:text="1 de 2 dentro del límite" />
+
+                                <ImageView
+                                    android:id="@+id/budgetsChevron"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginStart="8dp"
+                                    android:importantForAccessibility="no"
+                                    android:src="@drawable/ic_chevron"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+                            </LinearLayout>
+
+                            <!-- Lo que se pliega: la lista, el aviso de vacio y el boton. -->
+                            <LinearLayout
+                                android:id="@+id/budgetsBody"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="16dp"
+                                android:paddingBottom="12dp">
+
+                                <!-- Las filas se anaden desde MainActivity (item_budget.xml). -->
+                                <LinearLayout
+                                    android:id="@+id/budgetsList"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical" />
+
+                                <TextView
+                                    android:id="@+id/budgetsEmpty"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/budgets_empty"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    android:visibility="gone" />
+
+                                <!-- A la derecha y con borde, como "Nuevo presupuesto" en la web. -->
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/newBudgetButton"
+                                    style="@style/Widget.FinanceTracker.Button.Outlined"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="end"
+                                    android:layout_marginTop="8dp"
+                                    android:text="@string/budgets_new"
+                                    android:textColor="?attr/colorOnSurface"
+                                    app:strokeColor="?attr/colorOutline" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Filtros de la lista de movimientos, en cliente sobre los del mes ya
+                         cargado, igual que en la web. Plegable como los presupuestos: el
+                         desplegable de categoria nunca ocupa mas de una linea (ellipsize). -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/filtersCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/filtersHeader"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?attr/selectableItemBackground"
+                                android:contentDescription="@string/filters_toggle"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:padding="16dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/filters_title"
+                                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/filterShowingText"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="8dp"
+                                    android:gravity="end"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    android:visibility="gone"
+                                    tools:text="Mostrando 3 de 10" />
+
+                                <ImageView
+                                    android:id="@+id/filtersChevron"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginStart="8dp"
+                                    android:importantForAccessibility="no"
+                                    android:src="@drawable/ic_chevron"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+                            </LinearLayout>
+
+                            <!-- Lo que se pliega: buscador, tipo, categoria y "limpiar". -->
+                            <LinearLayout
+                                android:id="@+id/filtersBody"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="16dp"
+                                android:paddingBottom="16dp">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.FinanceTracker.TextInput"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/filters_search"
+                                    app:endIconMode="clear_text">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/filterSearchInput"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:contentDescription="@string/filters_search_label"
+                                        android:imeOptions="actionSearch"
+                                        android:inputType="text"
+                                        android:maxLines="1" />
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:orientation="horizontal">
+
+                                    <!-- android:maxLines + ellipsize: el texto elegido (p.ej.
+                                         "Todas las categorías") nunca ocupa dos lineas. -->
+                                    <!-- Categoria pesa mas que tipo: "Todas las categorias" es
+                                         mas largo que "Ingresos"/"Gastos" y sino sobraba hueco
+                                         en un lado y faltaba en el otro. -->
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        style="@style/Widget.FinanceTracker.TextInput.Dropdown"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="8dp"
+                                        android:layout_weight="1"
+                                        android:hint="@string/filters_type_label">
+
+                                        <!-- saveEnabled=false: su texto no es libre, se
+                                             recalcula siempre del filtro elegido. Sin esto,
+                                             BaseActivity le devolvia la etiqueta y el estado
+                                             de antes del reinicio (otro idioma incluido) por
+                                             encima, y el desplegable se quedaba sin abrir. -->
+                                        <AutoCompleteTextView
+                                            android:id="@+id/filterTypeInput"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:ellipsize="end"
+                                            android:inputType="none"
+                                            android:maxLines="1"
+                                            android:saveEnabled="false" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        style="@style/Widget.FinanceTracker.TextInput.Dropdown"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1.20"
+                                        android:hint="@string/filters_category_label">
+
+                                        <!-- saveEnabled=false, mismo motivo que filterTypeInput. -->
+                                        <AutoCompleteTextView
+                                            android:id="@+id/filterCategoryInput"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:ellipsize="end"
+                                            android:inputType="none"
+                                            android:maxLines="1"
+                                            android:saveEnabled="false" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+                                </LinearLayout>
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/filterClearButton"
+                                    style="@style/Widget.FinanceTracker.Button.Text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="end"
+                                    android:layout_marginTop="4dp"
+                                    android:text="@string/filters_clear"
+                                    android:visibility="gone" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/filterNoMatchesText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"
+                        android:text="@string/dashboard_no_matches"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:visibility="gone" />
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="32dp"
+                        android:indeterminate="true"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/messageText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:visibility="gone"
+                        tools:text="Todavía no tienes ningún movimiento." />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/retryButton"
+                        style="@style/Widget.FinanceTracker.Button.Outlined"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/dashboard_retry"
+                        android:visibility="gone" />
+
+                    <!-- La lista de movimientos, en su tarjeta blanca. Sin scroll propio
+                         (nestedScrollingEnabled = false, en MainActivity): crece con su
+                         contenido y quien desplaza toda la pantalla es el
+                         NestedScrollView de fuera. -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/transactionsList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="8dp"
+                            tools:listitem="@layout/item_transaction" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-        </LinearLayout>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -45,6 +45,21 @@
     <string name="dashboard_no_category">No category</string>
     <string name="dashboard_retry">Retry</string>
 
+    <string name="filters_search">Search description...</string>
+    <string name="filters_search_label">Search by description</string>
+    <string name="filters_type_label">Transaction type</string>
+    <string name="filters_category_label">Category</string>
+    <string name="filters_all_types">All</string>
+    <string name="filters_all_categories">All categories</string>
+    <string name="filters_no_category">No category</string>
+    <string name="filters_clear">Clear</string>
+    <string name="filters_title">Filters</string>
+    <string name="filters_toggle">Show or hide the filters</string>
+    <string name="dashboard_showing">Showing %1$d of %2$d transactions this month.</string>
+    <string name="dashboard_no_matches">No transaction matches the filters.</string>
+    <string name="dashboard_movement_count">%1$d transactions</string>
+    <string name="dashboard_movement_count_one">1 transaction</string>
+
     <string name="error_load">Could not load the data.</string>
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
 

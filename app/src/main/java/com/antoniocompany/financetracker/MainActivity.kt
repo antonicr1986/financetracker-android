@@ -2,8 +2,11 @@ package com.antoniocompany.financetracker
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.activity.result.contract.ActivityResultContracts
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +16,7 @@ import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.TransactionRepository
 import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.TransactionDto
+import com.antoniocompany.financetracker.data.model.TransactionType
 import com.antoniocompany.financetracker.databinding.ItemBudgetBinding
 import com.antoniocompany.financetracker.databinding.ActivityMainBinding
 import com.antoniocompany.financetracker.domain.BudgetTone
@@ -21,6 +25,8 @@ import com.antoniocompany.financetracker.domain.budgetPercentage
 import com.antoniocompany.financetracker.domain.budgetTone
 import com.antoniocompany.financetracker.domain.budgetsOfMonth
 import com.antoniocompany.financetracker.domain.budgetsWithinLimit
+import com.antoniocompany.financetracker.domain.categoryNamesOf
+import com.antoniocompany.financetracker.domain.filterTransactions
 import com.antoniocompany.financetracker.domain.summaryOf
 import com.antoniocompany.financetracker.domain.transactionsOfMonth
 import com.antoniocompany.financetracker.ui.TransactionAdapter
@@ -58,6 +64,18 @@ class MainActivity : BaseActivity() {
     /** Todos los meses; se filtran al pintar. Se piden aparte de los movimientos. */
     private var allBudgets: List<BudgetDto> = emptyList()
     private var selectedMonth: String? = null
+
+    /**
+     * Filtros de la lista de movimientos, en cliente sobre el mes ya cargado,
+     * igual que la web. Se leen de `DashboardCache` al construir la pantalla
+     * para sobrevivir al reinicio por tema o idioma (ver `BaseActivity`).
+     */
+    private var filterType: TransactionType? = DashboardCache.filterType
+    private var filterCategory: String? = DashboardCache.filterCategory
+    private var filterSearch: String = DashboardCache.filterSearch
+
+    /** "Sin categoría" traducido, para los filtros y para agrupar sin categoría. */
+    private lateinit var noCategoryLabel: String
 
     /**
      * El alta devuelve RESULT_OK cuando ha guardado. Se recarga entonces, y
@@ -98,6 +116,7 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
 
         repository = TransactionRepository(ApiClient.get(this))
+        noCategoryLabel = getString(R.string.filters_no_category)
 
         binding.emailText.text = session.email.orEmpty()
 
@@ -105,6 +124,9 @@ class MainActivity : BaseActivity() {
 
         binding.transactionsList.layoutManager = LinearLayoutManager(this)
         binding.transactionsList.adapter = adapter
+        // Ya no tiene su propio scroll: ahora es el NestedScrollView de fuera
+        // el que mueve la pantalla entera, lista incluida.
+        binding.transactionsList.isNestedScrollingEnabled = false
 
         binding.addButton.setOnClickListener {
             newTransaction.launch(Intent(this, NewTransactionActivity::class.java))
@@ -138,6 +160,13 @@ class MainActivity : BaseActivity() {
             selectedMonth?.let { budgetForm.launch(BudgetActivity.newIntent(this, it)) }
         }
 
+        binding.filtersHeader.setOnClickListener {
+            DashboardCache.filtersExpanded = !DashboardCache.filtersExpanded
+            applyFiltersExpanded()
+        }
+        applyFiltersExpanded()
+        setupFilters()
+
         val cached = DashboardCache.transactions
         if (restartedForLook && cached != null) {
             selectedMonth = DashboardCache.selectedMonth
@@ -145,6 +174,29 @@ class MainActivity : BaseActivity() {
             render(cached)
         } else {
             load()
+        }
+    }
+
+    /**
+     * `BaseActivity` devuelve aqui el texto que tenian las vistas justo antes
+     * de un reinicio por tema o idioma (ver `window.restoreHierarchyState`).
+     * Eso vale para un `EditText` de texto libre, pero los desplegables de
+     * tipo y categoria no lo son: su texto se calcula siempre a partir del
+     * filtro elegido, en el idioma actual. Sin este arreglo, un cambio de
+     * idioma dejaba la etiqueta vieja puesta encima ("All" con el resto de
+     * la pantalla ya en espanol) y el desplegable con la flecha atascada.
+     */
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        if (!::binding.isInitialized) return
+
+        binding.filterTypeInput.dismissDropDown()
+        binding.filterTypeInput.setText(typeFilterLabel(filterType), false)
+
+        selectedMonth?.let { month ->
+            val allLabel = getString(R.string.filters_all_categories)
+            binding.filterCategoryInput.dismissDropDown()
+            binding.filterCategoryInput.setText(filterCategory ?: allLabel, false)
         }
     }
 
@@ -254,6 +306,12 @@ class MainActivity : BaseActivity() {
         binding.budgetsChevron.rotation = if (expanded) 0f else 180f
     }
 
+    private fun applyFiltersExpanded() {
+        val expanded = DashboardCache.filtersExpanded
+        binding.filtersBody.visibility = if (expanded) View.VISIBLE else View.GONE
+        binding.filtersChevron.rotation = if (expanded) 0f else 180f
+    }
+
     private fun render(all: List<TransactionDto>) {
         allTransactions = all
         DashboardCache.transactions = all
@@ -335,8 +393,128 @@ class MainActivity : BaseActivity() {
             }
         )
 
-        adapter.submitList(ofMonth)
+        binding.filtersCard.visibility = if (ofMonth.isEmpty()) View.GONE else View.VISIBLE
+        if (ofMonth.isNotEmpty()) updateCategoryFilterOptions(month, ofMonth)
+        applyFilters(month)
         renderBudgets(month)
+    }
+
+    /**
+     * Se llama a los tres cambios (buscador, tipo, categoria) y cada vez que
+     * se pinta un mes. La categoria puede no existir en el mes que se ve: se
+     * cae a "todas" en vez de reiniciar el filtro desde un efecto, que es lo
+     * que hacia la web para no disparar el aviso del linter.
+     */
+    private fun applyFilters(month: String) {
+        val ofMonth = transactionsOfMonth(allTransactions, month)
+        val filtered = filterTransactions(ofMonth, filterType, filterCategory, filterSearch, noCategoryLabel)
+
+        val hasFilters = filterType != null || filterCategory != null || filterSearch.isNotBlank()
+        binding.filterClearButton.visibility = if (hasFilters) View.VISIBLE else View.GONE
+
+        // Siempre visible, en una sola linea (maxLines+ellipsize en el layout):
+        // es lo unico que se ve del todo cuando la tarjeta esta plegada, asi
+        // que tiene que decir algo aunque no haya ningun filtro puesto.
+        binding.filterShowingText.visibility = View.VISIBLE
+        binding.filterShowingText.text = if (hasFilters) {
+            getString(R.string.dashboard_showing, filtered.size, ofMonth.size)
+        } else if (ofMonth.size == 1) {
+            getString(R.string.dashboard_movement_count_one)
+        } else {
+            getString(R.string.dashboard_movement_count, ofMonth.size)
+        }
+
+        binding.filterNoMatchesText.visibility =
+            if (ofMonth.isNotEmpty() && filtered.isEmpty()) View.VISIBLE else View.GONE
+
+        adapter.submitList(filtered)
+    }
+
+    /**
+     * Reconstruye el desplegable de categoria con las que hay en el mes que
+     * se ve. Se reconstruye en cada mes porque las categorias disponibles
+     * cambian con el.
+     */
+    private fun updateCategoryFilterOptions(month: String, ofMonth: List<TransactionDto>) {
+        val names = categoryNamesOf(ofMonth, noCategoryLabel)
+        val allLabel = getString(R.string.filters_all_categories)
+
+        binding.filterCategoryInput.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_list_item_1, listOf(allLabel) + names)
+        )
+
+        if (filterCategory != null && filterCategory !in names) {
+            filterCategory = null
+            DashboardCache.filterCategory = null
+        }
+
+        binding.filterCategoryInput.setText(filterCategory ?: allLabel, false)
+        binding.filterCategoryInput.setOnItemClickListener { _, _, position, _ ->
+            filterCategory = if (position == 0) null else names[position - 1]
+            DashboardCache.filterCategory = filterCategory
+            applyFilters(month)
+        }
+    }
+
+    /** Texto del filtro de tipo para el valor actual: "Todos", "Ingresos" o "Gastos". */
+    private fun typeFilterLabel(type: TransactionType?): String = when (type) {
+        TransactionType.INCOME -> getString(R.string.dashboard_income)
+        TransactionType.EXPENSE -> getString(R.string.dashboard_expenses)
+        null -> getString(R.string.filters_all_types)
+    }
+
+    /** Conecta el buscador y los dos desplegables. La categoria se rellena por mes (ver renderMonth). */
+    private fun setupFilters() {
+        binding.filterSearchInput.setText(filterSearch)
+        binding.filterSearchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+
+            override fun afterTextChanged(editable: Editable?) {
+                filterSearch = editable?.toString().orEmpty()
+                DashboardCache.filterSearch = filterSearch
+                selectedMonth?.let { applyFilters(it) }
+            }
+        })
+
+        binding.filterTypeInput.setAdapter(
+            ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                listOf(
+                    getString(R.string.filters_all_types),
+                    getString(R.string.dashboard_income),
+                    getString(R.string.dashboard_expenses)
+                )
+            )
+        )
+        binding.filterTypeInput.setText(typeFilterLabel(filterType), false)
+        binding.filterTypeInput.setOnItemClickListener { _, _, position, _ ->
+            filterType = when (position) {
+                1 -> TransactionType.INCOME
+                2 -> TransactionType.EXPENSE
+                else -> null
+            }
+            DashboardCache.filterType = filterType
+            selectedMonth?.let { applyFilters(it) }
+        }
+
+        binding.filterClearButton.setOnClickListener {
+            filterType = null
+            filterCategory = null
+            filterSearch = ""
+            DashboardCache.filterType = null
+            DashboardCache.filterCategory = null
+            DashboardCache.filterSearch = ""
+
+            binding.filterSearchInput.setText("")
+            binding.filterTypeInput.setText(getString(R.string.filters_all_types), false)
+
+            selectedMonth?.let { month ->
+                updateCategoryFilterOptions(month, transactionsOfMonth(allTransactions, month))
+                applyFilters(month)
+            }
+        }
     }
 
     private fun setLoading(loading: Boolean) {
