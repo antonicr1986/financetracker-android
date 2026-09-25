@@ -1,9 +1,13 @@
 package com.antoniocompany.financetracker
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.ThemePreference
@@ -20,6 +24,14 @@ import com.antoniocompany.financetracker.ui.ThemePreference
  *
  * El estado de la pantalla (lo escrito en los campos, etc.) viaja en el
  * Intent y se restaura como si Android la hubiera recreado.
+ *
+ * Ojo: pasar ese estado a `super.onCreate(bundle)` no basta para que vuelva
+ * el texto de los EditText. Ese restablecimiento automático (por tener
+ * `android:id`) solo lo dispara el sistema cuando es EL quien recrea la
+ * Activity; aqui la recreamos nosotros con startActivity+finish, asi que
+ * hay que guardar y devolver el estado de las vistas a mano con
+ * `window.saveHierarchyState()`/`restoreHierarchyState()` (ver
+ * `restartIfLookChanged` y `onPostCreate`).
  */
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -33,13 +45,51 @@ abstract class BaseActivity : AppCompatActivity() {
     protected var restartedForLook = false
         private set
 
+    /**
+     * Estado de las vistas (texto de los EditText, etc.) a la espera de que
+     * `setContentView` las cree. No se puede restaurar aqui todavia: en
+     * `onCreate` la pantalla hija aun no ha inflado su layout.
+     */
+    private var pendingViewState: Bundle? = null
+
+    /** Si el teclado estaba abierto antes del reinicio, para no cerrarlo ni abrirlo de mas. */
+    private var wasKeyboardVisible = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val carried = intent.getBundleExtra(EXTRA_STATE)
         intent.removeExtra(EXTRA_STATE)
         restartedForLook = carried != null
+        pendingViewState = carried?.getBundle(KEY_VIEW_STATE)
+        wasKeyboardVisible = carried?.getBoolean(KEY_KEYBOARD_VISIBLE) ?: false
         super.onCreate(savedInstanceState ?: carried)
         appliedLook = currentLook()
     }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        // Aqui el layout de la pantalla hija ya esta inflado (se hizo en su
+        // onCreate, antes de que este se llame). Ahora si se puede devolver
+        // el texto escrito.
+        pendingViewState?.let { window.restoreHierarchyState(it) }
+        pendingViewState = null
+
+        // Si el campo que tenia el foco lo recupera, Android entiende que hay
+        // que abrir el teclado. Eso es lo que queremos SI ya estaba abierto
+        // (se deja el foco puesto y la ventana lo abre sola al mostrarse). Si
+        // no lo estaba, se quita el foco para que no salte de la nada.
+        if (restartedForLook && !wasKeyboardVisible) hideKeyboardAndClearFocus()
+    }
+
+    private fun hideKeyboardAndClearFocus() {
+        val focused = currentFocus ?: return
+        focused.clearFocus()
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(focused.windowToken, 0)
+    }
+
+    private fun isKeyboardVisible(): Boolean =
+        ViewCompat.getRootWindowInsets(window.decorView)
+            ?.isVisible(WindowInsetsCompat.Type.ime()) ?: false
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -57,6 +107,8 @@ abstract class BaseActivity : AppCompatActivity() {
         if (isFinishing || appliedLook == currentLook()) return
 
         val state = Bundle().also { onSaveInstanceState(it) }
+        state.putBundle(KEY_VIEW_STATE, window.saveHierarchyState())
+        state.putBoolean(KEY_KEYBOARD_VISIBLE, isKeyboardVisible())
         // Un Intent nuevo y limpio, no una copia del actual: el de la pantalla
         // de arranque es el del icono (MAIN/LAUNCHER + NEW_TASK) y relanzarlo
         // solo trae al frente la tarea existente sin crear pantalla nueva; el
@@ -81,5 +133,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private companion object {
         const val EXTRA_STATE = "com.antoniocompany.financetracker.RESTART_STATE"
+        const val KEY_VIEW_STATE = "com.antoniocompany.financetracker.VIEW_STATE"
+        const val KEY_KEYBOARD_VISIBLE = "com.antoniocompany.financetracker.KEYBOARD_VISIBLE"
     }
 }
