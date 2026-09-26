@@ -98,6 +98,21 @@ jobs:
           path: app/build/reports/tests/
           if-no-files-found: ignore
 
+      # Lint: Android Lint ya viene con el plugin de Android, sin dependencias
+      # nuevas. Revisa Kotlin, layouts, recursos y manifiesto (traducciones que
+      # faltan, APIs no disponibles en la minSdk, recursos sin usar...). Falla
+      # con los problemas de gravedad "error"; los avisos quedan en el informe.
+      - name: Lint
+        run: ./gradlew lintDebug
+
+      - name: Upload the lint report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lint-report
+          path: app/build/reports/lint-results-debug.html
+          if-no-files-found: ignore
+
       - name: Build
         run: ./gradlew assembleDebug
 

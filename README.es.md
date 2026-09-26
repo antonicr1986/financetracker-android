@@ -191,8 +191,8 @@ red.
 
 ## 🔄 Automatizacion
 
-- **CI** en cada push y pull request: escaneo de secretos, pruebas unitarias y
-  un APK de depuracion, descargable desde la propia ejecucion.
+- **CI** en cada push y pull request: escaneo de secretos, pruebas unitarias,
+  Android Lint (su informe HTML queda como artefacto) y un APK de depuracion, descargable desde la propia ejecucion.
 - **Release** en cada etiqueta de version (`v1.2.3`): ejecuta las pruebas, firma
   el APK con una clave guardada en los secretos del repositorio, comprueba la
   firma con `apksigner` y publica una Release de GitHub con el APK y el
