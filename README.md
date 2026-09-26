@@ -10,11 +10,12 @@
 Android client for [FinanceTracker](https://github.com/antonicr1986/FinanceTracker),
 a personal finance REST API written in .NET 8.
 
-**This is the second client of that API.** The first is
+**This is one of three clients of that API**, alongside
 [financetracker-web](https://github.com/antonicr1986/financetracker-web), in
-Next.js. Writing a second consumer is what turns an API into a contract: the
-same endpoints, the same error codes and the same business rules, reached from
-a different language and a different platform.
+Next.js, and [financetracker-desktop](https://github.com/antonicr1986/financetracker-desktop),
+in C# and WPF. Writing more than one consumer is what turns an API into a
+contract: the same endpoints, the same error codes and the same business rules,
+reached from a different language and a different platform.
 
 There is a **public demo account**, the same one the web client uses, reachable
 in one tap from the sign-in screen. The API sleeps after 20 minutes of
@@ -44,6 +45,18 @@ allowed for the browser or file manager you open it from.
   bar that turns amber at 80% and red at 100%, and what is left or over. They
   can be created, edited and deleted, for one category or for all of a type.
   The API computes the figures; the app only picks the month's.
+- **Expenses by category**: the month's expenses grouped by category, largest
+  first, each with a bar relative to the largest one.
+- **Filters** by description, type and category, resolved on the device over
+  the month already loaded — as in the web client, with no new request. The
+  totals stay those of the whole month; only the list is filtered.
+- **Collapsible sections** — budgets, the breakdown and the filters — whose
+  one-line summary stays visible when folded ("1 of 2 within limit",
+  "Largest: …", "Showing 3 of 12").
+- **The whole dashboard scrolls as one page**, with pull to refresh from
+  anywhere on it.
+- **A clear message when the session expires**: the sign-in screen says why
+  the user is back there, instead of a silent return.
 - **Creating a category from the form**, of the chosen type, which is then
   selected — the same flow as the web client.
 - **Pull to refresh**, and a retry button when loading fails.
@@ -60,8 +73,8 @@ allowed for the browser or file manager you open it from.
 The web client is the complete one. This one is deliberately smaller, built
 around what a phone is good at: checking quickly and recording on the spot.
 
-- No filters and no breakdown by category. Categories can be created, but
-  not renamed or deleted.
+- No trend chart across the year. Categories can be created, but not renamed
+  or deleted.
 
 ## 🖼️ Preview
 
@@ -99,7 +112,7 @@ and theme switches in the top bar.
     app/src/main/java/.../
       data/           Retrofit client, session and repository
         model/        The API DTOs
-      domain/         Month grouping and totals — pure Kotlin
+      domain/         Months, totals, budgets, filters, breakdown and form rules — pure Kotlin
       ui/             Top bar, theme, language, adapter and formats
       BaseActivity    Theme and language switching without flashing
       LoginActivity, RegisterActivity, MainActivity, NewTransactionActivity
@@ -132,9 +145,13 @@ status code, two messages.
 with `recreate()`, which removes the old window before the new one is drawn —
 that gap is a visible flash. The activities declare `uiMode|locale` in
 `configChanges`, so Android only notifies them, and `BaseActivity` restarts the
-screen with a system cross-fade, carrying its saved state in the intent. The
-dashboard reuses the transactions it already had instead of calling the API
-again.
+screen **with no animation at all**, carrying its saved state in the intent:
+what was typed stays typed, and the keyboard stays open only if it already was.
+The dashboard reuses the transactions it already had instead of calling the
+API again. The filter drop-downs are excluded from that restore
+(`android:saveEnabled="false"`): their value always comes from the chosen
+filter, and restoring it as raw view state left one showing the other
+language's label and ignoring taps.
 
 **The language uses AppCompat per-app locales.** The choice is stored by the
 system on Android 13+ (it also shows in the system app settings) and by
@@ -144,7 +161,7 @@ preferences file, separate from the session, so signing out does not reset it.
 
 ## 🧪 Tests
 
-`./gradlew test` — 44 unit tests, no emulator needed.
+`./gradlew test` — 56 unit tests, no emulator needed.
 
 Six cover the month derivations. Four cover the paging loop against a fake API,
 including the case the real world hides: with fewer than 100 transactions the
@@ -152,7 +169,12 @@ second page is never requested, so a bug there would only surface once a user
 accumulated data.
 
 Eight cover the budgets (which month's are shown, the 80% and 100% colour
-thresholds, the month picker across a year boundary). Eleven cover the form rules (registration, amounts typed with a comma or a dot,
+thresholds, the month picker across a year boundary). Seven cover the filters
+(a search that ignores case and surrounding spaces, a blank one that filters
+nothing, type and category — including "no category" — combined with the
+search, and the category list offered in the drop-down), and five the breakdown (expenses only,
+largest first, transactions without a category grouped under one label).
+Eleven cover the form rules (registration, amounts typed with a comma or a dot,
 duplicate categories), seven the formats in each language (`€12,345.60` versus
 `12.345,60 €`, always in euros), and eight check that the API calls leave
 with the method, path and body the .NET API expects — against an OkHttp

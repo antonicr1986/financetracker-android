@@ -10,9 +10,10 @@
 Cliente Android de [FinanceTracker](https://github.com/antonicr1986/FinanceTracker),
 una API REST de finanzas personales escrita en .NET 8.
 
-**Este es el segundo cliente de esa API.** El primero es
+**Es uno de los tres clientes de esa API**, junto a
 [financetracker-web](https://github.com/antonicr1986/financetracker-web), en
-Next.js. Escribir un segundo consumidor es lo que convierte una API en un
+Next.js, y [financetracker-desktop](https://github.com/antonicr1986/financetracker-desktop),
+en C# y WPF. Escribir mas de un consumidor es lo que convierte una API en un
 contrato: los mismos endpoints, los mismos codigos de error y las mismas reglas
 de negocio, alcanzados desde otro lenguaje y otra plataforma.
 
@@ -46,6 +47,18 @@ que se abra.
   queda o lo que se ha pasado. Se crean, editan y borran, para una categoria o
   para todas las de un tipo. Las cifras las calcula la API; la app solo elige
   las del mes.
+- **Gastos por categoria**: los gastos del mes agrupados por categoria, de
+  mayor a menor, cada uno con una barra relativa a la mayor.
+- **Filtros** por descripcion, tipo y categoria, resueltos en el dispositivo
+  sobre el mes ya cargado — como en el cliente web, sin pedir nada nuevo. Los
+  totales siguen siendo los del mes entero; solo se filtra la lista.
+- **Secciones plegables** — presupuestos, desglose y filtros — cuyo resumen de
+  una linea sigue a la vista al plegarlas ("1 de 2 dentro del limite",
+  "Mayor: …", "Mostrando 3 de 12").
+- **Todo el panel se desplaza como una sola pagina**, y se puede deslizar para
+  recargar desde cualquier punto.
+- **Un aviso claro cuando caduca la sesion**: la pantalla de acceso explica por
+  que se ha vuelto a ella, en lugar de volver sin decir nada.
 - **Crear una categoria desde el formulario**, del tipo elegido, que queda
   seleccionada: el mismo flujo que el cliente web.
 - **Deslizar para recargar**, y boton de reintentar cuando la carga falla.
@@ -63,8 +76,8 @@ que se abra.
 El cliente completo es el web. Este es deliberadamente mas pequeno, construido
 alrededor de lo que un movil hace bien: consultar rapido y anotar en el momento.
 
-- No hay filtros ni desglose por categoria. Las categorias se pueden crear,
-  pero no renombrar ni borrar.
+- No hay grafica de evolucion a lo largo del año. Las categorias se pueden
+  crear, pero no renombrar ni borrar.
 
 ## 🖼️ Vista previa
 
@@ -102,7 +115,7 @@ cambio de idioma y de tema en la barra superior.
     app/src/main/java/.../
       data/           Cliente de Retrofit, sesion y repositorio
         model/        Los DTOs de la API
-      domain/         Agrupacion por mes y totales — Kotlin puro
+      domain/         Meses, totales, presupuestos, filtros, desglose y formularios — Kotlin puro
       ui/             Barra superior, tema, idioma, adaptador y formatos
       BaseActivity    Cambio de tema e idioma sin parpadeo
       LoginActivity, RegisterActivity, MainActivity, NewTransactionActivity
@@ -132,12 +145,17 @@ habia sesion, asi que es una contrasena incorrecta. En el panel si habia token y
 la API lo ha rechazado, asi que la sesion ha caducado y se vuelve al acceso.
 Mismo codigo de estado, dos mensajes.
 
-**Cambiar de tema o de idioma no recrea la pantalla.** Android los aplica con
+**Cambiar de tema o de idioma no recrea la pantalla.** Android lo aplica con
 `recreate()`, que quita la ventana vieja antes de dibujar la nueva, y ese hueco
 se ve como un parpadeo. Las pantallas declaran `uiMode|locale` en
 `configChanges`, asi que Android solo les avisa, y `BaseActivity` las reinicia
-con un fundido del sistema, llevando su estado guardado en el intent. El panel
+**sin ninguna animacion**, llevando su estado guardado en el intent: lo escrito
+sigue escrito, y el teclado solo sigue abierto si ya lo estaba. El panel
 reutiliza los movimientos que ya tenia en lugar de volver a llamar a la API.
+Los desplegables de los filtros quedan fuera de esa restauracion
+(`android:saveEnabled="false"`): su valor sale siempre del filtro elegido, y
+restaurarlo como estado de la vista dejaba uno con el texto en el otro idioma y
+sin responder a los toques.
 
 **El idioma usa los idiomas por aplicacion de AppCompat.** Lo guarda el sistema
 en Android 13+ (y aparece tambien en los ajustes de la aplicacion) y
@@ -148,7 +166,7 @@ no lo reinicie.
 
 ## 🧪 Pruebas
 
-`./gradlew test` — 44 pruebas unitarias, sin emulador.
+`./gradlew test` — 56 pruebas unitarias, sin emulador.
 
 Seis cubren las derivaciones por mes. Cuatro cubren el bucle de paginacion
 contra una API falsa, incluido el caso que el mundo real esconde: con menos de
@@ -156,7 +174,13 @@ contra una API falsa, incluido el caso que el mundo real esconde: con menos de
 apareceria el dia que un usuario acumulara datos.
 
 Ocho cubren los presupuestos (cuales se ven en cada mes, los cortes de color
-del 80 % y el 100 %, el selector de meses al cruzar de año). Once cubren las
+del 80 % y el 100 %, el selector de meses al cruzar de año). Siete cubren los
+filtros (un buscador que ignora mayusculas y espacios de los extremos, uno vacio
+que no filtra nada, tipo y categoria — incluida "sin categoria" — combinados con
+el buscador, y la lista de categorias que ofrece el desplegable), y cinco el
+desglose (solo gastos, de mayor a
+menor, y los movimientos sin categoria agrupados bajo una sola etiqueta). Once
+cubren las
 reglas de los formularios (registro, importes con coma o punto,
 categorias repetidas), siete los formatos de cada idioma (`€12,345.60` frente a
 `12.345,60 €`, siempre en euros), y ocho comprueban que las llamadas a
