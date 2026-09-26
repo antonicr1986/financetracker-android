@@ -3,9 +3,7 @@ package com.antoniocompany.financetracker.data.model
 /** Cuerpo de POST /api/Users/login. */
 data class LoginRequest(
     val email: String,
-    val password: String,
-    /** "es" o "en": la API siembra las categorias de partida en ese idioma. */
-    val language: String
+    val password: String
 )
 
 /**
@@ -15,7 +13,9 @@ data class LoginRequest(
 data class RegisterRequest(
     val name: String,
     val email: String,
-    val password: String
+    val password: String,
+    /** "es" o "en": la API siembra las categorias de partida en ese idioma. */
+    val language: String
 )
 
 /**
