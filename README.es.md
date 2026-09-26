@@ -31,7 +31,8 @@ que se abra.
 
 - **Acceso con JWT**, con entrada directa a la cuenta de demostracion.
 - **Registro de cuenta**, validado igual que en el cliente web; despues inicia
-  sesion con los mismos datos y abre el panel.
+  sesion con los mismos datos y abre el panel. Envia el idioma de la app, asi
+  que las categorias de partida se crean en espanol o en ingles.
 - **Selector de meses**: un chip por cada mes con datos, de modo que el
   historico entero esta a mano y no solo el mes en curso.
 - **Totales del mes elegido** — ingresos, gastos y balance — derivados en el

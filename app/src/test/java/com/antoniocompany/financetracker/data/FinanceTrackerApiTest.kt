@@ -66,11 +66,12 @@ class FinanceTrackerApiTest {
     @Test
     fun `register posts the new account`() = runBlocking {
         val user = api(201, """{"id":9,"name":"Ana","email":"ana@mail.com"}""")
-            .register(RegisterRequest("Ana", "ana@mail.com", "secreto"))
+            .register(RegisterRequest("Ana", "ana@mail.com", "secreto", "en"))
 
         assertEquals("POST", lastRequest!!.method)
         assertEquals("/api/Users/register", lastRequest!!.url.encodedPath)
         assertTrue(lastBody, lastBody.contains("\"email\":\"ana@mail.com\""))
+        assertTrue(lastBody, lastBody.contains("\"language\":\"en\""))
         assertEquals(9, user.id)
     }
 

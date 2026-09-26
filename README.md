@@ -30,7 +30,8 @@ allowed for the browser or file manager you open it from.
 
 - **Sign-in with JWT**, with one-tap entry into the demo account.
 - **Account registration**, validated like the web client, which then signs in
-  with the same credentials and opens the dashboard.
+  with the same credentials and opens the dashboard. It sends the app language,
+  so the starter categories are created in Spanish or English.
 - **Month selector**: a chip per month that has data, so the whole history is
   reachable and not just the current month.
 - **Totals for the selected month** — income, expenses and balance — derived on

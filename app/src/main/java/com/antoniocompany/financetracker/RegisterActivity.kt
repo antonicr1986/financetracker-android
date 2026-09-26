@@ -11,6 +11,7 @@ import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.databinding.ActivityRegisterBinding
 import com.antoniocompany.financetracker.domain.RegistrationProblem
 import com.antoniocompany.financetracker.domain.validateRegistration
+import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -76,7 +77,7 @@ class RegisterActivity : BaseActivity() {
         lifecycleScope.launch {
             try {
                 val api = ApiClient.get(this@RegisterActivity)
-                api.register(RegisterRequest(name, email, password))
+                api.register(RegisterRequest(name, email, password, LanguagePreference.current()))
 
                 // El registro devuelve el usuario, no un token: se encadena el
                 // login para no obligar a escribir otra vez los mismos datos.
