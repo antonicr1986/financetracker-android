@@ -36,6 +36,38 @@ jobs:
       - name: Scan the repository history
         run: gitleaks git . --config .gitleaks.toml --redact --verbose
 
+  # Gradle no trae un "list --vulnerable" como dotnet. En su lugar se envia a
+  # GitHub el grafo completo de dependencias (tambien las transitivas, que no
+  # aparecen en ningun fichero del repo), y GitHub lo cruza con su base de
+  # avisos: salen como alertas de Dependabot en la pestana Security.
+  dependencies:
+    name: dependencies
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # la API de envio del grafo lo exige
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Submit the dependency graph
+        uses: gradle/actions/dependency-submission@v4
+
+      # En una pull request, ademas, se compara el grafo con el de main y se
+      # falla si la PR introduce una dependencia con una vulnerabilidad
+      # conocida de gravedad alta o critica.
+      - name: Review the new dependencies
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
   build:
     name: build
     runs-on: ubuntu-latest

@@ -193,6 +193,14 @@ red.
 
 - **CI** en cada push y pull request: escaneo de secretos, pruebas unitarias,
   Android Lint (su informe HTML queda como artefacto) y un APK de depuracion, descargable desde la propia ejecucion.
+- **Escaneo de dependencias**: el CI envia a GitHub el grafo completo de
+  dependencias de Gradle (tambien las transitivas), y GitHub avisa de las
+  vulnerabilidades conocidas como alertas de Dependabot; en las pull requests,
+  una revision de dependencias falla si una nueva tiene una vulnerabilidad alta
+  o critica.
+- **Dependabot** abre cada mes una pull request con las actualizaciones menores
+  y de parche de las dependencias de Gradle y de las acciones, agrupadas en una;
+  las versiones mayores se dejan para decidirlas a mano.
 - **Release** en cada etiqueta de version (`v1.2.3`): ejecuta las pruebas, firma
   el APK con una clave guardada en los secretos del repositorio, comprueba la
   firma con `apksigner` y publica una Release de GitHub con el APK y el

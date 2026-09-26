@@ -185,6 +185,13 @@ interceptor instead of a server, so they need no network.
 
 - **CI** on every push and pull request: secret scanning, unit tests, Android
   Lint (its HTML report is kept as an artifact) and a debug APK, downloadable from the run itself.
+- **Dependency scanning**: CI sends the full Gradle dependency graph (transitive
+  dependencies included) to GitHub, which reports known vulnerabilities as
+  Dependabot alerts; on pull requests, a dependency review fails if a new
+  dependency has a high or critical vulnerability.
+- **Dependabot** opens a monthly pull request with the minor and patch updates
+  of the Gradle dependencies and the workflow actions, grouped in one; major
+  versions are left for a manual decision.
 - **Release** on every version tag (`v1.2.3`): runs the tests, signs the APK
   with a key kept in the repository secrets, verifies the signature with
   `apksigner`, and publishes a GitHub Release with the APK and a changelog
