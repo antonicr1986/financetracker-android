@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">FinanceTracker</string>
 
     <string name="login_subtitle">Accede para ver tus finanzas</string>
@@ -49,7 +49,7 @@
     <string name="dashboard_no_category">Sin categoría</string>
     <string name="dashboard_retry">Reintentar</string>
 
-    <string name="filters_search">Buscar concepto...</string>
+    <string name="filters_search">Buscar concepto…</string>
     <string name="filters_search_label">Buscar por concepto</string>
     <string name="filters_type_label">Tipo de movimiento</string>
     <string name="filters_category_label">Categoría</string>
@@ -65,10 +65,16 @@
     <string name="breakdown_summary">Mayor: %1$s (%2$s)</string>
     <string name="breakdown_no_expenses">Sin gastos</string>
     <string name="breakdown_empty">No hay gastos registrados este mes.</string>
-    <string name="dashboard_showing">Mostrando %1$d de %2$d movimientos del mes.</string>
+    <!-- El plural depende del total (%2$d): "Mostrando 1 de 1 movimiento". -->
+    <plurals name="dashboard_showing">
+        <item quantity="one">Mostrando %1$d de %2$d movimiento del mes.</item>
+        <item quantity="other">Mostrando %1$d de %2$d movimientos del mes.</item>
+    </plurals>
     <string name="dashboard_no_matches">Ningún movimiento coincide con los filtros.</string>
-    <string name="dashboard_movement_count">%1$d movimientos</string>
-    <string name="dashboard_movement_count_one">1 movimiento</string>
+    <plurals name="dashboard_movement_count">
+        <item quantity="one">%1$d movimiento</item>
+        <item quantity="other">%1$d movimientos</item>
+    </plurals>
 
     <string name="error_load">No se han podido cargar los datos.</string>
     <string name="error_session_expired">Tu sesión ha caducado. Vuelve a iniciar sesión.</string>
@@ -110,7 +116,9 @@
     <string name="error_create_category_failed">No se ha podido crear la categoría.</string>
 
     <string name="budgets_title">Presupuestos</string>
-    <string name="budgets_summary">%1$d de %2$d dentro del límite</string>
+    <!-- Sin plural a proposito: "1 de 1 dentro del limite" ya es correcto,
+         no hay ningun sustantivo que cambie con la cantidad. -->
+    <string name="budgets_summary" tools:ignore="PluralsCandidate">%1$d de %2$d dentro del límite</string>
     <string name="budgets_all_categories">Todas las categorías</string>
     <string name="budgets_spent_of">%1$s de %2$s</string>
     <string name="budgets_remaining">Quedan %1$s</string>
@@ -143,4 +151,10 @@
     <string name="error_choose_category">Elige una categoría.</string>
     <string name="error_categories_failed">No se han podido cargar las categorías.</string>
     <string name="error_save_failed">No se ha podido guardar el movimiento.</string>
+
+    <!-- Porcentaje y signo del importe como recursos, no concatenados en
+         Kotlin: el orden y el espaciado cambian segun el idioma. -->
+    <string name="budget_percent">%1$d %%</string>
+    <string name="amount_income">+%1$s</string>
+    <string name="amount_expense">−%1$s</string>
 </resources>

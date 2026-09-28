@@ -52,9 +52,10 @@ class TransactionAdapter(
                 ?: context.getString(R.string.dashboard_no_category)
             binding.date.text = formatShortDate(transaction.date)
 
-            // Menos (U+2212), no un guion: se alinea con las cifras.
-            val sign = if (isIncome) "+" else "−"
-            binding.amount.text = sign + formatCurrency(transaction.amount)
+            // El signo vive en los recursos (amount_income/amount_expense). El
+            // de gasto es un menos (U+2212), no un guion: se alinea con las cifras.
+            val format = if (isIncome) R.string.amount_income else R.string.amount_expense
+            binding.amount.text = context.getString(format, formatCurrency(transaction.amount))
 
             binding.amount.setTextColor(
                 if (isIncome) {

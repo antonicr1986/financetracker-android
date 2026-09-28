@@ -293,7 +293,7 @@ class MainActivity : BaseActivity() {
             )
             row.budgetBar.progress = percentage.coerceIn(0, 100)
             row.budgetBar.setIndicatorColor(ContextCompat.getColor(this, bar))
-            row.budgetPercent.text = "$percentage%"
+            row.budgetPercent.text = getString(R.string.budget_percent, percentage)
             row.budgetPercent.setTextColor(ContextCompat.getColor(this, text))
             row.budgetRemaining.text = if (budget.remainingAmount < 0) {
                 getString(R.string.budgets_exceeded, formatCurrency(-budget.remainingAmount))
@@ -470,11 +470,13 @@ class MainActivity : BaseActivity() {
         // que tiene que decir algo aunque no haya ningun filtro puesto.
         binding.filterShowingText.visibility = View.VISIBLE
         binding.filterShowingText.text = if (hasFilters) {
-            getString(R.string.dashboard_showing, filtered.size, ofMonth.size)
-        } else if (ofMonth.size == 1) {
-            getString(R.string.dashboard_movement_count_one)
+            resources.getQuantityString(
+                R.plurals.dashboard_showing, ofMonth.size, filtered.size, ofMonth.size
+            )
         } else {
-            getString(R.string.dashboard_movement_count, ofMonth.size)
+            resources.getQuantityString(
+                R.plurals.dashboard_movement_count, ofMonth.size, ofMonth.size
+            )
         }
 
         binding.filterNoMatchesText.visibility =

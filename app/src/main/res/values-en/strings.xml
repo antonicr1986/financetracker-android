@@ -2,7 +2,7 @@
 <!-- Textos en ingles. Android los usa cuando el idioma de la app es ingles;
      para cualquier otro idioma se queda con values/strings.xml (espanol).
      Mismas frases que la web en ingles (lib/i18n/messages.ts). -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="login_subtitle">Sign in to see your finances</string>
     <string name="login_email">Email address</string>
     <string name="login_password">Password</string>
@@ -45,7 +45,7 @@
     <string name="dashboard_no_category">No category</string>
     <string name="dashboard_retry">Retry</string>
 
-    <string name="filters_search">Search description...</string>
+    <string name="filters_search">Search description…</string>
     <string name="filters_search_label">Search by description</string>
     <string name="filters_type_label">Transaction type</string>
     <string name="filters_category_label">Category</string>
@@ -61,10 +61,15 @@
     <string name="breakdown_summary">Largest: %1$s (%2$s)</string>
     <string name="breakdown_no_expenses">No expenses</string>
     <string name="breakdown_empty">No expenses recorded this month.</string>
-    <string name="dashboard_showing">Showing %1$d of %2$d transactions this month.</string>
+    <plurals name="dashboard_showing">
+        <item quantity="one">Showing %1$d of %2$d transaction this month.</item>
+        <item quantity="other">Showing %1$d of %2$d transactions this month.</item>
+    </plurals>
     <string name="dashboard_no_matches">No transaction matches the filters.</string>
-    <string name="dashboard_movement_count">%1$d transactions</string>
-    <string name="dashboard_movement_count_one">1 transaction</string>
+    <plurals name="dashboard_movement_count">
+        <item quantity="one">%1$d transaction</item>
+        <item quantity="other">%1$d transactions</item>
+    </plurals>
 
     <string name="error_load">Could not load the data.</string>
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
@@ -106,7 +111,7 @@
     <string name="error_create_category_failed">Could not create the category.</string>
 
     <string name="budgets_title">Budgets</string>
-    <string name="budgets_summary">%1$d of %2$d within limit</string>
+    <string name="budgets_summary" tools:ignore="PluralsCandidate">%1$d of %2$d within limit</string>
     <string name="budgets_all_categories">All categories</string>
     <string name="budgets_spent_of">%1$s of %2$s</string>
     <string name="budgets_remaining">%1$s left</string>
@@ -139,4 +144,8 @@
     <string name="error_choose_category">Choose a category.</string>
     <string name="error_categories_failed">Could not load the categories.</string>
     <string name="error_save_failed">Could not save the transaction.</string>
+
+    <string name="budget_percent">%1$d%%</string>
+    <string name="amount_income">+%1$s</string>
+    <string name="amount_expense">−%1$s</string>
 </resources>
