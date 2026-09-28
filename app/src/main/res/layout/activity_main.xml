@@ -444,6 +444,7 @@
                                              de antes del reinicio (otro idioma incluido) por
                                              encima, y el desplegable se quedaba sin abrir. -->
                                         <AutoCompleteTextView
+                                            tools:ignore="LabelFor"
                                             android:id="@+id/filterTypeInput"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
@@ -462,6 +463,7 @@
 
                                         <!-- saveEnabled=false, mismo motivo que filterTypeInput. -->
                                         <AutoCompleteTextView
+                                            tools:ignore="LabelFor"
                                             android:id="@+id/filterCategoryInput"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"

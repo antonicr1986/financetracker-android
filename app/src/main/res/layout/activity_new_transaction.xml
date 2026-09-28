@@ -100,12 +100,17 @@
             <!--
               No editable: la fecha se elige en el calendario, no se teclea.
               Asi no hay que validar formatos ni fechas imposibles.
+              focusable sin focusableInTouchMode: al tocarlo no sale el
+              teclado, pero con teclado o TalkBack se puede llegar a el.
+              (Los desplegables llevan tools:ignore="LabelFor": su etiqueta es
+              el hint del TextInputLayout, que TalkBack ya lee; lint no lo ve.)
             -->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dateInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
+                android:focusable="true"
+                android:focusableInTouchMode="false"
                 android:clickable="true"
                 android:inputType="none"
                 tools:text="20 sept" />
@@ -120,6 +125,8 @@
             android:hint="@string/new_transaction_category">
 
             <AutoCompleteTextView
+
+                tools:ignore="LabelFor"
                 android:id="@+id/categoryInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
