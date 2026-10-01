@@ -16,7 +16,7 @@ jobs:
     name: secrets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           # El historial completo: un secreto borrado ayer sigue estando en el
           # commit que lo introdujo, y es ahi donde hay que encontrarlo.
@@ -46,9 +46,9 @@ jobs:
     permissions:
       contents: write   # la API de envio del grafo lo exige
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 25
@@ -57,14 +57,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Submit the dependency graph
-        uses: gradle/actions/dependency-submission@v4
+        uses: gradle/actions/dependency-submission@v6
 
       # En una pull request, ademas, se compara el grafo con el de main y se
       # falla si la PR introduce una dependencia con una vulnerabilidad
       # conocida de gravedad alta o critica.
       - name: Review the new dependencies
         if: github.event_name == 'pull_request'
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5
         with:
           fail-on-severity: high
 
@@ -72,9 +72,9 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 25
