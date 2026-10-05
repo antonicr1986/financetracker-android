@@ -98,8 +98,19 @@ jobs:
           {
             echo "## FinanceTracker Android $VERSION_NAME"
             echo
-            echo "Install \`financetracker-v$VERSION_NAME.apk\` on Android 7.0 or later."
-            echo "Sign in with the demo account (\`demo@financetracker.app\` / \`Demo1234!\`) or create your own." # gitleaks:allow
+            echo "Android client of FinanceTracker, a personal finance app (income, expenses and monthly balance) backed by a .NET API on Azure."
+            echo
+            echo "### Install (about a minute)"
+            echo
+            echo "1. On an Android phone (7.0 or later), download **\`financetracker.apk\`** from *Assets* below. \`financetracker-v$VERSION_NAME.apk\` is the same file with the version in its name."
+            echo "2. Open the downloaded file. The first time, Android asks you to allow your browser to *install unknown apps*: allow it and go back."
+            echo "3. Tap **Install**. The app needs only internet access."
+            echo
+            echo "### Try it"
+            echo
+            echo "- On the sign-in screen, tap **Sign in with the demo account** (\`demo@financetracker.app\` / \`Demo1234!\`), or register your own account." # gitleaks:allow
+            echo "- The first sign-in of the day can take a few seconds while the API wakes up."
+            echo "- Language (Spanish or English) and light or dark theme can be changed inside the app."
             echo
             if [ -n "$previous" ]; then
               echo "### Changes since $previous"
