@@ -56,8 +56,13 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      # Solo se envian las dependencias de la app. Las de los plugins (AGP,
+      # Kotlin) se resuelven en "classpath", no van en el APK y generaban
+      # alertas que Dependabot no puede corregir (dependency_not_found).
       - name: Submit the dependency graph
         uses: gradle/actions/dependency-submission@v4
+        with:
+          dependency-graph-exclude-configurations: 'classpath'
 
       # En una pull request, ademas, se compara el grafo con el de main y se
       # falla si la PR introduce una dependencia con una vulnerabilidad
