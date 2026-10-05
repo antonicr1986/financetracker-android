@@ -22,7 +22,7 @@ un toque desde la pantalla de acceso. La API se duerme tras 20 minutos sin uso,
 asi que la primera entrada del dia tarda unos segundos mientras despiertan el
 servicio y la base de datos — la pantalla lo explica mientras espera.
 
-**[Descargar el ultimo APK](https://github.com/antonicr1986/financetracker-android/releases/latest)**
+**[Descargar el ultimo APK](https://github.com/antonicr1986/financetracker-android/releases/latest/download/financetracker.apk)**
 — firmado, para Android 7.0 o superior. Para instalarlo hay que permitir
 "instalar aplicaciones desconocidas" al navegador o gestor de archivos desde el
 que se abra.

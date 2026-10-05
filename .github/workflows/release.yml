@@ -89,6 +89,8 @@ jobs:
           apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
           "$apksigner" verify --print-certs "$apk"
           cp "$apk" "financetracker-v$VERSION_NAME.apk"
+          # Copia con nombre fijo: el README enlaza a releases/latest/download/financetracker.apk
+          cp "$apk" financetracker.apk
 
       - name: Write the changelog
         run: |
@@ -115,7 +117,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "financetracker-v$VERSION_NAME.apk" \
+          gh release create "$GITHUB_REF_NAME" "financetracker-v$VERSION_NAME.apk" financetracker.apk \
             --title "FinanceTracker Android $VERSION_NAME" \
             --notes-file release-notes.md
 

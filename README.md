@@ -22,7 +22,7 @@ in one tap from the sign-in screen. The API sleeps after 20 minutes of
 inactivity, so the first sign-in of the day takes a few seconds while the app
 service and the database wake up — the screen says so while it waits.
 
-**[Download the latest APK](https://github.com/antonicr1986/financetracker-android/releases/latest)**
+**[Download the latest APK](https://github.com/antonicr1986/financetracker-android/releases/latest/download/financetracker.apk)**
 — signed, for Android 7.0 or later. Installing it needs "install unknown apps"
 allowed for the browser or file manager you open it from.
 
