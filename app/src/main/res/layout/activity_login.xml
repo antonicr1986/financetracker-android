@@ -194,4 +194,6 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
+
+    <include layout="@layout/view_app_version" />
 </LinearLayout>

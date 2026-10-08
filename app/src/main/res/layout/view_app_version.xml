@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Version de la app, en pequeno al pie del login y del panel. El texto
+     sale de app_version_label, que genera build.gradle.kts con versionName. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/appVersion"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:paddingVertical="8dp"
+    android:text="@string/app_version_label"
+    android:textAppearance="?attr/textAppearanceLabelSmall"
+    android:textColor="?attr/colorOnSurfaceVariant"
+    android:alpha="0.7"
+    android:importantForAccessibility="no" />

@@ -37,6 +37,10 @@ android {
             "API_BASE_URL",
             "\"https://financetracker-api-cpctbta0gddddge5.belgiumcentral-01.azurewebsites.net/\""
         )
+
+        // Version visible en pie de pantalla (login y panel). Como recurso y no
+        // como BuildConfig para poder usarla directamente desde el XML.
+        resValue("string", "app_version_label", "v$releaseVersionName")
     }
 
     signingConfigs {
@@ -71,6 +75,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        resValues = true
     }
 }
 
