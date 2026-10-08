@@ -41,7 +41,10 @@
     <string name="language_en" translatable="false">🇺🇸 EN</string>
     <string name="language_switch_to_es" translatable="false">Cambiar a español</string>
     <string name="language_switch_to_en" translatable="false">Switch to English</string>
-    <string name="theme_toggle">Cambiar entre tema claro y oscuro</string>
+    <string name="theme_button_description">Tema: %1$s. Pulsa para cambiarlo</string>
+    <string name="theme_system">Según el sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
     <string name="dashboard_income">Ingresos</string>
     <string name="dashboard_expenses">Gastos</string>
     <string name="dashboard_balance">Balance</string>

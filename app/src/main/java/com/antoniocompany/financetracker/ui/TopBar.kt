@@ -2,6 +2,8 @@ package com.antoniocompany.financetracker.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.view.Gravity
+import androidx.appcompat.widget.PopupMenu
 import com.antoniocompany.financetracker.LoginActivity
 import com.antoniocompany.financetracker.R
 import com.antoniocompany.financetracker.data.SessionStore
@@ -34,15 +36,60 @@ private fun ViewTopBarBinding.bindLanguageToggle() {
     }
 }
 
+/**
+ * El boton abre un menu con las tres opciones (segun el sistema, claro,
+ * oscuro) y la elegida aparece marcada. El icono muestra la opcion actual:
+ * medio circulo para "segun el sistema", sol para claro y luna para oscuro.
+ */
 private fun ViewTopBarBinding.bindThemeToggle() {
     val context = root.context
-    // Luna en claro (para pasar a oscuro), sol en oscuro (para volver).
-    themeToggleButton.setIconResource(
-        if (ThemePreference.isDark(context)) R.drawable.ic_theme_light else R.drawable.ic_theme_dark
-    )
-    themeToggleButton.setOnClickListener {
-        ThemePreference.toggle(context)
+    showThemeIcon()
+    themeToggleButton.setOnClickListener { anchor ->
+        val popup = PopupMenu(context, anchor, Gravity.END)
+        popup.menuInflater.inflate(R.menu.theme_menu, popup.menu)
+        val checkedId = when (ThemePreference.current(context)) {
+            ThemePreference.Mode.SYSTEM -> R.id.theme_system
+            ThemePreference.Mode.LIGHT -> R.id.theme_light
+            ThemePreference.Mode.DARK -> R.id.theme_dark
+        }
+        popup.menu.findItem(checkedId).isChecked = true
+        popup.setOnMenuItemClickListener { item ->
+            val mode = when (item.itemId) {
+                R.id.theme_light -> ThemePreference.Mode.LIGHT
+                R.id.theme_dark -> ThemePreference.Mode.DARK
+                else -> ThemePreference.Mode.SYSTEM
+            }
+            ThemePreference.set(context, mode)
+            // Si la opcion nueva se ve igual que la anterior (p. ej. pasar de
+            // "oscuro" a "segun el sistema" con el movil en oscuro), la
+            // pantalla no se redibuja: hay que cambiar el icono a mano.
+            showThemeIcon()
+            true
+        }
+        popup.show()
     }
+}
+
+private fun ViewTopBarBinding.showThemeIcon() {
+    val context = root.context
+    val mode = ThemePreference.current(context)
+    themeToggleButton.setIconResource(
+        when (mode) {
+            ThemePreference.Mode.SYSTEM -> R.drawable.ic_theme_system
+            ThemePreference.Mode.LIGHT -> R.drawable.ic_theme_light
+            ThemePreference.Mode.DARK -> R.drawable.ic_theme_dark
+        }
+    )
+    themeToggleButton.contentDescription = context.getString(
+        R.string.theme_button_description,
+        context.getString(
+            when (mode) {
+                ThemePreference.Mode.SYSTEM -> R.string.theme_system
+                ThemePreference.Mode.LIGHT -> R.string.theme_light
+                ThemePreference.Mode.DARK -> R.string.theme_dark
+            }
+        )
+    )
 }
 
 /**

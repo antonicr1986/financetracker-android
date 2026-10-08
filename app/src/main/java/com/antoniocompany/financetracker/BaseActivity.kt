@@ -36,7 +36,11 @@ import com.antoniocompany.financetracker.ui.ThemePreference
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    /** Tema e idioma con los que se pinto esta pantalla. */
+    /**
+     * Tema e idioma con los que se pinto esta pantalla. Incluye la opcion
+     * elegida (y no solo si se ve oscuro) para que las pantallas de detras
+     * actualicen el icono del tema al volver a ellas.
+     */
     private var appliedLook: String? = null
 
     /**
@@ -155,7 +159,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun currentLook(): String =
-        "${ThemePreference.isDark(this)}|${LanguagePreference.current()}"
+        "${ThemePreference.isDark(this)}|${ThemePreference.current(this)}|${LanguagePreference.current()}"
 
     private companion object {
         const val EXTRA_STATE = "com.antoniocompany.financetracker.RESTART_STATE"

@@ -37,7 +37,10 @@
     <string name="error_network">Could not reach the server.</string>
 
     <string name="dashboard_sign_out">Sign out</string>
-    <string name="theme_toggle">Switch between light and dark theme</string>
+    <string name="theme_button_description">Theme: %1$s. Tap to change it</string>
+    <string name="theme_system">System default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
     <string name="dashboard_income">Income</string>
     <string name="dashboard_expenses">Expenses</string>
     <string name="dashboard_balance">Balance</string>
