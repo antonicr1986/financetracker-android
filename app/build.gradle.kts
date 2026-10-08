@@ -77,6 +77,12 @@ android {
         buildConfig = true
         resValues = true
     }
+
+    // Robolectric necesita los recursos y el manifiesto para crear un Context
+    // real en la JVM: asi SessionStore y ThemePreference se prueban sin emulador.
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -90,6 +96,9 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.okhttp.mockwebserver)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }

@@ -58,8 +58,10 @@ object ApiClient {
      * Anade la cabecera Authorization cuando hay sesion. Se lee el token en
      * cada peticion y no al construir el cliente, porque cambia al entrar y al
      * salir y el cliente se crea una sola vez.
+     *
+     * Interno y no privado para poder probarlo (ApiClientAuthTest).
      */
-    private fun authInterceptor(session: SessionStore) = Interceptor { chain ->
+    internal fun authInterceptor(session: SessionStore) = Interceptor { chain ->
         val token = session.token
 
         val request = if (token == null) {
