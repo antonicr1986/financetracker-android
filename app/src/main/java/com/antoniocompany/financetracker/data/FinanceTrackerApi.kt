@@ -11,6 +11,7 @@ import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.UserDto
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -27,6 +28,15 @@ import retrofit2.http.Query
  * lee en linea recta, sin callbacks anidados.
  */
 interface FinanceTrackerApi {
+
+    /**
+     * Comprobacion de salud que consulta la base de datos. Solo se usa para
+     * despertar la API y Azure SQL al abrir el login (ver LoginActivity). La
+     * respuesta no importa: devuelve Response para no lanzar una excepcion con
+     * el 503 que da mientras la base de datos despierta.
+     */
+    @GET("health/ready")
+    suspend fun warmUp(): Response<Unit>
 
     @POST("api/Users/login")
     suspend fun login(@Body body: LoginRequest): LoginResponse

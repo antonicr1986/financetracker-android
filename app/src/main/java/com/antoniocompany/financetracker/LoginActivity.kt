@@ -46,6 +46,18 @@ class LoginActivity : BaseActivity() {
         // Sin sesion, "Salir" aparece deshabilitado.
         binding.topBar.bind(this)
 
+        // Precalentamiento: la API (plan gratuito de Azure) se descarga tras
+        // un rato sin uso y la base de datos serverless se pausa. Se despiertan
+        // ya, en segundo plano, para que la espera ocurra mientras se mira la
+        // pantalla y no al pulsar "Entrar". Si falla da igual: el login
+        // funciona igual, solo que con la espera de siempre.
+        lifecycleScope.launch {
+            try {
+                ApiClient.get(this@LoginActivity).warmUp()
+            } catch (_: IOException) {
+            }
+        }
+
         // Si venimos aquí porque la API devolvió 401 (token caducado a los
         // 60 minutos, sin refresh token), avisamos en vez de dejar que
         // parezca un cierre de sesión cualquiera. Se consume una sola vez:
