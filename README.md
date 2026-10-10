@@ -18,9 +18,10 @@ contract: the same endpoints, the same error codes and the same business rules,
 reached from a different language and a different platform.
 
 There is a **public demo account**, the same one the web client uses, reachable
-in one tap from the sign-in screen. The API sleeps after 20 minutes of
-inactivity, so the first sign-in of the day takes a few seconds while the app
-service and the database wake up — the screen says so while it waits.
+in one tap from the sign-in screen. The API runs on
+Azure's free tier and sleeps when idle: the app wakes it up as soon as the
+sign-in screen opens, so the wait happens while you read it — and if it still
+runs long, the screen says so.
 
 **[Download the latest APK](https://github.com/antonicr1986/financetracker-android/releases/latest/download/financetracker.apk)**
 — signed, for Android 7.0 or later. Installing it needs "install unknown apps"

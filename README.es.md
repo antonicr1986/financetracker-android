@@ -18,9 +18,10 @@ contrato: los mismos endpoints, los mismos codigos de error y las mismas reglas
 de negocio, alcanzados desde otro lenguaje y otra plataforma.
 
 Hay una **cuenta de demostracion publica**, la misma que usa el cliente web, a
-un toque desde la pantalla de acceso. La API se duerme tras 20 minutos sin uso,
-asi que la primera entrada del dia tarda unos segundos mientras despiertan el
-servicio y la base de datos — la pantalla lo explica mientras espera.
+un toque desde la pantalla de acceso. La API corre en el
+plan gratuito de Azure y se duerme sin uso: la app la despierta en cuanto se abre
+la pantalla de acceso, asi que la espera ocurre mientras se lee — y si aun asi se
+alarga, la pantalla lo explica.
 
 **[Descargar el ultimo APK](https://github.com/antonicr1986/financetracker-android/releases/latest/download/financetracker.apk)**
 — firmado, para Android 7.0 o superior. Para instalarlo hay que permitir
