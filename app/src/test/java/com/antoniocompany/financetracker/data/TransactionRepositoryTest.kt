@@ -15,6 +15,7 @@ import com.antoniocompany.financetracker.data.model.UserDto
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import retrofit2.Response
 
 /**
  * El bucle de paginacion es el sitio donde un error se nota tarde y mal: con
@@ -35,6 +36,9 @@ class TransactionRepositoryTest {
         // El resto del contrato existe porque la interfaz lo exige, no porque
         // estas pruebas lo necesiten. Si alguna acaba llamandolas, el error
         // dice exactamente que falta.
+        override suspend fun warmUp(): Response<Unit> =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
         override suspend fun login(body: LoginRequest): LoginResponse =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
