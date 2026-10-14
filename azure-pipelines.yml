@@ -1,0 +1,30 @@
+# CI de FinanceTracker Android (Kotlin + Gradle) en Azure Pipelines
+# Solo valida: tests unitarios y que el APK debug compila.
+
+trigger:
+  branches:
+    include: [ main ]
+
+pr:
+  branches:
+    include: [ main ]
+
+pool:
+  vmImage: ubuntu-latest   # trae el Android SDK preinstalado
+
+steps:
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: x64
+      jdkSourceOption: PreInstalled
+    displayName: Instalar JDK 17
+
+  - script: chmod +x gradlew
+    displayName: Dar permisos a gradlew
+
+  - script: ./gradlew test
+    displayName: Tests unitarios (JUnit)
+
+  - script: ./gradlew assembleDebug
+    displayName: Build APK debug
