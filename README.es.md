@@ -213,6 +213,14 @@ red.
 - El JDK esta fijado al mismo con el que se desarrolla, de modo que el CI y el
   escritorio compilan igual.
 
+### Azure DevOps
+
+Este repositorio se copia tambien automaticamente a Azure Repos
+(`mirror-azure.yml`) y Azure Pipelines lo valida alli
+(`azure-pipelines.yml`): pruebas unitarias y un APK de depuracion. Solo valida; las releases firmadas siguen en GitHub
+Actions. Como funciona todo el montaje se explica en el
+[README de la API](https://github.com/antonicr1986/FinanceTracker/blob/master/README.es.md#-azure-devops).
+
 ## ⚙️ Ejecutar en local
 
 Android Studio, JDK 17 o superior, y un dispositivo o emulador con Android 7.0+.

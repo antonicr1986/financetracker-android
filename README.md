@@ -204,6 +204,14 @@ interceptor instead of a server, so they need no network.
 - The JDK is pinned to the one the project is developed with, so the CI and the
   desk compile the same way.
 
+### Azure DevOps
+
+This repository is also copied automatically to Azure Repos
+(`mirror-azure.yml`) and validated there by Azure Pipelines
+(`azure-pipelines.yml`): unit tests and a debug APK. It only validates; signed releases stay in GitHub
+Actions. How the whole setup works is explained in the
+[API README](https://github.com/antonicr1986/FinanceTracker#-azure-devops).
+
 ## ⚙️ Running locally
 
 Android Studio, JDK 17 or later, and a device or emulator on Android 7.0+.
