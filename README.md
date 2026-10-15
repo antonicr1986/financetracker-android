@@ -203,6 +203,9 @@ interceptor instead of a server, so they need no network.
   configuration as the other repositories in this project.
 - The JDK is pinned to the one the project is developed with, so the CI and the
   desk compile the same way.
+- **Tight workflows**: the `GITHUB_TOKEN` is read-only by default (only the jobs
+  that need more ask for it) and every job has a time limit, so a stuck one does
+  not burn minutes for hours.
 
 ### Azure DevOps
 

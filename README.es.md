@@ -212,6 +212,9 @@ red.
   configuracion que los demas repositorios de este proyecto.
 - El JDK esta fijado al mismo con el que se desarrolla, de modo que el CI y el
   escritorio compilan igual.
+- **Workflows acotados**: el `GITHUB_TOKEN` es de solo lectura por defecto (solo
+  los jobs que lo necesitan piden mas permisos) y cada job tiene un tiempo
+  maximo, para que uno colgado no consuma minutos durante horas.
 
 ### Azure DevOps
 
