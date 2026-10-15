@@ -208,7 +208,10 @@ interceptor instead of a server, so they need no network.
   throwaway container: manifest (exported components, permissions, backup,
   cleartext traffic), decompiled code, libraries and any secrets left inside.
   The security score and findings appear in the job summary, and the PDF and
-  JSON report is kept as an artifact (`mobsf-report`).
+  JSON report is kept as an artifact (`mobsf-report`). The job **fails** if a
+  new high-severity finding appears; accepted ones (the CI APK being unsigned
+  and supporting Android 7.0) are listed in `.mobsf/accepted.txt` with their
+  reason.
 - **Tight workflows**: the `GITHUB_TOKEN` is read-only by default (only the jobs
   that need more ask for it) and every job has a time limit, so a stuck one does
   not burn minutes for hours.

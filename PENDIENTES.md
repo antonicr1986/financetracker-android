@@ -12,8 +12,9 @@ con `[x]` y se anota la fecha o el commit.
 - [ ] Verificar el checksum de gitleaks al descargarlo.
 - [ ] `SECURITY.md` con cómo reportar vulnerabilidades.
 - [ ] `azure-pipelines.yml`: añadir el mismo análisis de dependencias que en GitHub Actions y `timeoutInMinutes`.
-- [ ] **MobSF**: revisar el primer informe (`mobsf-report`), corregir lo que proceda y poner
-  `MOBSF_FAIL_ON_HIGH: 'true'` para que un hallazgo alto bloquee. Fijar la versión de la imagen.
+- [x] **MobSF bloquea**: falla con hallazgos altos que no estén en `.mobsf/accepted.txt` (firma en el
+  CI y `minSdk 24`, aceptados con su motivo).
+- [ ] Fijar la versión de la imagen de MobSF (ahora `latest`).
 - [ ] Generar un SBOM de la release y adjuntarlo junto a los instalables.
 - [ ] Atestación de procedencia de los instalables (`actions/attest-build-provenance`).
 

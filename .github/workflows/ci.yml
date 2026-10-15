@@ -179,16 +179,17 @@ jobs:
   #    workflow de Release), que es la que llega a los usuarios. La debug
   #    saldria con avisos propios de depuracion que no aplican.
   #  - MobSF corre en un contenedor desechable con una API key aleatoria.
-  #  - De momento solo informa: puntuacion y hallazgos en el resumen del job, e
-  #    informe PDF y JSON como artefacto (mobsf-report). Cuando este revisado,
-  #    se pone MOBSF_FAIL_ON_HIGH a true para que un hallazgo alto lo bloquee.
+  #  - Puntuacion y hallazgos en el resumen del job, e informe PDF y JSON como
+  #    artefacto (mobsf-report). El job falla si aparece un hallazgo de
+  #    gravedad alta que no este en .mobsf/accepted.txt (riesgos aceptados,
+  #    cada uno con su motivo).
   mobsf:
     name: mobsf
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      MOBSF_FAIL_ON_HIGH: 'false'
+      MOBSF_FAIL_ON_HIGH: 'true'
     steps:
       - uses: actions/checkout@v7
 
@@ -272,13 +273,23 @@ jobs:
           path: mobsf-report/
           if-no-files-found: ignore
 
-      - name: Bloquear si hay hallazgos altos
+      - name: Bloquear si hay hallazgos altos nuevos
         if: env.MOBSF_FAIL_ON_HIGH == 'true'
         run: |
-          if [ "$HIGH_COUNT" -gt 0 ]; then
-            echo "::error::MobSF ha encontrado $HIGH_COUNT hallazgos de gravedad alta"
-            exit 1
-          fi
+          grep -v '^#' .mobsf/accepted.txt | sed '/^\s*$/d' > accepted.tmp
+          jq -r '.high[].title' mobsf-report/scorecard.json > high.tmp
+          new=0
+          while IFS= read -r title; do
+            # Aceptado si el titulo contiene alguna de las lineas de la lista.
+            if grep -qF -f accepted.tmp <<< "$title"; then
+              echo "Aceptado: $title"
+            else
+              echo "::error::Hallazgo alto nuevo de MobSF: $title"
+              new=$((new + 1))
+            fi
+          done < high.tmp
+          if [ "$new" -gt 0 ]; then exit 1; fi
+          echo "Sin hallazgos altos nuevos."
 
       - name: Apagar MobSF
         if: always()

@@ -1,0 +1,10 @@
+# Hallazgos de gravedad alta de MobSF aceptados, uno por linea: el comienzo
+# del titulo tal y como sale en el informe. El job mobsf solo falla si aparece
+# un hallazgo alto que NO empiece por ninguna de estas lineas.
+#
+# El APK del CI se compila sin firmar a proposito: la clave solo existe en el
+# workflow de Release, que firma el APK publicado y lo verifica con apksigner.
+Missing Code Signing certificate
+# minSdk 24 (Android 7.0) por compatibilidad: llega al 99 % de dispositivos
+# frente al 91 % con Android 10. Decision consciente para una app de demo.
+App can be installed on a vulnerable unpatched Android version

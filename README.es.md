@@ -217,7 +217,10 @@ red.
   desechable: manifiesto (componentes exportados, permisos, backup, trafico sin
   cifrar), codigo descompilado, librerias y secretos que hayan quedado dentro.
   La puntuacion de seguridad y los hallazgos salen en el resumen del job, y el
-  informe PDF y JSON queda como artefacto (`mobsf-report`).
+  informe PDF y JSON queda como artefacto (`mobsf-report`). El job **falla** si
+  aparece un hallazgo de gravedad alta nuevo; los aceptados (que el APK del CI
+  va sin firmar y el soporte desde Android 7.0) estan en `.mobsf/accepted.txt`
+  con su motivo.
 - **Workflows acotados**: el `GITHUB_TOKEN` es de solo lectura por defecto (solo
   los jobs que lo necesitan piden mas permisos) y cada job tiene un tiempo
   maximo, para que uno colgado no consuma minutos durante horas.
