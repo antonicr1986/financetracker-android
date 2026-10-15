@@ -203,6 +203,12 @@ interceptor instead of a server, so they need no network.
   configuration as the other repositories in this project.
 - The JDK is pinned to the one the project is developed with, so the CI and the
   desk compile the same way.
+- **APK analysis with MobSF** (Mobile Security Framework): on every push and
+  pull request the release build is compiled and MobSF analyses it in a
+  throwaway container: manifest (exported components, permissions, backup,
+  cleartext traffic), decompiled code, libraries and any secrets left inside.
+  The security score and findings appear in the job summary, and the PDF and
+  JSON report is kept as an artifact (`mobsf-report`).
 - **Tight workflows**: the `GITHUB_TOKEN` is read-only by default (only the jobs
   that need more ask for it) and every job has a time limit, so a stuck one does
   not burn minutes for hours.

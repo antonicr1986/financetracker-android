@@ -169,3 +169,117 @@ jobs:
           name: financetracker-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+
+  # Analisis de seguridad del APK con MobSF (Mobile Security Framework): abre
+  # el APK compilado y revisa el manifiesto (componentes exportados, permisos,
+  # backup, trafico sin cifrar...), el codigo descompilado, las librerias y
+  # los secretos que hayan quedado dentro. Es lo equivalente a ZAP para una app
+  # movil: analiza lo que se instala, no el codigo fuente.
+  #  - Se analiza la build release (sin firmar: la clave solo existe en el
+  #    workflow de Release), que es la que llega a los usuarios. La debug
+  #    saldria con avisos propios de depuracion que no aplican.
+  #  - MobSF corre en un contenedor desechable con una API key aleatoria.
+  #  - De momento solo informa: puntuacion y hallazgos en el resumen del job, e
+  #    informe PDF y JSON como artefacto (mobsf-report). Cuando este revisado,
+  #    se pone MOBSF_FAIL_ON_HIGH a true para que un hallazgo alto lo bloquee.
+  mobsf:
+    name: mobsf
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MOBSF_FAIL_ON_HIGH: 'false'
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Arrancar MobSF
+        run: |
+          key=$(openssl rand -hex 32)
+          echo "::add-mask::$key"
+          echo "MOBSF_KEY=$key" >> "$GITHUB_ENV"
+          docker run -d --name mobsf -p 8000:8000 -e MOBSF_API_KEY="$key" \
+            opensecurity/mobile-security-framework-mobsf:latest
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build the release APK (sin firmar)
+        run: ./gradlew assembleRelease
+
+      - name: Esperar a que MobSF este listo
+        run: |
+          for i in $(seq 1 30); do
+            status=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Mobsf-Api-Key: $MOBSF_KEY" http://localhost:8000/api/v1/scans || true)
+            echo "Intento $i: HTTP $status"
+            if [ "$status" = "200" ]; then exit 0; fi
+            sleep 10
+          done
+          echo "::error::MobSF no ha arrancado"
+          docker logs mobsf | tail -50
+          exit 1
+
+      - name: Analizar el APK
+        run: |
+          apk=$(ls app/build/outputs/apk/release/*.apk | head -1)
+          echo "APK: $apk"
+          hash=$(curl -sf -H "X-Mobsf-Api-Key: $MOBSF_KEY" -F "file=@$apk" http://localhost:8000/api/v1/upload | jq -r .hash)
+          if [ -z "$hash" ] || [ "$hash" = "null" ]; then
+            echo "::error::No se pudo subir el APK a MobSF"
+            exit 1
+          fi
+          curl -sf -H "X-Mobsf-Api-Key: $MOBSF_KEY" -d "hash=$hash" http://localhost:8000/api/v1/scan > /dev/null
+          mkdir -p mobsf-report
+          curl -sf -H "X-Mobsf-Api-Key: $MOBSF_KEY" -d "hash=$hash" http://localhost:8000/api/v1/scorecard -o mobsf-report/scorecard.json
+          curl -sf -H "X-Mobsf-Api-Key: $MOBSF_KEY" -d "hash=$hash" http://localhost:8000/api/v1/report_json -o mobsf-report/report.json
+          curl -sf -H "X-Mobsf-Api-Key: $MOBSF_KEY" -d "hash=$hash" http://localhost:8000/api/v1/download_pdf -o mobsf-report/report.pdf || echo "::warning::No se pudo generar el PDF"
+
+      - name: Resumen
+        run: |
+          card=mobsf-report/scorecard.json
+          score=$(jq -r '.security_score' "$card")
+          high=$(jq '.high | length' "$card")
+          warning=$(jq '.warning | length' "$card")
+          {
+            echo "### MobSF: puntuacion de seguridad $score/100"
+            echo
+            echo "| Alta | Aviso | Info | Seguro |"
+            echo "|---|---|---|---|"
+            echo "| $high | $warning | $(jq '.info | length' "$card") | $(jq '.secure | length' "$card") |"
+            echo
+            if [ "$high" -gt 0 ]; then
+              echo "**Hallazgos de gravedad alta:**"
+              jq -r '.high[] | "- \(.title)"' "$card"
+              echo
+            fi
+            if [ "$warning" -gt 0 ]; then
+              echo "**Avisos:**"
+              jq -r '.warning[] | "- \(.title)"' "$card"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "HIGH_COUNT=$high" >> "$GITHUB_ENV"
+
+      - name: Subir el informe
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mobsf-report
+          path: mobsf-report/
+          if-no-files-found: ignore
+
+      - name: Bloquear si hay hallazgos altos
+        if: env.MOBSF_FAIL_ON_HIGH == 'true'
+        run: |
+          if [ "$HIGH_COUNT" -gt 0 ]; then
+            echo "::error::MobSF ha encontrado $HIGH_COUNT hallazgos de gravedad alta"
+            exit 1
+          fi
+
+      - name: Apagar MobSF
+        if: always()
+        run: docker rm -f mobsf || true

@@ -212,6 +212,12 @@ red.
   configuracion que los demas repositorios de este proyecto.
 - El JDK esta fijado al mismo con el que se desarrolla, de modo que el CI y el
   escritorio compilan igual.
+- **Analisis del APK con MobSF** (Mobile Security Framework): en cada push y
+  pull request se compila la build release y MobSF la analiza en un contenedor
+  desechable: manifiesto (componentes exportados, permisos, backup, trafico sin
+  cifrar), codigo descompilado, librerias y secretos que hayan quedado dentro.
+  La puntuacion de seguridad y los hallazgos salen en el resumen del job, y el
+  informe PDF y JSON queda como artefacto (`mobsf-report`).
 - **Workflows acotados**: el `GITHUB_TOKEN` es de solo lectura por defecto (solo
   los jobs que lo necesitan piden mas permisos) y cada job tiene un tiempo
   maximo, para que uno colgado no consuma minutos durante horas.
