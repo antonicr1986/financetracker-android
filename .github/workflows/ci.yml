@@ -11,10 +11,16 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Permisos minimos por defecto para el GITHUB_TOKEN: solo lectura del
+# codigo. Un job que necesite mas lo declara el mismo, solo para el.
+permissions:
+  contents: read
+
 jobs:
   secrets:
     name: secrets
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:
@@ -43,6 +49,7 @@ jobs:
   dependencies:
     name: dependencies
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: write   # la API de envio del grafo lo exige
     steps:
@@ -76,6 +83,7 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
 
