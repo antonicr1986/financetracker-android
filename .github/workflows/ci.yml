@@ -79,6 +79,11 @@ jobs:
         uses: actions/dependency-review-action@v5
         with:
           fail-on-severity: high
+          # Riesgos aceptados, cada uno con su motivo:
+          #  - GHSA-xxph-c9ww-hj94 (Guava): llega por el classpath de los plugins
+          #    (settings.gradle.kts, AGP). Solo se usa al compilar, no va en el
+          #    APK, y el build no deserializa datos externos con Guava.
+          allow-ghsas: GHSA-xxph-c9ww-hj94
 
   build:
     name: build
