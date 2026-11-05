@@ -2,6 +2,7 @@ package com.antoniocompany.financetracker.data
 
 import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryInput
+import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
@@ -62,6 +63,28 @@ class FinanceTrackerApiTest {
         type = TransactionType.EXPENSE,
         categoryId = 4
     )
+
+    @Test
+    fun `google login posts the id token and language`() = runBlocking {
+        api(200, """{"token":"jwt","expiration":"2026-11-05T12:00:00Z","user":null}""")
+            .googleLogin(GoogleLoginRequest("google-id-token", "en"))
+
+        assertEquals("POST", lastRequest!!.method)
+        assertEquals("/api/Users/google", lastRequest!!.url.encodedPath)
+        assertTrue(lastBody, lastBody.contains("\"idToken\":\"google-id-token\""))
+        assertTrue(lastBody, lastBody.contains("\"language\":\"en\""))
+    }
+
+    @Test
+    fun `google login returns the session token`() = runBlocking {
+        val response = api(
+            200,
+            """{"token":"jwt-google","expiration":"2026-11-05T12:00:00Z","user":{"id":7,"name":"Maria","email":"maria@gmail.com"}}"""
+        ).googleLogin(GoogleLoginRequest("google-id-token", "es"))
+
+        assertEquals("jwt-google", response.token)
+        assertEquals("maria@gmail.com", response.user?.email)
+    }
 
     @Test
     fun `register posts the new account`() = runBlocking {

@@ -3,12 +3,20 @@ package com.antoniocompany.financetracker
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
+import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.databinding.ActivityLoginBinding
+import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -79,6 +87,10 @@ class LoginActivity : BaseActivity() {
             signIn(DEMO_EMAIL, DEMO_PASSWORD)
         }
 
+        binding.googleButton.setOnClickListener {
+            signInWithGoogle()
+        }
+
         // El login se queda debajo: "Entrar" en el registro solo tiene que
         // cerrar esa pantalla para volver aqui.
         binding.createAccountLink.setOnClickListener {
@@ -120,10 +132,58 @@ class LoginActivity : BaseActivity() {
         }
     }
 
+    /**
+     * Abre el selector de cuentas de Google del sistema (Credential Manager),
+     * manda el ID token a la API y guarda la sesion igual que el login normal.
+     * Cancelar el selector o cualquier fallo deja al usuario aqui con un aviso.
+     */
+    private fun signInWithGoogle() {
+        showError(null)
+        setLoading(true)
+
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(
+                GetSignInWithGoogleOption.Builder(getString(R.string.google_web_client_id)).build()
+            )
+            .build()
+
+        lifecycleScope.launch {
+            try {
+                val credential = CredentialManager.create(this@LoginActivity)
+                    .getCredential(this@LoginActivity, request)
+                    .credential
+                val idToken = GoogleIdTokenCredential.createFrom(credential.data).idToken
+
+                val response = ApiClient.get(this@LoginActivity)
+                    .googleLogin(GoogleLoginRequest(idToken, LanguagePreference.current()))
+
+                session.token = response.token
+                session.email = response.user?.email.orEmpty()
+
+                goToDashboard()
+            } catch (error: GetCredentialException) {
+                // Incluye cancelar el selector y no tener cuentas de Google.
+                showError(getString(R.string.error_google_sign_in))
+            } catch (error: GoogleIdTokenParsingException) {
+                showError(getString(R.string.error_google_sign_in))
+            } catch (error: HttpException) {
+                showError(
+                    if (error.code() == 401) getString(R.string.error_google_sign_in)
+                    else getString(R.string.error_server)
+                )
+            } catch (error: IOException) {
+                showError(getString(R.string.error_network))
+            } finally {
+                setLoading(false)
+            }
+        }
+    }
+
     private fun setLoading(loading: Boolean) {
         binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
         binding.signInButton.isEnabled = !loading
         binding.demoButton.isEnabled = !loading
+        binding.googleButton.isEnabled = !loading
         binding.createAccountLink.isEnabled = !loading
         binding.signInButton.setText(
             if (loading) R.string.login_submitting else R.string.login_submit

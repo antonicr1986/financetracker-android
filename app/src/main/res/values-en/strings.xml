@@ -10,6 +10,7 @@
     <string name="login_submitting">Signing in…</string>
     <string name="login_or">or</string>
     <string name="login_demo">Sign in with the demo account</string>
+    <string name="login_google">Continue with Google</string>
     <string name="login_no_account">Don\'t have an account?</string>
     <string name="login_create_account">Create one</string>
     <string name="login_waking">The server was idle and is waking up. The first sign-in of the day can take a few seconds.</string>
@@ -33,6 +34,7 @@
 
     <string name="error_fill_credentials">Enter your email and your password.</string>
     <string name="error_invalid_credentials">Incorrect email or password.</string>
+    <string name="error_google_sign_in">Could not sign in with Google.</string>
     <string name="error_server">Server error. Please try again later.</string>
     <string name="error_network">Could not reach the server.</string>
 
