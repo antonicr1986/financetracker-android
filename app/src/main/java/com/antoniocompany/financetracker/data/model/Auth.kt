@@ -7,6 +7,15 @@ data class LoginRequest(
 )
 
 /**
+ * Cuerpo de POST /api/Users/google: el ID token que da Google al elegir la
+ * cuenta y el idioma ("es" o "en") por si la API tiene que crear la cuenta.
+ */
+data class GoogleLoginRequest(
+    val idToken: String,
+    val language: String
+)
+
+/**
  * Cuerpo de POST /api/Users/register. Mismos limites que RegisterUserDto en
  * la API: nombre hasta 100, correo hasta 150 y contrasena de al menos 6.
  */

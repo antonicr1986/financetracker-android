@@ -4,6 +4,7 @@ import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
+import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
 import com.antoniocompany.financetracker.data.model.PagedResult
@@ -40,6 +41,10 @@ interface FinanceTrackerApi {
 
     @POST("api/Users/login")
     suspend fun login(@Body body: LoginRequest): LoginResponse
+
+    /** Misma respuesta que el login. 401 si Google no verifica la cuenta. */
+    @POST("api/Users/google")
+    suspend fun googleLogin(@Body body: GoogleLoginRequest): LoginResponse
 
     /**
      * Crea la cuenta y devuelve el usuario (201), sin token. Si el correo ya

@@ -4,6 +4,7 @@ import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
+import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
 import com.antoniocompany.financetracker.data.model.PagedResult
@@ -40,6 +41,9 @@ class TransactionRepositoryTest {
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun login(body: LoginRequest): LoginResponse =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun googleLogin(body: GoogleLoginRequest): LoginResponse =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun register(body: RegisterRequest): UserDto =
