@@ -207,8 +207,13 @@ jobs:
           key=$(openssl rand -hex 32)
           echo "::add-mask::$key"
           echo "MOBSF_KEY=$key" >> "$GITHUB_ENV"
+          # Imagen fijada por digest (contenido exacto), no por tag: ":latest" se
+          # mueve con cada version y podria romper el pipeline o cambiar los
+          # resultados sin que cambie nada en el codigo. Es la que era :latest el
+          # 14/11/2026. Dependabot no ve imagenes dentro de un run:, asi que se
+          # revisa a mano cada mes: docker pull ...:latest y copiar el digest nuevo.
           docker run -d --name mobsf -p 8000:8000 -e MOBSF_API_KEY="$key" \
-            opensecurity/mobile-security-framework-mobsf:latest
+            opensecurity/mobile-security-framework-mobsf@sha256:0bfb5ee3eb2e94befeef497564f38632ea2870038a74c93941809267b8954064
 
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
