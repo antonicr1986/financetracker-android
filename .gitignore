@@ -22,3 +22,6 @@ local.properties
 keystore.properties
 /.idea/deploymentTargetSelector.xml
 /.idea/deviceManager.xml
+
+# Estilo de codigo del IDE (Android Studio), local de cada equipo
+.idea/codeStyles/
