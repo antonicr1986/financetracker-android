@@ -20,7 +20,7 @@
     <string name="register_title">Crear cuenta</string>
     <string name="register_subtitle">Empieza a llevar tus finanzas</string>
     <string name="register_name">Nombre</string>
-    <string name="register_password_hint">Mínimo 6 caracteres</string>
+    <string name="register_password_hint">Mínimo 12 caracteres</string>
     <string name="register_confirm">Repite la contraseña</string>
     <string name="register_submit">Crear cuenta</string>
     <string name="register_submitting">Creando cuenta…</string>
@@ -29,7 +29,7 @@
 
     <string name="error_fill_all">Rellena todos los campos.</string>
     <string name="error_invalid_email">Introduce un correo válido.</string>
-    <string name="error_password_too_short">La contraseña debe tener al menos 6 caracteres.</string>
+    <string name="error_password_too_short">La contraseña debe tener al menos 12 caracteres.</string>
     <string name="error_passwords_dont_match">Las dos contraseñas no coinciden.</string>
     <string name="error_email_already_exists">Ya existe una cuenta con ese correo.</string>
     <string name="error_create_account_failed">No se ha podido crear la cuenta.</string>

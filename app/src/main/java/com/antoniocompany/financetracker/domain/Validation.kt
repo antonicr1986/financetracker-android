@@ -21,7 +21,7 @@ enum class RegistrationProblem {
 }
 
 /** Minimo de la API (RegisterUserDto). */
-const val MIN_PASSWORD_LENGTH = 6
+const val MIN_PASSWORD_LENGTH = 12
 
 /**
  * Forma basica de un correo: algo@algo.algo, sin espacios. No pretende ser

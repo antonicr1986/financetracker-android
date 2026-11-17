@@ -19,14 +19,14 @@ class ValidationTest {
 
     @Test
     fun `a complete and valid registration has no problem`() {
-        assertNull(validateRegistration("Ana", "ana@mail.com", "secreto", "secreto"))
+        assertNull(validateRegistration("Ana", "ana@mail.com", "secreto-largo", "secreto-largo"))
     }
 
     @Test
     fun `any empty field is reported first`() {
         assertEquals(
             RegistrationProblem.MISSING_FIELDS,
-            validateRegistration("", "ana@mail.com", "secreto", "secreto")
+            validateRegistration("", "ana@mail.com", "secreto-largo", "secreto-largo")
         )
         assertEquals(
             RegistrationProblem.MISSING_FIELDS,
@@ -40,25 +40,25 @@ class ValidationTest {
             assertEquals(
                 "\"$email\"",
                 RegistrationProblem.INVALID_EMAIL,
-                validateRegistration("Ana", email, "secreto", "secreto")
+                validateRegistration("Ana", email, "secreto-largo", "secreto-largo")
             )
         }
     }
 
     @Test
-    fun `the password needs the API minimum of six characters`() {
+    fun `the password needs the API minimum of twelve characters`() {
         assertEquals(
             RegistrationProblem.PASSWORD_TOO_SHORT,
-            validateRegistration("Ana", "ana@mail.com", "12345", "12345")
+            validateRegistration("Ana", "ana@mail.com", "12345678901", "12345678901")
         )
-        assertNull(validateRegistration("Ana", "ana@mail.com", "123456", "123456"))
+        assertNull(validateRegistration("Ana", "ana@mail.com", "123456789012", "123456789012"))
     }
 
     @Test
     fun `the two passwords must match`() {
         assertEquals(
             RegistrationProblem.PASSWORDS_DONT_MATCH,
-            validateRegistration("Ana", "ana@mail.com", "secreto", "Secreto")
+            validateRegistration("Ana", "ana@mail.com", "secreto-largo", "Secreto-largo")
         )
     }
 

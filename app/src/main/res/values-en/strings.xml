@@ -18,7 +18,7 @@
     <string name="register_title">Create account</string>
     <string name="register_subtitle">Start tracking your finances</string>
     <string name="register_name">Name</string>
-    <string name="register_password_hint">At least 6 characters</string>
+    <string name="register_password_hint">At least 12 characters</string>
     <string name="register_confirm">Repeat the password</string>
     <string name="register_submit">Create account</string>
     <string name="register_submitting">Creating account…</string>
@@ -27,7 +27,7 @@
 
     <string name="error_fill_all">Fill in every field.</string>
     <string name="error_invalid_email">Enter a valid email address.</string>
-    <string name="error_password_too_short">The password must be at least 6 characters long.</string>
+    <string name="error_password_too_short">The password must be at least 12 characters long.</string>
     <string name="error_passwords_dont_match">The two passwords do not match.</string>
     <string name="error_email_already_exists">An account with that email already exists.</string>
     <string name="error_create_account_failed">Could not create the account.</string>
