@@ -98,13 +98,16 @@ class RegisterActivity : BaseActivity() {
 
     /**
      * La API responde 400 con el codigo "email_already_exists" cuando el
-     * correo ya esta dado de alta. Cualquier otro 4xx es un dato que no ha
-     * aceptado; un 5xx, un fallo suyo.
+     * correo ya esta dado de alta, 400 con "password_breached" si la
+     * contraseña aparece en filtraciones y 429 si hay demasiados intentos.
+     * Cualquier otro 4xx es un dato que no ha aceptado; un 5xx, un fallo suyo.
      */
     private fun describe(error: HttpException): String {
         val body = runCatching { error.response()?.errorBody()?.string() }.getOrNull().orEmpty()
         return when {
             body.contains("email_already_exists") -> getString(R.string.error_email_already_exists)
+            body.contains("password_breached") -> getString(R.string.error_password_breached)
+            error.code() == 429 -> getString(R.string.error_too_many_requests)
             error.code() >= 500 -> getString(R.string.error_server)
             else -> getString(R.string.error_create_account_failed)
         }

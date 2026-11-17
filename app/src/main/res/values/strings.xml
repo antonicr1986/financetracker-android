@@ -38,6 +38,8 @@
     <string name="error_invalid_credentials">Correo o contraseña incorrectos.</string>
     <string name="error_google_sign_in">No se ha podido iniciar sesión con Google.</string>
     <string name="error_server">Error del servidor. Inténtalo más tarde.</string>
+    <string name="error_too_many_requests">Demasiados intentos. Espera un minuto y vuelve a probar.</string>
+    <string name="error_password_breached">Esta contraseña aparece en filtraciones de datos conocidas. Elige otra.</string>
     <string name="error_network">No se ha podido contactar con el servidor.</string>
 
     <string name="dashboard_sign_out">Salir</string>

@@ -36,6 +36,8 @@
     <string name="error_invalid_credentials">Incorrect email or password.</string>
     <string name="error_google_sign_in">Could not sign in with Google.</string>
     <string name="error_server">Server error. Please try again later.</string>
+    <string name="error_too_many_requests">Too many attempts. Wait a minute and try again.</string>
+    <string name="error_password_breached">This password has appeared in known data breaches. Choose a different one.</string>
     <string name="error_network">Could not reach the server.</string>
 
     <string name="dashboard_sign_out">Sign out</string>

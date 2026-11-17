@@ -120,8 +120,11 @@ class LoginActivity : BaseActivity() {
                 // Un 401 aqui no es una sesion caducada: todavia no habia
                 // sesion. Son credenciales que la API no acepta.
                 showError(
-                    if (error.code() == 401) getString(R.string.error_invalid_credentials)
-                    else getString(R.string.error_server)
+                    when (error.code()) {
+                        401 -> getString(R.string.error_invalid_credentials)
+                        429 -> getString(R.string.error_too_many_requests)
+                        else -> getString(R.string.error_server)
+                    }
                 )
             } catch (error: IOException) {
                 // Sin red, o el servidor no responde a tiempo.
@@ -168,8 +171,11 @@ class LoginActivity : BaseActivity() {
                 showError(getString(R.string.error_google_sign_in))
             } catch (error: HttpException) {
                 showError(
-                    if (error.code() == 401) getString(R.string.error_google_sign_in)
-                    else getString(R.string.error_server)
+                    when (error.code()) {
+                        401 -> getString(R.string.error_google_sign_in)
+                        429 -> getString(R.string.error_too_many_requests)
+                        else -> getString(R.string.error_server)
+                    }
                 )
             } catch (error: IOException) {
                 showError(getString(R.string.error_network))
