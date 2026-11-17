@@ -7,6 +7,10 @@ import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
+import com.antoniocompany.financetracker.data.model.MfaCodeRequest
+import com.antoniocompany.financetracker.data.model.MfaRecoveryCodesResponse
+import com.antoniocompany.financetracker.data.model.MfaSetupResponse
+import com.antoniocompany.financetracker.data.model.MfaVerifyRequest
 import com.antoniocompany.financetracker.data.model.PagedResult
 import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.data.model.TransactionDto
@@ -44,6 +48,18 @@ class TransactionRepositoryTest {
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun googleLogin(body: GoogleLoginRequest): LoginResponse =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun verifyMfa(body: MfaVerifyRequest): LoginResponse =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun setupMfa(): MfaSetupResponse =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun confirmMfa(body: MfaCodeRequest): MfaRecoveryCodesResponse =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun disableMfa(body: MfaCodeRequest) =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun register(body: RegisterRequest): UserDto =

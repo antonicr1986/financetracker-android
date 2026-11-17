@@ -544,6 +544,16 @@
                             tools:listitem="@layout/item_transaction" />
                     </com.google.android.material.card.MaterialCardView>
 
+                    <!-- Seguridad de la cuenta: verificacion en dos pasos. -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/securityButton"
+                        style="@style/Widget.FinanceTracker.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/mfa_title" />
+
                     <!-- Version de la app al final del contenido, con margen
                          para que el boton flotante no la tape. -->
                     <include layout="@layout/view_app_version" />

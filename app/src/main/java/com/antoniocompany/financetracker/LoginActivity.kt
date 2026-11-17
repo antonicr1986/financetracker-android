@@ -1,5 +1,6 @@
 package com.antoniocompany.financetracker
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,14 +10,19 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
+import com.antoniocompany.financetracker.data.apiErrorCode
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
+import com.antoniocompany.financetracker.data.model.LoginResponse
+import com.antoniocompany.financetracker.data.model.MfaVerifyRequest
 import com.antoniocompany.financetracker.databinding.ActivityLoginBinding
+import com.antoniocompany.financetracker.databinding.DialogMfaCodeBinding
 import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -112,10 +118,7 @@ class LoginActivity : BaseActivity() {
                 val response = ApiClient.get(this@LoginActivity)
                     .login(LoginRequest(email, password))
 
-                session.token = response.token
-                session.email = response.user?.email ?: email
-
-                goToDashboard()
+                onSignedIn(response, email)
             } catch (error: HttpException) {
                 // Un 401 aqui no es una sesion caducada: todavia no habia
                 // sesion. Son credenciales que la API no acepta.
@@ -160,10 +163,7 @@ class LoginActivity : BaseActivity() {
                 val response = ApiClient.get(this@LoginActivity)
                     .googleLogin(GoogleLoginRequest(idToken, LanguagePreference.current()))
 
-                session.token = response.token
-                session.email = response.user?.email.orEmpty()
-
-                goToDashboard()
+                onSignedIn(response, "")
             } catch (error: GetCredentialException) {
                 // Incluye cancelar el selector y no tener cuentas de Google.
                 showError(getString(R.string.error_google_sign_in))
@@ -181,6 +181,80 @@ class LoginActivity : BaseActivity() {
                 showError(getString(R.string.error_network))
             } finally {
                 setLoading(false)
+            }
+        }
+    }
+
+    /**
+     * Con MFA activo el login no trae token, sino un mfaToken: se pide el
+     * codigo antes de abrir la sesion.
+     */
+    private fun onSignedIn(response: LoginResponse, fallbackEmail: String) {
+        val mfaToken = response.mfaToken
+        if (response.mfaRequired && mfaToken != null) {
+            askMfaCode(mfaToken, fallbackEmail)
+            return
+        }
+
+        startSession(response, fallbackEmail)
+    }
+
+    private fun startSession(response: LoginResponse, fallbackEmail: String) {
+        session.token = response.token
+        session.email = response.user?.email ?: fallbackEmail
+        session.mfaEnabled = response.user?.mfaEnabled ?: false
+        goToDashboard()
+    }
+
+    /**
+     * Dialogo del segundo paso. El boton "Verificar" no cierra el dialogo por
+     * si solo: si el codigo no vale, el error se ve en el propio campo.
+     */
+    private fun askMfaCode(mfaToken: String, fallbackEmail: String) {
+        val dialogBinding = DialogMfaCodeBinding.inflate(layoutInflater)
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.mfa_title)
+            .setView(dialogBinding.root)
+            .setPositiveButton(R.string.mfa_verify, null)
+            .setNegativeButton(R.string.mfa_back, null)
+            .setCancelable(false)
+            .show()
+
+        dialogBinding.codeInput.requestFocus()
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener { button ->
+            val code = dialogBinding.codeInput.text?.toString()?.trim().orEmpty()
+            if (code.isEmpty()) return@setOnClickListener
+
+            dialogBinding.codeLayout.error = null
+            button.isEnabled = false
+
+            lifecycleScope.launch {
+                try {
+                    val response = ApiClient.get(this@LoginActivity)
+                        .verifyMfa(MfaVerifyRequest(mfaToken, code))
+                    dialog.dismiss()
+                    startSession(response, fallbackEmail)
+                } catch (error: HttpException) {
+                    when {
+                        error.code() == 429 ->
+                            dialogBinding.codeLayout.error = getString(R.string.error_too_many_requests)
+                        // Han pasado los 5 minutos: vuelta a la contraseña.
+                        error.apiErrorCode() == "invalid_mfa_token" -> {
+                            dialog.dismiss()
+                            showError(getString(R.string.error_mfa_expired))
+                        }
+                        error.code() == 401 ->
+                            dialogBinding.codeLayout.error = getString(R.string.error_mfa_invalid_code)
+                        else ->
+                            dialogBinding.codeLayout.error = getString(R.string.error_server)
+                    }
+                } catch (error: IOException) {
+                    dialogBinding.codeLayout.error = getString(R.string.error_network)
+                } finally {
+                    button.isEnabled = true
+                }
             }
         }
     }

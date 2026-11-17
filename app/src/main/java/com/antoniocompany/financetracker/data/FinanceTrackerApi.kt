@@ -7,6 +7,10 @@ import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
+import com.antoniocompany.financetracker.data.model.MfaCodeRequest
+import com.antoniocompany.financetracker.data.model.MfaRecoveryCodesResponse
+import com.antoniocompany.financetracker.data.model.MfaSetupResponse
+import com.antoniocompany.financetracker.data.model.MfaVerifyRequest
 import com.antoniocompany.financetracker.data.model.PagedResult
 import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.data.model.TransactionDto
@@ -45,6 +49,26 @@ interface FinanceTrackerApi {
     /** Misma respuesta que el login. 401 si Google no verifica la cuenta. */
     @POST("api/Users/google")
     suspend fun googleLogin(@Body body: GoogleLoginRequest): LoginResponse
+
+    /**
+     * Segundo paso del login cuando la cuenta tiene MFA. 401 con
+     * "invalid_mfa_code" si el codigo no vale, o "invalid_mfa_token" si han
+     * pasado los 5 minutos y hay que volver a poner la contraseña.
+     */
+    @POST("api/users/mfa/verify")
+    suspend fun verifyMfa(@Body body: MfaVerifyRequest): LoginResponse
+
+    /** Genera el secreto (aun sin activar). Requiere sesion. */
+    @POST("api/users/mfa/setup")
+    suspend fun setupMfa(): MfaSetupResponse
+
+    /** Activa el MFA con el primer codigo. 400 "invalid_mfa_code" si no vale. */
+    @POST("api/users/mfa/confirm")
+    suspend fun confirmMfa(@Body body: MfaCodeRequest): MfaRecoveryCodesResponse
+
+    /** Responde 204 sin contenido. */
+    @POST("api/users/mfa/disable")
+    suspend fun disableMfa(@Body body: MfaCodeRequest)
 
     /**
      * Crea la cuenta y devuelve el usuario (201), sin token. Si el correo ya

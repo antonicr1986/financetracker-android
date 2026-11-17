@@ -30,6 +30,11 @@ class SessionStore(context: Context) {
             if (value == null) remove(KEY_EMAIL) else putString(KEY_EMAIL, value)
         }.apply()
 
+    /** Si la cuenta tiene el MFA activo, para mostrarlo en su pantalla. */
+    var mfaEnabled: Boolean
+        get() = prefs.getBoolean(KEY_MFA_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(KEY_MFA_ENABLED, value).apply()
+
     val hasSession: Boolean
         get() = token != null
 
@@ -42,5 +47,6 @@ class SessionStore(context: Context) {
         const val FILE_NAME = "financetracker.session"
         const val KEY_TOKEN = "token"
         const val KEY_EMAIL = "email"
+        const val KEY_MFA_ENABLED = "mfa_enabled"
     }
 }

@@ -82,8 +82,10 @@ class RegisterActivity : BaseActivity() {
                 // El registro devuelve el usuario, no un token: se encadena el
                 // login para no obligar a escribir otra vez los mismos datos.
                 val response = api.login(LoginRequest(email, password))
+                // Una cuenta recien creada no tiene MFA: siempre llega el token.
                 session.token = response.token
                 session.email = response.user?.email ?: email
+                session.mfaEnabled = false
 
                 goToDashboard()
             } catch (error: HttpException) {

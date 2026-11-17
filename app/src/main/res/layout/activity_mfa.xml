@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Verificacion en dos pasos: estado, activar (clave + primer codigo +
+     codigos de recuperacion) y desactivar. Que bloque se ve lo decide
+     MfaActivity. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/topBar"
+        layout="@layout/view_top_bar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mfa_title"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                tools:text="@string/mfa_status_off" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/mfa_description"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/actionButton"
+                style="@style/Widget.FinanceTracker.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                tools:text="@string/mfa_enable" />
+
+            <!-- Paso 1 de la activacion: la clave. En el movil no se escanea
+                 un QR de la propia pantalla: se abre la app autenticadora con
+                 el enlace otpauth:// o se copia la clave. -->
+            <LinearLayout
+                android:id="@+id/setupGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mfa_add_account"
+                    android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/openAppButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/mfa_open_app" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/mfa_manual"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
+
+                <TextView
+                    android:id="@+id/secretText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="monospace"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textIsSelectable="true"
+                    tools:text="JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/copySecretButton"
+                    style="@style/Widget.FinanceTracker.Button.Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mfa_copy_key" />
+            </LinearLayout>
+
+            <!-- Codigo de 6 digitos: para confirmar la activacion o para desactivar. -->
+            <LinearLayout
+                android:id="@+id/codeGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/codeHelpText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    tools:text="@string/mfa_disable_help" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.FinanceTracker.TextInput"
+                    android:id="@+id/codeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/mfa_code_label">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/codeInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="smsOTPCode"
+                        android:fontFamily="monospace"
+                        android:inputType="number"
+                        android:maxLength="6" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/confirmButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    tools:text="@string/mfa_confirm" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancelButton"
+                    style="@style/Widget.FinanceTracker.Button.Outlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mfa_cancel" />
+            </LinearLayout>
+
+            <!-- Codigos de recuperacion: solo se ven esta vez. -->
+            <LinearLayout
+                android:id="@+id/codesGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mfa_recovery_title"
+                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/mfa_recovery_body"
+                    android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+                <TextView
+                    android:id="@+id/recoveryCodesText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="monospace"
+                    android:lineSpacingExtra="4dp"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textIsSelectable="true"
+                    tools:text="abcd-efgh-ijkl-mnop" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/copyCodesButton"
+                    style="@style/Widget.FinanceTracker.Button.Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mfa_copy_codes" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/doneButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/mfa_recovery_done" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/errorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorError"
+                android:visibility="gone" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:indeterminate="true"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

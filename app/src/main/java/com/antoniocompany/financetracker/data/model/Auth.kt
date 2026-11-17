@@ -34,13 +34,43 @@ data class RegisterRequest(
  * registrar hay que encadenar el login, como hace la web.
  */
 data class LoginResponse(
-    val token: String,
-    val expiration: String,
-    val user: UserDto?
+    /** null cuando la cuenta tiene MFA y falta el codigo (mfaRequired). */
+    val token: String?,
+    val expiration: String?,
+    val user: UserDto?,
+    /**
+     * true si la contraseña es correcta pero la cuenta tiene verificacion en
+     * dos pasos: no hay sesion todavia, solo mfaToken para enviar el codigo.
+     */
+    val mfaRequired: Boolean = false,
+    val mfaToken: String? = null
 )
 
 data class UserDto(
     val id: Int,
     val name: String?,
-    val email: String
+    val email: String,
+    val mfaEnabled: Boolean = false
+)
+
+/** Cuerpo de POST /api/users/mfa/verify: codigo TOTP o de recuperacion. */
+data class MfaVerifyRequest(
+    val mfaToken: String,
+    val code: String
+)
+
+/** Cuerpo de confirm y disable: los 6 digitos de la app autenticadora. */
+data class MfaCodeRequest(
+    val code: String
+)
+
+/** Respuesta de POST /api/users/mfa/setup. */
+data class MfaSetupResponse(
+    val secret: String,
+    val otpAuthUri: String
+)
+
+/** Respuesta de POST /api/users/mfa/confirm. Se muestran una sola vez. */
+data class MfaRecoveryCodesResponse(
+    val recoveryCodes: List<String>
 )

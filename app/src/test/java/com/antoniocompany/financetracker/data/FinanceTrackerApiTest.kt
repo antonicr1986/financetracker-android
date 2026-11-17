@@ -3,6 +3,9 @@ package com.antoniocompany.financetracker.data
 import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
+import com.antoniocompany.financetracker.data.model.LoginRequest
+import com.antoniocompany.financetracker.data.model.MfaCodeRequest
+import com.antoniocompany.financetracker.data.model.MfaVerifyRequest
 import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
@@ -84,6 +87,41 @@ class FinanceTrackerApiTest {
 
         assertEquals("jwt-google", response.token)
         assertEquals("maria@gmail.com", response.user?.email)
+    }
+
+    @Test
+    fun `login with two-step verification returns the challenge and no token`() = runBlocking {
+        val response = api(
+            200,
+            """{"mfaRequired":true,"mfaToken":"mfa-token","expiration":"2026-11-05T12:05:00Z"}"""
+        ).login(LoginRequest("ana@mail.com", "una-clave-larga"))
+
+        assertTrue(response.mfaRequired)
+        assertEquals("mfa-token", response.mfaToken)
+        assertEquals(null, response.token)
+    }
+
+    @Test
+    fun `mfa verify posts the token and the code`() = runBlocking {
+        val response = api(
+            200,
+            """{"token":"jwt","expiration":"2026-11-05T12:00:00Z","user":{"id":7,"name":"Ana","email":"ana@mail.com","mfaEnabled":true}}"""
+        ).verifyMfa(MfaVerifyRequest("mfa-token", "123456"))
+
+        assertEquals("POST", lastRequest!!.method)
+        assertEquals("/api/users/mfa/verify", lastRequest!!.url.encodedPath)
+        assertTrue(lastBody, lastBody.contains("\"mfaToken\":\"mfa-token\""))
+        assertTrue(lastBody, lastBody.contains("\"code\":\"123456\""))
+        assertEquals("jwt", response.token)
+        assertTrue(response.user!!.mfaEnabled)
+    }
+
+    @Test
+    fun `mfa disable posts the code`() = runBlocking {
+        api(204).disableMfa(MfaCodeRequest("654321"))
+
+        assertEquals("/api/users/mfa/disable", lastRequest!!.url.encodedPath)
+        assertTrue(lastBody, lastBody.contains("\"code\":\"654321\""))
     }
 
     @Test

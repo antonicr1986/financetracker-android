@@ -48,6 +48,12 @@
             android:exported="false" />
 
         <activity
+            android:name=".MfaActivity"
+            android:configChanges="uiMode|locale|layoutDirection"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".NewTransactionActivity"
             android:configChanges="uiMode|locale|layoutDirection"
             android:exported="false"

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Segundo paso del login: codigo de la app autenticadora o de recuperacion. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mfa_login_body"
+        android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.FinanceTracker.TextInput"
+        android:id="@+id/codeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/mfa_login_code">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/codeInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="smsOTPCode"
+            android:fontFamily="monospace"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions|textVisiblePassword"
+            android:maxLength="32"
+            tools:text="123456" />
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>
