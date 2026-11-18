@@ -1,0 +1,4 @@
+
+# TrustedDeviceStore.KEY_TOKEN = "trusted_device": nombre de la clave en las
+# preferencias, no un token.
+b443c68e762dfd6dbcbfe3f312b6fc85e85b7b89:app/src/main/java/com/antoniocompany/financetracker/data/TrustedDeviceStore.kt:hardcoded-credential-assignment:27
