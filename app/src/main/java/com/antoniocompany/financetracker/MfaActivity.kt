@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
+import com.antoniocompany.financetracker.data.TrustedDeviceStore
 import com.antoniocompany.financetracker.data.apiErrorCode
 import com.antoniocompany.financetracker.data.model.MfaCodeRequest
 import com.antoniocompany.financetracker.databinding.ActivityMfaBinding
@@ -61,6 +62,7 @@ class MfaActivity : BaseActivity() {
             copySensitive(binding.recoveryCodesText.text.toString())
         }
         binding.doneButton.setOnClickListener { show(Mode.IDLE) }
+        binding.forgetDevicesButton.setOnClickListener { forgetDevices() }
 
         show(Mode.IDLE)
     }
@@ -72,6 +74,7 @@ class MfaActivity : BaseActivity() {
         binding.statusText.setText(if (enabled) R.string.mfa_status_on else R.string.mfa_status_off)
         binding.actionButton.setText(if (enabled) R.string.mfa_disable else R.string.mfa_enable)
         binding.actionButton.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE
+        binding.devicesGroup.visibility = if (newMode == Mode.IDLE && enabled) View.VISIBLE else View.GONE
 
         binding.setupGroup.visibility = if (newMode == Mode.CONFIRM) View.VISIBLE else View.GONE
         binding.codeGroup.visibility =
@@ -122,8 +125,17 @@ class MfaActivity : BaseActivity() {
         call {
             ApiClient.get(this).disableMfa(MfaCodeRequest(code))
             session.mfaEnabled = false
+            // La API ya ha olvidado los dispositivos: el token guardado no sirve.
+            TrustedDeviceStore(this).token = null
             show(Mode.IDLE)
         }
+    }
+
+    /** "Olvidar todos los dispositivos": el siguiente acceso pedira el codigo en todos. */
+    private fun forgetDevices() = call {
+        ApiClient.get(this).forgetDevices()
+        TrustedDeviceStore(this).token = null
+        Toast.makeText(this, R.string.mfa_devices_forgotten, Toast.LENGTH_LONG).show()
     }
 
     /** Las apps autenticadoras (Google, Microsoft...) abren los enlaces otpauth://. */
@@ -205,6 +217,7 @@ class MfaActivity : BaseActivity() {
     private fun setLoading(loading: Boolean) {
         binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
         binding.actionButton.isEnabled = !loading
+        binding.forgetDevicesButton.isEnabled = !loading
         binding.confirmButton.isEnabled = !loading
         binding.cancelButton.isEnabled = !loading
     }

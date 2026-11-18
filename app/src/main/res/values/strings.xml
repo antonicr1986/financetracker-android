@@ -65,6 +65,10 @@
     <string name="mfa_login_body">Escribe el código de 6 dígitos de tu app autenticadora o uno de tus códigos de recuperación.</string>
     <string name="mfa_login_code">Código</string>
     <string name="mfa_verify">Verificar</string>
+    <string name="mfa_remember_device">No volver a pedir el código en este dispositivo durante 30 días</string>
+    <string name="mfa_forget_devices_help">Los dispositivos en los que marcaste "no volver a pedir el código" entran sin él durante 30 días.</string>
+    <string name="mfa_forget_devices">Olvidar todos los dispositivos</string>
+    <string name="mfa_devices_forgotten">Hecho: el próximo acceso pedirá el código en todos tus dispositivos.</string>
     <string name="mfa_back">Volver</string>
     <string name="error_mfa_invalid_code">El código no es válido.</string>
     <string name="error_mfa_expired">Ha pasado demasiado tiempo. Vuelve a introducir tu contraseña.</string>

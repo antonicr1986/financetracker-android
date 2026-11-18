@@ -3,7 +3,9 @@ package com.antoniocompany.financetracker.data.model
 /** Cuerpo de POST /api/Users/login. */
 data class LoginRequest(
     val email: String,
-    val password: String
+    val password: String,
+    /** Dispositivo de confianza del MFA, si lo hay: con uno valido no se pide el codigo. */
+    val trustedDeviceToken: String? = null
 )
 
 /**
@@ -12,7 +14,8 @@ data class LoginRequest(
  */
 data class GoogleLoginRequest(
     val idToken: String,
-    val language: String
+    val language: String,
+    val trustedDeviceToken: String? = null
 )
 
 /**
@@ -43,7 +46,9 @@ data class LoginResponse(
      * dos pasos: no hay sesion todavia, solo mfaToken para enviar el codigo.
      */
     val mfaRequired: Boolean = false,
-    val mfaToken: String? = null
+    val mfaToken: String? = null,
+    /** Solo tras verificar el codigo con rememberDevice: se guarda en TrustedDeviceStore. */
+    val trustedDeviceToken: String? = null
 )
 
 data class UserDto(
@@ -56,7 +61,9 @@ data class UserDto(
 /** Cuerpo de POST /api/users/mfa/verify: codigo TOTP o de recuperacion. */
 data class MfaVerifyRequest(
     val mfaToken: String,
-    val code: String
+    val code: String,
+    /** "No volver a pedir el codigo en este dispositivo durante 30 dias". */
+    val rememberDevice: Boolean = false
 )
 
 /** Cuerpo de confirm y disable: los 6 digitos de la app autenticadora. */

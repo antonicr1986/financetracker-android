@@ -33,4 +33,12 @@
             android:maxLength="32"
             tools:text="123456" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Desmarcada por defecto: en un movil compartido no conviene. -->
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/rememberDeviceCheck"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/mfa_remember_device" />
 </LinearLayout>

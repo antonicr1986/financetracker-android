@@ -10,6 +10,7 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
+import com.antoniocompany.financetracker.data.TrustedDeviceStore
 import com.antoniocompany.financetracker.data.apiErrorCode
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
@@ -40,6 +41,7 @@ class LoginActivity : BaseActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var session: SessionStore
+    private lateinit var trustedDevice: TrustedDeviceStore
 
     /** Cuenta atras del aviso de arranque en frio. */
     private var wakingJob: Job? = null
@@ -48,6 +50,7 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         session = SessionStore(this)
+        trustedDevice = TrustedDeviceStore(this)
 
         if (session.hasSession) {
             goToDashboard()
@@ -116,7 +119,7 @@ class LoginActivity : BaseActivity() {
         lifecycleScope.launch {
             try {
                 val response = ApiClient.get(this@LoginActivity)
-                    .login(LoginRequest(email, password))
+                    .login(LoginRequest(email, password, trustedDevice.token))
 
                 onSignedIn(response, email)
             } catch (error: HttpException) {
@@ -161,7 +164,7 @@ class LoginActivity : BaseActivity() {
                 val idToken = GoogleIdTokenCredential.createFrom(credential.data).idToken
 
                 val response = ApiClient.get(this@LoginActivity)
-                    .googleLogin(GoogleLoginRequest(idToken, LanguagePreference.current()))
+                    .googleLogin(GoogleLoginRequest(idToken, LanguagePreference.current(), trustedDevice.token))
 
                 onSignedIn(response, "")
             } catch (error: GetCredentialException) {
@@ -233,7 +236,10 @@ class LoginActivity : BaseActivity() {
             lifecycleScope.launch {
                 try {
                     val response = ApiClient.get(this@LoginActivity)
-                        .verifyMfa(MfaVerifyRequest(mfaToken, code))
+                        .verifyMfa(
+                            MfaVerifyRequest(mfaToken, code, dialogBinding.rememberDeviceCheck.isChecked)
+                        )
+                    response.trustedDeviceToken?.let { trustedDevice.token = it }
                     dialog.dismiss()
                     startSession(response, fallbackEmail)
                 } catch (error: HttpException) {

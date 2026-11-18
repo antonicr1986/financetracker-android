@@ -117,6 +117,36 @@ class FinanceTrackerApiTest {
     }
 
     @Test
+    fun `mfa verify can ask to remember the device and returns its token`() = runBlocking {
+        val response = api(
+            200,
+            """{"token":"jwt","expiration":"2026-11-05T12:00:00Z","user":null,"trustedDeviceToken":"device-123"}"""
+        ).verifyMfa(MfaVerifyRequest("mfa-token", "123456", rememberDevice = true))
+
+        assertTrue(lastBody, lastBody.contains("\"rememberDevice\":true"))
+        assertEquals("device-123", response.trustedDeviceToken)
+    }
+
+    @Test
+    fun `login sends the trusted device token only when there is one`() = runBlocking {
+        val ok = """{"token":"jwt","expiration":"2026-11-05T12:00:00Z","user":null}"""
+
+        api(200, ok).login(LoginRequest("ana@mail.com", "una-clave-larga", "device-123"))
+        assertTrue(lastBody, lastBody.contains("\"trustedDeviceToken\":\"device-123\""))
+
+        api(200, ok).login(LoginRequest("ana@mail.com", "una-clave-larga"))
+        assertFalse(lastBody, lastBody.contains("trustedDeviceToken"))
+    }
+
+    @Test
+    fun `forget devices posts to its endpoint`() = runBlocking {
+        api(204).forgetDevices()
+
+        assertEquals("POST", lastRequest!!.method)
+        assertEquals("/api/users/mfa/forget-devices", lastRequest!!.url.encodedPath)
+    }
+
+    @Test
     fun `mfa disable posts the code`() = runBlocking {
         api(204).disableMfa(MfaCodeRequest("654321"))
 

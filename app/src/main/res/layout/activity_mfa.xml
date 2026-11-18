@@ -52,6 +52,31 @@
                 android:layout_marginTop="16dp"
                 tools:text="@string/mfa_enable" />
 
+            <!-- Solo con el MFA activo: los dispositivos donde se marco "no
+                 volver a pedir el codigo". -->
+            <LinearLayout
+                android:id="@+id/devicesGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mfa_forget_devices_help"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/forgetDevicesButton"
+                    style="@style/Widget.FinanceTracker.Button.Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mfa_forget_devices" />
+            </LinearLayout>
+
             <!-- Paso 1 de la activacion: la clave. En el movil no se escanea
                  un QR de la propia pantalla: se abre la app autenticadora con
                  el enlace otpauth:// o se copia la clave. -->

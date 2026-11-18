@@ -70,6 +70,10 @@ interface FinanceTrackerApi {
     @POST("api/users/mfa/disable")
     suspend fun disableMfa(@Body body: MfaCodeRequest)
 
+    /** "Olvidar todos los dispositivos". Responde 204 sin contenido. */
+    @POST("api/users/mfa/forget-devices")
+    suspend fun forgetDevices()
+
     /**
      * Crea la cuenta y devuelve el usuario (201), sin token. Si el correo ya
      * existe responde 400 con un ProblemDetails.

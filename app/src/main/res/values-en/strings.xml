@@ -63,6 +63,10 @@
     <string name="mfa_login_body">Enter the 6-digit code from your authenticator app or one of your recovery codes.</string>
     <string name="mfa_login_code">Code</string>
     <string name="mfa_verify">Verify</string>
+    <string name="mfa_remember_device">Don\'t ask for the code on this device for 30 days</string>
+    <string name="mfa_forget_devices_help">Devices where you ticked "don\'t ask for the code" sign in without it for 30 days.</string>
+    <string name="mfa_forget_devices">Forget all devices</string>
+    <string name="mfa_devices_forgotten">Done: your next sign-in will ask for the code on every device.</string>
     <string name="mfa_back">Back</string>
     <string name="error_mfa_invalid_code">The code is not valid.</string>
     <string name="error_mfa_expired">Too much time has passed. Enter your password again.</string>
