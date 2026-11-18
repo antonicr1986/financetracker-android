@@ -39,6 +39,7 @@
     <string name="error_too_many_requests">Too many attempts. Wait a minute and try again.</string>
     <string name="top_bar_settings">Settings</string>
     <string name="top_bar_home">Back to summary</string>
+    <string name="security_title">Security</string>
     <string name="mfa_title">Two-step verification</string>
     <string name="mfa_description">Besides your password, signing in will ask for a code from your authenticator app (Google Authenticator, Microsoft Authenticator…).</string>
     <string name="mfa_status_on">On</string>
@@ -67,6 +68,9 @@
     <string name="mfa_forget_devices_help">Devices where you ticked "don\'t ask for the code" sign in without it for 30 days.</string>
     <string name="mfa_forget_devices">Forget all devices</string>
     <string name="mfa_devices_forgotten">Done: your next sign-in will ask for the code on every device.</string>
+    <string name="sign_out_everywhere">Sign out of all devices</string>
+    <string name="sign_out_everywhere_help">Signs you out here and on any other browser, phone or computer. Use it if you lose a device or think someone has accessed your account.</string>
+    <string name="sign_out_everywhere_confirm">Sign out of every device, including this one?</string>
     <string name="mfa_back">Back</string>
     <string name="error_mfa_invalid_code">The code is not valid.</string>
     <string name="error_mfa_expired">Too much time has passed. Enter your password again.</string>

@@ -75,6 +75,13 @@ interface FinanceTrackerApi {
     suspend fun forgetDevices()
 
     /**
+     * "Cerrar sesion en todos los dispositivos": invalida todos los JWT de la
+     * cuenta, tambien el de este movil. 204 sin cuerpo.
+     */
+    @POST("api/users/sessions/revoke")
+    suspend fun revokeSessions()
+
+    /**
      * Crea la cuenta y devuelve el usuario (201), sin token. Si el correo ya
      * existe responde 400 con un ProblemDetails.
      */

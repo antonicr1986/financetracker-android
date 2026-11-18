@@ -26,8 +26,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mfa_title"
+                android:text="@string/security_title"
                 android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/mfa_title"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <TextView
                 android:id="@+id/statusText"
@@ -224,6 +231,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/mfa_recovery_done" />
+            </LinearLayout>
+
+            <!-- Cerrar sesion en todos los dispositivos. Independiente del
+                 MFA: se ve aunque no este activado. -->
+            <LinearLayout
+                android:id="@+id/sessionsGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_out_everywhere_help"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/signOutEverywhereButton"
+                    style="@style/Widget.FinanceTracker.Button.Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_out_everywhere"
+                    android:textColor="?attr/colorError" />
             </LinearLayout>
 
             <TextView

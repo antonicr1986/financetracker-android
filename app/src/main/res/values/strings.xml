@@ -41,6 +41,7 @@
     <string name="error_too_many_requests">Demasiados intentos. Espera un minuto y vuelve a probar.</string>
     <string name="top_bar_settings">Configuración</string>
     <string name="top_bar_home">Volver al resumen</string>
+    <string name="security_title">Seguridad</string>
     <string name="mfa_title">Verificación en dos pasos</string>
     <string name="mfa_description">Además de la contraseña, al entrar se pedirá un código de tu app autenticadora (Google Authenticator, Microsoft Authenticator…).</string>
     <string name="mfa_status_on">Activada</string>
@@ -69,6 +70,9 @@
     <string name="mfa_forget_devices_help">Los dispositivos en los que marcaste "no volver a pedir el código" entran sin él durante 30 días.</string>
     <string name="mfa_forget_devices">Olvidar todos los dispositivos</string>
     <string name="mfa_devices_forgotten">Hecho: el próximo acceso pedirá el código en todos tus dispositivos.</string>
+    <string name="sign_out_everywhere">Cerrar sesión en todos los dispositivos</string>
+    <string name="sign_out_everywhere_help">Cierra la sesión aquí y en cualquier otro navegador, móvil o equipo. Úsalo si pierdes un dispositivo o crees que alguien ha entrado en tu cuenta.</string>
+    <string name="sign_out_everywhere_confirm">¿Cerrar la sesión en todos los dispositivos, también en este?</string>
     <string name="mfa_back">Volver</string>
     <string name="error_mfa_invalid_code">El código no es válido.</string>
     <string name="error_mfa_expired">Ha pasado demasiado tiempo. Vuelve a introducir tu contraseña.</string>

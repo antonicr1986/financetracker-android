@@ -18,6 +18,7 @@ import com.antoniocompany.financetracker.data.apiErrorCode
 import com.antoniocompany.financetracker.data.model.MfaCodeRequest
 import com.antoniocompany.financetracker.databinding.ActivityMfaBinding
 import com.antoniocompany.financetracker.ui.bind
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -63,6 +64,7 @@ class MfaActivity : BaseActivity() {
         }
         binding.doneButton.setOnClickListener { show(Mode.IDLE) }
         binding.forgetDevicesButton.setOnClickListener { forgetDevices() }
+        binding.signOutEverywhereButton.setOnClickListener { confirmSignOutEverywhere() }
 
         show(Mode.IDLE)
     }
@@ -75,6 +77,7 @@ class MfaActivity : BaseActivity() {
         binding.actionButton.setText(if (enabled) R.string.mfa_disable else R.string.mfa_enable)
         binding.actionButton.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE
         binding.devicesGroup.visibility = if (newMode == Mode.IDLE && enabled) View.VISIBLE else View.GONE
+        binding.sessionsGroup.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE
 
         binding.setupGroup.visibility = if (newMode == Mode.CONFIRM) View.VISIBLE else View.GONE
         binding.codeGroup.visibility =
@@ -136,6 +139,29 @@ class MfaActivity : BaseActivity() {
         ApiClient.get(this).forgetDevices()
         TrustedDeviceStore(this).token = null
         Toast.makeText(this, R.string.mfa_devices_forgotten, Toast.LENGTH_LONG).show()
+    }
+
+    private fun confirmSignOutEverywhere() {
+        MaterialAlertDialogBuilder(this)
+            .setMessage(R.string.sign_out_everywhere_confirm)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.sign_out_everywhere) { _, _ -> signOutEverywhere() }
+            .show()
+    }
+
+    /**
+     * La API invalida todos los JWT de la cuenta, tambien el de este movil, asi
+     * que aqui se cierra la sesion como con "Salir". El dispositivo de confianza
+     * del MFA se conserva: eso es "Olvidar todos los dispositivos".
+     */
+    private fun signOutEverywhere() = call {
+        ApiClient.get(this).revokeSessions()
+        session.clear()
+        startActivity(
+            Intent(this, LoginActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
+        finish()
     }
 
     /** Las apps autenticadoras (Google, Microsoft...) abren los enlaces otpauth://. */
@@ -218,6 +244,7 @@ class MfaActivity : BaseActivity() {
         binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
         binding.actionButton.isEnabled = !loading
         binding.forgetDevicesButton.isEnabled = !loading
+        binding.signOutEverywhereButton.isEnabled = !loading
         binding.confirmButton.isEnabled = !loading
         binding.cancelButton.isEnabled = !loading
     }

@@ -65,6 +65,9 @@ class TransactionRepositoryTest {
         override suspend fun forgetDevices() =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
+        override suspend fun revokeSessions() =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
         override suspend fun register(body: RegisterRequest): UserDto =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 

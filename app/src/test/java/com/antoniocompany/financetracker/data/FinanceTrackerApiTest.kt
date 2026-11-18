@@ -139,6 +139,14 @@ class FinanceTrackerApiTest {
     }
 
     @Test
+    fun `revoke sessions posts to its endpoint`() = runBlocking {
+        api(204).revokeSessions()
+
+        assertEquals("POST", lastRequest!!.method)
+        assertEquals("/api/users/sessions/revoke", lastRequest!!.url.encodedPath)
+    }
+
+    @Test
     fun `forget devices posts to its endpoint`() = runBlocking {
         api(204).forgetDevices()
 
