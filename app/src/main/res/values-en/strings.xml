@@ -37,6 +37,8 @@
     <string name="error_google_sign_in">Could not sign in with Google.</string>
     <string name="error_server">Server error. Please try again later.</string>
     <string name="error_too_many_requests">Too many attempts. Wait a minute and try again.</string>
+    <string name="top_bar_settings">Settings</string>
+    <string name="top_bar_home">Back to summary</string>
     <string name="mfa_title">Two-step verification</string>
     <string name="mfa_description">Besides your password, signing in will ask for a code from your authenticator app (Google Authenticator, Microsoft Authenticator…).</string>
     <string name="mfa_status_on">On</string>

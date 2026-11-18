@@ -137,10 +137,6 @@ class MainActivity : BaseActivity() {
         binding.swipeRefresh.setOnRefreshListener { load(fromSwipe = true) }
         binding.retryButton.setOnClickListener { load() }
 
-        binding.securityButton.setOnClickListener {
-            startActivity(Intent(this, MfaActivity::class.java))
-        }
-
         binding.monthChips.setOnCheckedStateChangeListener { group, checkedIds ->
             val checkedId = checkedIds.firstOrNull() ?: return@setOnCheckedStateChangeListener
             val month = group.findViewById<Chip>(checkedId)?.tag as? String

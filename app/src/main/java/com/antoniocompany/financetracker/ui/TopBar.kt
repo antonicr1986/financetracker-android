@@ -3,8 +3,11 @@ package com.antoniocompany.financetracker.ui
 import android.app.Activity
 import android.content.Intent
 import android.view.Gravity
+import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.TooltipCompat
 import com.antoniocompany.financetracker.LoginActivity
+import com.antoniocompany.financetracker.MfaActivity
 import com.antoniocompany.financetracker.R
 import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.databinding.ViewTopBarBinding
@@ -16,7 +19,31 @@ import com.antoniocompany.financetracker.databinding.ViewTopBarBinding
 fun ViewTopBarBinding.bind(activity: Activity) {
     bindLanguageToggle()
     bindThemeToggle()
+    bindSettings(activity)
     bindSignOut(activity)
+}
+
+/**
+ * Engranaje hacia la seguridad de la cuenta (verificacion en dos pasos). Sin
+ * sesion no hay nada que configurar.
+ *
+ * Estando ya en esa pantalla, el mismo hueco es una casa para volver al panel,
+ * como "Resumen" en la web. Cerrarla basta: el panel sigue debajo en la pila.
+ */
+private fun ViewTopBarBinding.bindSettings(activity: Activity) {
+    val context = root.context
+    settingsButton.visibility = if (SessionStore(activity).hasSession) View.VISIBLE else View.GONE
+
+    if (activity is MfaActivity) {
+        settingsButton.setIconResource(R.drawable.ic_home)
+        settingsButton.contentDescription = context.getString(R.string.top_bar_home)
+        TooltipCompat.setTooltipText(settingsButton, context.getString(R.string.top_bar_home))
+        settingsButton.setOnClickListener { activity.finish() }
+    } else {
+        settingsButton.setOnClickListener {
+            activity.startActivity(Intent(activity, MfaActivity::class.java))
+        }
+    }
 }
 
 /**

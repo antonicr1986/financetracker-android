@@ -39,6 +39,8 @@
     <string name="error_google_sign_in">No se ha podido iniciar sesión con Google.</string>
     <string name="error_server">Error del servidor. Inténtalo más tarde.</string>
     <string name="error_too_many_requests">Demasiados intentos. Espera un minuto y vuelve a probar.</string>
+    <string name="top_bar_settings">Configuración</string>
+    <string name="top_bar_home">Volver al resumen</string>
     <string name="mfa_title">Verificación en dos pasos</string>
     <string name="mfa_description">Además de la contraseña, al entrar se pedirá un código de tu app autenticadora (Google Authenticator, Microsoft Authenticator…).</string>
     <string name="mfa_status_on">Activada</string>
