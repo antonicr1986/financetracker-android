@@ -2,6 +2,7 @@ package com.antoniocompany.financetracker
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -53,6 +54,9 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var session: SessionStore
+
+    /** Ultima carga del panel (elapsedRealtime), para no repetirla al volver. */
+    private var lastLoadAt = 0L
     private lateinit var repository: TransactionRepository
 
     /** Pulsar un movimiento lo abre en la misma pantalla del alta, para editar o borrar. */
@@ -213,25 +217,27 @@ class MainActivity : BaseActivity() {
      * hay una rueda girando arriba, y encender ademas la del centro se ve como
      * si la pantalla se reiniciara.
      */
-    private fun load(fromSwipe: Boolean = false) {
-        if (!fromSwipe) setLoading(true)
-        showMessage(null)
+    private fun load(fromSwipe: Boolean = false, quiet: Boolean = false) {
+        lastLoadAt = SystemClock.elapsedRealtime()
+        if (!fromSwipe && !quiet) setLoading(true)
+        if (!quiet) showMessage(null)
         loadBudgets()
 
         lifecycleScope.launch {
             try {
                 render(repository.getAll())
+                if (quiet) showMessage(null)
             } catch (error: HttpException) {
-                // Aquí un 401 si es una sesion caducada: había token y la API
-                // lo ha rechazado. Se borra y se vuelve al acceso.
-                if (error.code() == 401) {
-                    session.clear()
-                    goToLogin(sessionExpired = true)
-                } else {
+                // Un 401 (sesion caducada o cerrada desde otro dispositivo) ya
+                // lo ha gestionado ApiClient: la sesion esta borrada y el acceso
+                // abierto. Aqui no hay nada mas que hacer.
+                if (error.code() != 401 && !quiet) {
                     showMessage(getString(R.string.error_load), canRetry = true)
                 }
             } catch (error: IOException) {
-                showMessage(getString(R.string.error_load), canRetry = true)
+                // Al volver a la app, sin red no merece la pena un aviso: se
+                // queda lo que habia y se reintenta la proxima vez.
+                if (!quiet) showMessage(getString(R.string.error_load), canRetry = true)
             } finally {
                 setLoading(false)
                 binding.swipeRefresh.isRefreshing = false
@@ -587,6 +593,20 @@ class MainActivity : BaseActivity() {
         binding.retryButton.visibility = if (canRetry) View.VISIBLE else View.GONE
     }
 
+    /**
+     * Al volver al panel (desde otra pantalla o desde segundo plano) se recarga
+     * en silencio. Si la sesion se cerro desde otro dispositivo, la API
+     * responde 401 y se va al acceso; sin esto se seguia viendo lo ya cargado
+     * hasta tirar hacia abajo. Como mucho una vez cada RETURN_REFRESH_MS: al
+     * volver de guardar un movimiento ya se ha recargado.
+     */
+    override fun onRestart() {
+        super.onRestart()
+        if (!::binding.isInitialized || !session.hasSession) return
+        if (SystemClock.elapsedRealtime() - lastLoadAt < RETURN_REFRESH_MS) return
+        load(quiet = true)
+    }
+
     private fun goToLogin(sessionExpired: Boolean = false) {
         val intent = Intent(this, LoginActivity::class.java)
         if (sessionExpired) intent.putExtra(EXTRA_SESSION_EXPIRED, true)
@@ -600,5 +620,8 @@ class MainActivity : BaseActivity() {
          * normal, para que el login pueda avisar con el mensaje adecuado.
          */
         const val EXTRA_SESSION_EXPIRED = "com.antoniocompany.financetracker.SESSION_EXPIRED"
+
+        /** Tiempo minimo entre recargas al volver al panel. */
+        private const val RETURN_REFRESH_MS = 30_000L
     }
 }

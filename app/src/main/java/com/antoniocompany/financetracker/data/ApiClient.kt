@@ -21,6 +21,14 @@ object ApiClient {
 
     private var instance: FinanceTrackerApi? = null
 
+    /**
+     * Que hacer cuando la API rechaza la sesion (401 con token): caducada o
+     * cerrada desde otro dispositivo. Lo fija FinanceTrackerApp para llevar al
+     * acceso; aqui no se conoce ninguna pantalla.
+     */
+    @Volatile
+    var onSessionRejected: (() -> Unit)? = null
+
     fun get(context: Context): FinanceTrackerApi {
         return instance ?: build(context.applicationContext).also { instance = it }
     }
@@ -31,7 +39,7 @@ object ApiClient {
         val client = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
-            .addInterceptor(authInterceptor(session))
+            .addInterceptor(authInterceptor(session) { onSessionRejected?.invoke() })
             .apply {
                 // Solo en depuracion: en una release esto escribiria el token
                 // en los logs del dispositivo, donde cualquier aplicacion con
@@ -61,7 +69,10 @@ object ApiClient {
      *
      * Interno y no privado para poder probarlo (ApiClientAuthTest).
      */
-    internal fun authInterceptor(session: SessionStore) = Interceptor { chain ->
+    internal fun authInterceptor(
+        session: SessionStore,
+        onSessionRejected: () -> Unit = {},
+    ) = Interceptor { chain ->
         val token = session.token
 
         val request = if (token == null) {
@@ -72,6 +83,20 @@ object ApiClient {
                 .build()
         }
 
-        chain.proceed(request)
+        val response = chain.proceed(request)
+
+        // Un 401 con token: la API ya no acepta esta sesion. Se cierra aqui, en
+        // un solo sitio, para cualquier pantalla (antes solo lo hacia el panel).
+        // Sin token (login, registro) un 401 es otra cosa y no se toca. Si hay
+        // varias peticiones en vuelo, solo la primera avisa: las demas ya no
+        // encuentran el mismo token.
+        if (response.code == 401 && token != null) {
+            val rejected = synchronized(session) {
+                (session.token == token).also { if (it) session.clear() }
+            }
+            if (rejected) onSessionRejected()
+        }
+
+        response
     }
 }

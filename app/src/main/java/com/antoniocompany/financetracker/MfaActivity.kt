@@ -201,17 +201,9 @@ class MfaActivity : BaseActivity() {
             try {
                 block()
             } catch (error: HttpException) {
-                if (error.code() == 401) {
-                    // Sesion caducada: igual que en el panel.
-                    session.clear()
-                    startActivity(
-                        Intent(this@MfaActivity, LoginActivity::class.java)
-                            .putExtra(MainActivity.EXTRA_SESSION_EXPIRED, true)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    )
-                    finish()
-                    return@launch
-                }
+                // Sesion caducada o cerrada desde otro dispositivo: ApiClient ya
+                // la ha borrado y ha abierto el acceso.
+                if (error.code() == 401) return@launch
                 describe(error)
             } catch (error: IOException) {
                 showError(getString(R.string.error_network))
