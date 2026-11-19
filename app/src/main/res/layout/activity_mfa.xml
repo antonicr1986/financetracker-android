@@ -233,6 +233,36 @@
                     android:text="@string/mfa_recovery_done" />
             </LinearLayout>
 
+            <!-- Cambiar la contraseña: abre un dialogo con los tres campos. -->
+            <LinearLayout
+                android:id="@+id/passwordGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/password_title"
+                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/password_description"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/changePasswordButton"
+                    style="@style/Widget.FinanceTracker.Button.Outlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/password_change" />
+            </LinearLayout>
+
             <!-- Cerrar sesion en todos los dispositivos. Independiente del
                  MFA: se ve aunque no este activado. -->
             <LinearLayout

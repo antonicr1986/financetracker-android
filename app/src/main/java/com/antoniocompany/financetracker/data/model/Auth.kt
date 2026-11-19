@@ -36,6 +36,12 @@ data class RegisterRequest(
  * El registro, en cambio, devuelve el usuario y no un token: despues de
  * registrar hay que encadenar el login, como hace la web.
  */
+/** Cuerpo de POST /api/users/password. La respuesta es un LoginResponse con el token nuevo. */
+data class ChangePasswordRequest(
+    val currentPassword: String,
+    val newPassword: String
+)
+
 data class LoginResponse(
     /** null cuando la cuenta tiene MFA y falta el codigo (mfaRequired). */
     val token: String?,

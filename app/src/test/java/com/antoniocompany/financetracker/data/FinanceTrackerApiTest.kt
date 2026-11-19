@@ -2,6 +2,7 @@ package com.antoniocompany.financetracker.data
 
 import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryInput
+import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.MfaCodeRequest
@@ -136,6 +137,17 @@ class FinanceTrackerApiTest {
 
         api(200, ok).login(LoginRequest("ana@mail.com", "una-clave-larga"))
         assertFalse(lastBody, lastBody.contains("trustedDeviceToken"))
+    }
+
+    @Test
+    fun `change password posts both passwords and reads the new token`() = runBlocking {
+        val response = api(200, """{"token":"new-jwt","user":{"id":7,"name":"Ana","email":"ana@test.com"}}""")
+            .changePassword(ChangePasswordRequest("la-actual-larga", "la-nueva-larga"))
+
+        assertEquals("POST", lastRequest!!.method)
+        assertEquals("/api/users/password", lastRequest!!.url.encodedPath)
+        assertEquals("""{"currentPassword":"la-actual-larga","newPassword":"la-nueva-larga"}""", lastBody)
+        assertEquals("new-jwt", response.token)
     }
 
     @Test

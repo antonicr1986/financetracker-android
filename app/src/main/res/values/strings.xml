@@ -73,6 +73,17 @@
     <string name="sign_out_everywhere">Cerrar sesión en todos los dispositivos</string>
     <string name="sign_out_everywhere_help">Cierra la sesión aquí y en cualquier otro navegador, móvil o equipo. Úsalo si pierdes un dispositivo o crees que alguien ha entrado en tu cuenta.</string>
     <string name="sign_out_everywhere_confirm">¿Cerrar la sesión en todos los dispositivos, también en este?</string>
+    <string name="password_title">Contraseña</string>
+    <string name="password_description">Al cambiarla se cerrará la sesión en tus demás dispositivos.</string>
+    <string name="password_change">Cambiar contraseña</string>
+    <string name="password_current">Contraseña actual</string>
+    <string name="password_new">Nueva contraseña</string>
+    <string name="password_confirm">Repite la nueva contraseña</string>
+    <string name="password_save">Guardar</string>
+    <string name="password_changed">Contraseña cambiada. Se ha cerrado la sesión en tus demás dispositivos.</string>
+    <string name="error_invalid_current_password">La contraseña actual no es correcta.</string>
+    <string name="error_password_unchanged">La nueva contraseña tiene que ser distinta de la actual.</string>
+    <string name="error_password_not_available">Tu cuenta entra con Google (o es la de demostración): no tiene contraseña que cambiar.</string>
     <string name="mfa_back">Volver</string>
     <string name="error_mfa_invalid_code">El código no es válido.</string>
     <string name="error_mfa_expired">Ha pasado demasiado tiempo. Vuelve a introducir tu contraseña.</string>

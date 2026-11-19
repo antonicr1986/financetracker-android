@@ -71,6 +71,17 @@
     <string name="sign_out_everywhere">Sign out of all devices</string>
     <string name="sign_out_everywhere_help">Signs you out here and on any other browser, phone or computer. Use it if you lose a device or think someone has accessed your account.</string>
     <string name="sign_out_everywhere_confirm">Sign out of every device, including this one?</string>
+    <string name="password_title">Password</string>
+    <string name="password_description">Changing it will sign you out of your other devices.</string>
+    <string name="password_change">Change password</string>
+    <string name="password_current">Current password</string>
+    <string name="password_new">New password</string>
+    <string name="password_confirm">Repeat the new password</string>
+    <string name="password_save">Save</string>
+    <string name="password_changed">Password changed. You have been signed out of your other devices.</string>
+    <string name="error_invalid_current_password">The current password is not correct.</string>
+    <string name="error_password_unchanged">The new password must be different from the current one.</string>
+    <string name="error_password_not_available">Your account signs in with Google (or is the demo account): there is no password to change.</string>
     <string name="mfa_back">Back</string>
     <string name="error_mfa_invalid_code">The code is not valid.</string>
     <string name="error_mfa_expired">Too much time has passed. Enter your password again.</string>

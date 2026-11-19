@@ -10,13 +10,16 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.TrustedDeviceStore
 import com.antoniocompany.financetracker.data.apiErrorCode
+import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
 import com.antoniocompany.financetracker.data.model.MfaCodeRequest
 import com.antoniocompany.financetracker.databinding.ActivityMfaBinding
+import com.antoniocompany.financetracker.databinding.DialogChangePasswordBinding
 import com.antoniocompany.financetracker.ui.bind
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -65,6 +68,7 @@ class MfaActivity : BaseActivity() {
         binding.doneButton.setOnClickListener { show(Mode.IDLE) }
         binding.forgetDevicesButton.setOnClickListener { forgetDevices() }
         binding.signOutEverywhereButton.setOnClickListener { confirmSignOutEverywhere() }
+        binding.changePasswordButton.setOnClickListener { showChangePassword() }
 
         show(Mode.IDLE)
     }
@@ -78,6 +82,7 @@ class MfaActivity : BaseActivity() {
         binding.actionButton.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE
         binding.devicesGroup.visibility = if (newMode == Mode.IDLE && enabled) View.VISIBLE else View.GONE
         binding.sessionsGroup.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE
+        binding.passwordGroup.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE
 
         binding.setupGroup.visibility = if (newMode == Mode.CONFIRM) View.VISIBLE else View.GONE
         binding.codeGroup.visibility =
@@ -139,6 +144,80 @@ class MfaActivity : BaseActivity() {
         ApiClient.get(this).forgetDevices()
         TrustedDeviceStore(this).token = null
         Toast.makeText(this, R.string.mfa_devices_forgotten, Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Dialogo de cambio de contraseña. El boton "Guardar" se gestiona a mano
+     * para que un error (contraseña actual mal, demasiado corta...) no cierre
+     * el dialogo y se pueda corregir.
+     */
+    private fun showChangePassword() {
+        val form = DialogChangePasswordBinding.inflate(layoutInflater)
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.password_change)
+            .setView(form.root)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.password_save, null)
+            .show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val current = form.currentInput.text?.toString().orEmpty()
+            val next = form.newInput.text?.toString().orEmpty()
+            val confirmation = form.confirmInput.text?.toString().orEmpty()
+
+            form.currentLayout.error = null
+            form.newLayout.error = null
+            form.confirmLayout.error = null
+            showDialogError(form, null)
+
+            // Las mismas comprobaciones que el registro, antes de llamar a la API.
+            when {
+                current.isEmpty() -> { form.currentLayout.error = getString(R.string.error_invalid_current_password) }
+                next.length < 12 -> { form.newLayout.error = getString(R.string.error_password_too_short) }
+                next != confirmation -> { form.confirmLayout.error = getString(R.string.error_passwords_dont_match) }
+                else -> changePassword(dialog, form, current, next)
+            }
+        }
+    }
+
+    private fun changePassword(dialog: AlertDialog, form: DialogChangePasswordBinding, current: String, next: String) {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.get(this@MfaActivity)
+                    .changePassword(ChangePasswordRequest(current, next))
+                // La API ha cerrado todas las sesiones: este movil sigue dentro
+                // con el token nuevo.
+                session.token = response.token
+                dialog.dismiss()
+                Toast.makeText(this@MfaActivity, R.string.password_changed, Toast.LENGTH_LONG).show()
+            } catch (error: HttpException) {
+                // Un 401 lo gestiona ApiClient (acceso). Los errores del cambio son 400.
+                if (error.code() == 401) return@launch
+                when (error.apiErrorCode()) {
+                    "invalid_current_password" -> {
+                        form.currentLayout.error = getString(R.string.error_invalid_current_password)
+                    }
+                    "password_unchanged" -> { form.newLayout.error = getString(R.string.error_password_unchanged) }
+                    "password_breached" -> { form.newLayout.error = getString(R.string.error_password_breached) }
+                    "password_not_available" -> showDialogError(form, getString(R.string.error_password_not_available))
+                    else -> showDialogError(
+                        form,
+                        getString(if (error.code() == 429) R.string.error_too_many_requests else R.string.error_server)
+                    )
+                }
+            } catch (error: IOException) {
+                showDialogError(form, getString(R.string.error_network))
+            } finally {
+                if (dialog.isShowing) dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+            }
+        }
+    }
+
+    private fun showDialogError(form: DialogChangePasswordBinding, message: String?) {
+        form.dialogErrorText.text = message.orEmpty()
+        form.dialogErrorText.visibility = if (message == null) View.GONE else View.VISIBLE
     }
 
     private fun confirmSignOutEverywhere() {
@@ -237,6 +316,7 @@ class MfaActivity : BaseActivity() {
         binding.actionButton.isEnabled = !loading
         binding.forgetDevicesButton.isEnabled = !loading
         binding.signOutEverywhereButton.isEnabled = !loading
+        binding.changePasswordButton.isEnabled = !loading
         binding.confirmButton.isEnabled = !loading
         binding.cancelButton.isEnabled = !loading
     }

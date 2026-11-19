@@ -4,6 +4,7 @@ import com.antoniocompany.financetracker.data.model.BudgetDto
 import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
+import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
@@ -80,6 +81,15 @@ interface FinanceTrackerApi {
      */
     @POST("api/users/sessions/revoke")
     suspend fun revokeSessions()
+
+    /**
+     * Cambiar la contraseña. Cierra todas las sesiones, tambien esta, y devuelve
+     * un token nuevo para seguir dentro. Los errores son 400 con su codigo
+     * (invalid_current_password, password_unchanged, password_breached,
+     * password_not_available), nunca 401.
+     */
+    @POST("api/users/password")
+    suspend fun changePassword(@Body body: ChangePasswordRequest): LoginResponse
 
     /**
      * Crea la cuenta y devuelve el usuario (201), sin token. Si el correo ya
