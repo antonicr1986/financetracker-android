@@ -2,3 +2,7 @@
 # TrustedDeviceStore.KEY_TOKEN = "trusted_device": nombre de la clave en las
 # preferencias, no un token.
 b443c68e762dfd6dbcbfe3f312b6fc85e85b7b89:app/src/main/java/com/antoniocompany/financetracker/data/TrustedDeviceStore.kt:hardcoded-credential-assignment:27
+
+# SessionStore.KEY_HAS_PASSWORD = "has_password": nombre de la clave en las
+# preferencias (si la cuenta tiene contrasena propia), no una contrasena.
+9dea158e94f3c9f351188cc666dfa7d0fdd02235:app/src/main/java/com/antoniocompany/financetracker/data/SessionStore.kt:hardcoded-credential-assignment:56
