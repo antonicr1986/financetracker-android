@@ -7,10 +7,12 @@ import androidx.lifecycle.lifecycleScope
 import com.antoniocompany.financetracker.data.ApiClient
 import com.antoniocompany.financetracker.data.SessionStore
 import com.antoniocompany.financetracker.data.model.LoginRequest
+import com.antoniocompany.financetracker.data.model.LoginResponse
 import com.antoniocompany.financetracker.data.model.RegisterRequest
 import com.antoniocompany.financetracker.databinding.ActivityRegisterBinding
 import com.antoniocompany.financetracker.domain.RegistrationProblem
 import com.antoniocompany.financetracker.domain.validateRegistration
+import com.antoniocompany.financetracker.ui.EmailVerificationDialog
 import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
 import kotlinx.coroutines.Job
@@ -81,14 +83,7 @@ class RegisterActivity : BaseActivity() {
 
                 // El registro devuelve el usuario, no un token: se encadena el
                 // login para no obligar a escribir otra vez los mismos datos.
-                val response = api.login(LoginRequest(email, password))
-                // Una cuenta recien creada no tiene MFA: siempre llega el token.
-                session.token = response.token
-                session.email = response.user?.email ?: email
-                session.mfaEnabled = false
-                session.hasPassword = true
-
-                goToDashboard()
+                onSignedIn(api.login(LoginRequest(email, password)), email)
             } catch (error: HttpException) {
                 showError(describe(error))
             } catch (error: IOException) {
@@ -97,6 +92,46 @@ class RegisterActivity : BaseActivity() {
                 setLoading(false)
             }
         }
+    }
+
+    /**
+     * Con la verificacion de correo activa, el login de una cuenta recien
+     * creada pide el codigo que ha llegado al correo. Si algo no encaja (paso
+     * caducado, "Volver", o un MFA que una cuenta nueva no deberia tener), se
+     * sigue desde el acceso: la cuenta ya existe.
+     */
+    private fun onSignedIn(response: LoginResponse, email: String) {
+        val verificationToken = response.verificationToken
+        if (response.emailVerificationRequired && verificationToken != null) {
+            EmailVerificationDialog.show(
+                this,
+                verificationToken,
+                response.email ?: email,
+                onVerified = { verified -> onSignedIn(verified, email) },
+                onExpired = { goToLogin() },
+                onBack = { goToLogin() },
+            )
+            return
+        }
+
+        if (response.token == null) {
+            goToLogin()
+            return
+        }
+
+        session.token = response.token
+        session.email = response.user?.email ?: email
+        session.mfaEnabled = response.user?.mfaEnabled ?: false
+        session.hasPassword = response.user?.hasPassword != false
+        goToDashboard()
+    }
+
+    private fun goToLogin() {
+        startActivity(
+            Intent(this, LoginActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
+        finish()
     }
 
     /**

@@ -85,6 +85,14 @@
     <string name="mfa_back">Back</string>
     <string name="error_mfa_invalid_code">The code is not valid.</string>
     <string name="error_mfa_expired">Too much time has passed. Enter your password again.</string>
+    <string name="email_verification_title">Verify your email</string>
+    <string name="email_verification_body">We have sent a 6-digit code to %1$s. If you cannot see it, check your spam folder.</string>
+    <string name="email_verification_resend">Resend</string>
+    <string name="email_verification_resent">We have sent you a new code.</string>
+    <string name="error_email_code_format">Enter the 6 digits of the code.</string>
+    <string name="error_email_code_invalid">The code is not correct.</string>
+    <string name="error_email_code_expired">The code has expired or has been tried too many times. Ask for a new one.</string>
+    <string name="error_email_code_recently_sent">We sent you a code less than a minute ago. Wait a little before asking for another one.</string>
     <string name="error_mfa_not_available">Two-step verification is not available for this account (Google accounts and the demo account).</string>
     <string name="error_password_breached">This password has appeared in known data breaches. Choose a different one.</string>
     <string name="error_network">Could not reach the server.</string>

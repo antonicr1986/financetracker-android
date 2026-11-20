@@ -5,6 +5,8 @@ import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
+import com.antoniocompany.financetracker.data.model.EmailResendRequest
+import com.antoniocompany.financetracker.data.model.EmailVerifyRequest
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
@@ -70,6 +72,12 @@ class TransactionRepositoryTest {
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun changePassword(body: ChangePasswordRequest): LoginResponse =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun verifyEmail(body: EmailVerifyRequest): LoginResponse =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun resendEmailCode(body: EmailResendRequest) =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun register(body: RegisterRequest): UserDto =

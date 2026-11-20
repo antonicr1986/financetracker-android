@@ -3,6 +3,8 @@ package com.antoniocompany.financetracker.data
 import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
+import com.antoniocompany.financetracker.data.model.EmailResendRequest
+import com.antoniocompany.financetracker.data.model.EmailVerifyRequest
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.MfaCodeRequest
@@ -159,6 +161,29 @@ class FinanceTrackerApiTest {
 
         assertEquals(false, withField.user?.hasPassword)
         assertEquals(null, withoutField.user?.hasPassword)
+    }
+
+    @Test
+    fun `login reads the email verification step`() = runBlocking {
+        val response = api(200, """{"emailVerificationRequired":true,"verificationToken":"v-token","email":"a@test.com","expiration":"2026-11-20T12:00:00Z"}""")
+            .login(LoginRequest("a@test.com", "una-clave-larga"))
+
+        assertEquals(true, response.emailVerificationRequired)
+        assertEquals("v-token", response.verificationToken)
+        assertEquals("a@test.com", response.email)
+        assertEquals(null, response.token)
+    }
+
+    @Test
+    fun `verify and resend the email code post to their endpoints`() = runBlocking {
+        api(200, """{"token":"jwt","user":{"id":7,"name":"Ana","email":"a@test.com"}}""")
+            .verifyEmail(EmailVerifyRequest("v-token", "123456"))
+        assertEquals("/api/users/email/verify", lastRequest!!.url.encodedPath)
+        assertEquals("""{"verificationToken":"v-token","code":"123456"}""", lastBody)
+
+        api(204).resendEmailCode(EmailResendRequest("v-token"))
+        assertEquals("/api/users/email/resend", lastRequest!!.url.encodedPath)
+        assertEquals("""{"verificationToken":"v-token"}""", lastBody)
     }
 
     @Test

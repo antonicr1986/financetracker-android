@@ -54,7 +54,26 @@ data class LoginResponse(
     val mfaRequired: Boolean = false,
     val mfaToken: String? = null,
     /** Solo tras verificar el codigo con rememberDevice: se guarda en TrustedDeviceStore. */
-    val trustedDeviceToken: String? = null
+    val trustedDeviceToken: String? = null,
+    /**
+     * true si la contraseña es correcta pero el correo aun no esta verificado:
+     * no hay sesion, solo verificationToken para enviar el codigo de 6 digitos
+     * que ha llegado al correo (email).
+     */
+    val emailVerificationRequired: Boolean = false,
+    val verificationToken: String? = null,
+    val email: String? = null
+)
+
+/** Cuerpo de POST /api/users/email/verify. Responde un LoginResponse. */
+data class EmailVerifyRequest(
+    val verificationToken: String,
+    val code: String
+)
+
+/** Cuerpo de POST /api/users/email/resend. */
+data class EmailResendRequest(
+    val verificationToken: String
 )
 
 data class UserDto(

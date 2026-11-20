@@ -5,6 +5,8 @@ import com.antoniocompany.financetracker.data.model.BudgetInput
 import com.antoniocompany.financetracker.data.model.CategoryDto
 import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
+import com.antoniocompany.financetracker.data.model.EmailResendRequest
+import com.antoniocompany.financetracker.data.model.EmailVerifyRequest
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
@@ -90,6 +92,18 @@ interface FinanceTrackerApi {
      */
     @POST("api/users/password")
     suspend fun changePassword(@Body body: ChangePasswordRequest): LoginResponse
+
+    /**
+     * Codigo de 6 digitos enviado al correo. Errores: 400 invalid_email_code,
+     * 400 email_code_expired (pedir otro) y 401 invalid_verification_token
+     * (volver a la contraseña).
+     */
+    @POST("api/users/email/verify")
+    suspend fun verifyEmail(@Body body: EmailVerifyRequest): LoginResponse
+
+    /** Codigo nuevo; 400 email_code_recently_sent si se pidio hace menos de un minuto. */
+    @POST("api/users/email/resend")
+    suspend fun resendEmailCode(@Body body: EmailResendRequest)
 
     /**
      * Crea la cuenta y devuelve el usuario (201), sin token. Si el correo ya

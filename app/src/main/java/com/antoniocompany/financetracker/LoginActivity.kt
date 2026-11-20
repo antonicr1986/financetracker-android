@@ -18,6 +18,7 @@ import com.antoniocompany.financetracker.data.model.LoginResponse
 import com.antoniocompany.financetracker.data.model.MfaVerifyRequest
 import com.antoniocompany.financetracker.databinding.ActivityLoginBinding
 import com.antoniocompany.financetracker.databinding.DialogMfaCodeBinding
+import com.antoniocompany.financetracker.ui.EmailVerificationDialog
 import com.antoniocompany.financetracker.ui.LanguagePreference
 import com.antoniocompany.financetracker.ui.bind
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
@@ -193,6 +194,20 @@ class LoginActivity : BaseActivity() {
      * codigo antes de abrir la sesion.
      */
     private fun onSignedIn(response: LoginResponse, fallbackEmail: String) {
+        // Correo sin verificar: antes que nada, el codigo que le ha llegado.
+        val verificationToken = response.verificationToken
+        if (response.emailVerificationRequired && verificationToken != null) {
+            EmailVerificationDialog.show(
+                this,
+                verificationToken,
+                response.email ?: fallbackEmail,
+                onVerified = { verified -> onSignedIn(verified, fallbackEmail) },
+                onExpired = { showError(getString(R.string.error_mfa_expired)) },
+                onBack = {},
+            )
+            return
+        }
+
         val mfaToken = response.mfaToken
         if (response.mfaRequired && mfaToken != null) {
             askMfaCode(mfaToken, fallbackEmail)

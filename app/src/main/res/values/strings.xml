@@ -87,6 +87,14 @@
     <string name="mfa_back">Volver</string>
     <string name="error_mfa_invalid_code">El código no es válido.</string>
     <string name="error_mfa_expired">Ha pasado demasiado tiempo. Vuelve a introducir tu contraseña.</string>
+    <string name="email_verification_title">Verifica tu correo</string>
+    <string name="email_verification_body">Te hemos enviado un código de 6 dígitos a %1$s. Si no lo ves, revisa la carpeta de spam.</string>
+    <string name="email_verification_resend">Reenviar</string>
+    <string name="email_verification_resent">Te hemos enviado un código nuevo.</string>
+    <string name="error_email_code_format">Escribe los 6 dígitos del código.</string>
+    <string name="error_email_code_invalid">El código no es correcto.</string>
+    <string name="error_email_code_expired">El código ha caducado o se ha intentado demasiadas veces. Pide uno nuevo.</string>
+    <string name="error_email_code_recently_sent">Ya te enviamos un código hace menos de un minuto. Espera un poco antes de pedir otro.</string>
     <string name="error_mfa_not_available">La verificación en dos pasos no está disponible para esta cuenta (cuentas de Google y cuenta de demostración).</string>
     <string name="error_password_breached">Esta contraseña aparece en filtraciones de datos conocidas. Elige otra.</string>
     <string name="error_network">No se ha podido contactar con el servidor.</string>
