@@ -49,6 +49,17 @@ class SessionStoreTest {
     }
 
     @Test
+    fun `has a password unless told otherwise, and forgets it on sign out`() {
+        assertTrue(store.hasPassword)
+
+        store.hasPassword = false
+        assertFalse(SessionStore(context).hasPassword)
+
+        store.clear()
+        assertTrue(store.hasPassword)
+    }
+
+    @Test
     fun `setting null removes the value`() {
         store.token = "abc"
         store.token = null

@@ -206,6 +206,7 @@ class LoginActivity : BaseActivity() {
         session.token = response.token
         session.email = response.user?.email ?: fallbackEmail
         session.mfaEnabled = response.user?.mfaEnabled ?: false
+        session.hasPassword = response.user?.hasPassword != false
         goToDashboard()
     }
 

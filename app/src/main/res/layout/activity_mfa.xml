@@ -59,6 +59,16 @@
                 android:layout_marginTop="16dp"
                 tools:text="@string/mfa_enable" />
 
+            <!-- Cuentas de Google o la demo: en lugar de "Activar". -->
+            <TextView
+                android:id="@+id/mfaUnavailableText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/error_mfa_not_available"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:visibility="gone" />
+
             <!-- Solo con el MFA activo: los dispositivos donde se marco "no
                  volver a pedir el codigo". -->
             <LinearLayout
@@ -248,6 +258,7 @@
                     android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                 <TextView
+                    android:id="@+id/passwordDescriptionText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"

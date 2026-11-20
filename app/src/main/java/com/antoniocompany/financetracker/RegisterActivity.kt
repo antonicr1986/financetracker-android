@@ -86,6 +86,7 @@ class RegisterActivity : BaseActivity() {
                 session.token = response.token
                 session.email = response.user?.email ?: email
                 session.mfaEnabled = false
+                session.hasPassword = true
 
                 goToDashboard()
             } catch (error: HttpException) {

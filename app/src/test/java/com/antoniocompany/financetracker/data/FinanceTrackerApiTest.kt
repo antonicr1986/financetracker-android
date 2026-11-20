@@ -151,6 +151,17 @@ class FinanceTrackerApiTest {
     }
 
     @Test
+    fun `reads hasPassword, and leaves it null when the API does not send it`() = runBlocking {
+        val withField = api(200, """{"token":"t","user":{"id":7,"name":"Ana","email":"a@test.com","hasPassword":false}}""")
+            .login(LoginRequest("a@test.com", "una-clave-larga"))
+        val withoutField = api(200, """{"token":"t","user":{"id":7,"name":"Ana","email":"a@test.com"}}""")
+            .login(LoginRequest("a@test.com", "una-clave-larga"))
+
+        assertEquals(false, withField.user?.hasPassword)
+        assertEquals(null, withoutField.user?.hasPassword)
+    }
+
+    @Test
     fun `revoke sessions posts to its endpoint`() = runBlocking {
         api(204).revokeSessions()
 

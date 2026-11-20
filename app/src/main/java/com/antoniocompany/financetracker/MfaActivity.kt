@@ -79,7 +79,17 @@ class MfaActivity : BaseActivity() {
 
         binding.statusText.setText(if (enabled) R.string.mfa_status_on else R.string.mfa_status_off)
         binding.actionButton.setText(if (enabled) R.string.mfa_disable else R.string.mfa_enable)
-        binding.actionButton.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE
+        // Sin contraseña propia (Google, demo) no se puede activar el MFA ni
+        // cambiar la contraseña: se explica en lugar de ofrecer el boton. Si el
+        // MFA ya estaba activo (cuenta vinculada despues), si se puede desactivar.
+        val hasPassword = session.hasPassword
+        val canUseAction = enabled || hasPassword
+        binding.actionButton.visibility = if (newMode == Mode.IDLE && canUseAction) View.VISIBLE else View.GONE
+        binding.mfaUnavailableText.visibility = if (newMode == Mode.IDLE && !canUseAction) View.VISIBLE else View.GONE
+        binding.passwordDescriptionText.setText(
+            if (hasPassword) R.string.password_description else R.string.error_password_not_available
+        )
+        binding.changePasswordButton.visibility = if (hasPassword) View.VISIBLE else View.GONE
         binding.devicesGroup.visibility = if (newMode == Mode.IDLE && enabled) View.VISIBLE else View.GONE
         binding.sessionsGroup.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE
         binding.passwordGroup.visibility = if (newMode == Mode.IDLE) View.VISIBLE else View.GONE

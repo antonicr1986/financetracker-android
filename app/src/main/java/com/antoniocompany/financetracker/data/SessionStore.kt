@@ -35,6 +35,11 @@ class SessionStore(context: Context) {
         get() = prefs.getBoolean(KEY_MFA_ENABLED, false)
         set(value) = prefs.edit().putBoolean(KEY_MFA_ENABLED, value).apply()
 
+    /** Ver UserDto.hasPassword. Por defecto true: sesiones guardadas antes de existir. */
+    var hasPassword: Boolean
+        get() = prefs.getBoolean(KEY_HAS_PASSWORD, true)
+        set(value) = prefs.edit().putBoolean(KEY_HAS_PASSWORD, value).apply()
+
     val hasSession: Boolean
         get() = token != null
 
@@ -48,5 +53,6 @@ class SessionStore(context: Context) {
         const val KEY_TOKEN = "token"
         const val KEY_EMAIL = "email"
         const val KEY_MFA_ENABLED = "mfa_enabled"
+        const val KEY_HAS_PASSWORD = "has_password"
     }
 }

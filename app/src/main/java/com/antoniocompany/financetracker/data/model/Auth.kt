@@ -61,7 +61,14 @@ data class UserDto(
     val id: Int,
     val name: String?,
     val email: String,
-    val mfaEnabled: Boolean = false
+    val mfaEnabled: Boolean = false,
+    /**
+     * false en cuentas solo de Google y en la de demostracion: no tienen
+     * contraseña que cambiar ni pueden activar el MFA. Nullable a proposito:
+     * Gson no usa los valores por defecto de Kotlin, y si la API no lo manda
+     * (version anterior) quedaria en false; con null se asume que si.
+     */
+    val hasPassword: Boolean? = null
 )
 
 /** Cuerpo de POST /api/users/mfa/verify: codigo TOTP o de recuperacion. */
