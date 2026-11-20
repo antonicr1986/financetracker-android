@@ -15,6 +15,42 @@ import org.junit.Test
  */
 class ValidationTest {
 
+    // --- Recuperar contraseña
+
+    @Test
+    fun `a valid reset has no problem`() {
+        assertNull(validatePasswordReset("123456", "secreto-largo", "secreto-largo"))
+    }
+
+    @Test
+    fun `the reset code must be exactly six digits`() {
+        listOf("", "12345", "1234567", "12a456", " 123456").forEach { code ->
+            assertEquals(
+                code,
+                PasswordResetProblem.INVALID_CODE_FORMAT,
+                validatePasswordReset(code, "secreto-largo", "secreto-largo")
+            )
+        }
+    }
+
+    @Test
+    fun `the new password follows the registration rules`() {
+        assertEquals(
+            PasswordResetProblem.PASSWORD_TOO_SHORT,
+            validatePasswordReset("123456", "corta", "corta")
+        )
+        assertEquals(
+            PasswordResetProblem.PASSWORDS_DONT_MATCH,
+            validatePasswordReset("123456", "secreto-largo", "secreto-larga")
+        )
+    }
+
+    @Test
+    fun `email check accepts a normal address and rejects a broken one`() {
+        assertTrue(isValidEmail("ana@mail.com"))
+        assertFalse(isValidEmail("ana@mail"))
+    }
+
     // --- Registro
 
     @Test

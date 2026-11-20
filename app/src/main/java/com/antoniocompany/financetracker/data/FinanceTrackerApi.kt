@@ -7,6 +7,7 @@ import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
 import com.antoniocompany.financetracker.data.model.EmailResendRequest
 import com.antoniocompany.financetracker.data.model.EmailVerifyRequest
+import com.antoniocompany.financetracker.data.model.ForgotPasswordRequest
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
@@ -16,6 +17,7 @@ import com.antoniocompany.financetracker.data.model.MfaSetupResponse
 import com.antoniocompany.financetracker.data.model.MfaVerifyRequest
 import com.antoniocompany.financetracker.data.model.PagedResult
 import com.antoniocompany.financetracker.data.model.RegisterRequest
+import com.antoniocompany.financetracker.data.model.ResetPasswordRequest
 import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.UserDto
@@ -104,6 +106,21 @@ interface FinanceTrackerApi {
     /** Codigo nuevo; 400 email_code_recently_sent si se pidio hace menos de un minuto. */
     @POST("api/users/email/resend")
     suspend fun resendEmailCode(@Body body: EmailResendRequest)
+
+    /**
+     * "¿Has olvidado tu contraseña?". Siempre 204, exista o no la cuenta: la
+     * API solo envia el codigo a cuentas con contraseña propia.
+     */
+    @POST("api/users/password/forgot")
+    suspend fun forgotPassword(@Body body: ForgotPasswordRequest)
+
+    /**
+     * Contraseña nueva con el codigo del correo. 204 y sin sesion: la API
+     * cierra todas y se entra con la contraseña nueva. Errores: 400
+     * invalid_reset_code, reset_code_expired y password_breached.
+     */
+    @POST("api/users/password/reset")
+    suspend fun resetPassword(@Body body: ResetPasswordRequest)
 
     /**
      * Crea la cuenta y devuelve el usuario (201), sin token. Si el correo ya

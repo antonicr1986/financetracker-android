@@ -7,6 +7,7 @@ import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
 import com.antoniocompany.financetracker.data.model.EmailResendRequest
 import com.antoniocompany.financetracker.data.model.EmailVerifyRequest
+import com.antoniocompany.financetracker.data.model.ForgotPasswordRequest
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.LoginResponse
@@ -16,6 +17,7 @@ import com.antoniocompany.financetracker.data.model.MfaSetupResponse
 import com.antoniocompany.financetracker.data.model.MfaVerifyRequest
 import com.antoniocompany.financetracker.data.model.PagedResult
 import com.antoniocompany.financetracker.data.model.RegisterRequest
+import com.antoniocompany.financetracker.data.model.ResetPasswordRequest
 import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
@@ -78,6 +80,12 @@ class TransactionRepositoryTest {
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun resendEmailCode(body: EmailResendRequest) =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun forgotPassword(body: ForgotPasswordRequest) =
+            throw UnsupportedOperationException("Sin usar en estas pruebas")
+
+        override suspend fun resetPassword(body: ResetPasswordRequest) =
             throw UnsupportedOperationException("Sin usar en estas pruebas")
 
         override suspend fun register(body: RegisterRequest): UserDto =

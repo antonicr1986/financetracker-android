@@ -44,6 +44,26 @@ fun validateRegistration(
     else -> null
 }
 
+/** Forma basica de un correo, la misma que el registro. */
+fun isValidEmail(email: String): Boolean = EMAIL.matches(email)
+
+/** Lo primero que falla en el paso del codigo de "¿Has olvidado tu contraseña?". */
+enum class PasswordResetProblem {
+    INVALID_CODE_FORMAT,
+    PASSWORD_TOO_SHORT,
+    PASSWORDS_DONT_MATCH
+}
+
+private val SIX_DIGITS = Regex("^\\d{6}$")
+
+/** null si se puede enviar. Las mismas reglas que la API (ResetPasswordDto). */
+fun validatePasswordReset(code: String, password: String, confirmation: String): PasswordResetProblem? = when {
+    !SIX_DIGITS.matches(code) -> PasswordResetProblem.INVALID_CODE_FORMAT
+    password.length < MIN_PASSWORD_LENGTH -> PasswordResetProblem.PASSWORD_TOO_SHORT
+    password != confirmation -> PasswordResetProblem.PASSWORDS_DONT_MATCH
+    else -> null
+}
+
 /**
  * Lee el importe escrito. Acepta coma o punto como decimal, porque la coma es
  * lo que teclea cualquiera en espanol y toDouble() solo entiende el punto.

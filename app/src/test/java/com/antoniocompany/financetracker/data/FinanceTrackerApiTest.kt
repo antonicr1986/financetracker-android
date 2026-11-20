@@ -5,11 +5,13 @@ import com.antoniocompany.financetracker.data.model.CategoryInput
 import com.antoniocompany.financetracker.data.model.ChangePasswordRequest
 import com.antoniocompany.financetracker.data.model.EmailResendRequest
 import com.antoniocompany.financetracker.data.model.EmailVerifyRequest
+import com.antoniocompany.financetracker.data.model.ForgotPasswordRequest
 import com.antoniocompany.financetracker.data.model.GoogleLoginRequest
 import com.antoniocompany.financetracker.data.model.LoginRequest
 import com.antoniocompany.financetracker.data.model.MfaCodeRequest
 import com.antoniocompany.financetracker.data.model.MfaVerifyRequest
 import com.antoniocompany.financetracker.data.model.RegisterRequest
+import com.antoniocompany.financetracker.data.model.ResetPasswordRequest
 import com.antoniocompany.financetracker.data.model.TransactionInput
 import com.antoniocompany.financetracker.data.model.TransactionType
 import kotlinx.coroutines.runBlocking
@@ -184,6 +186,20 @@ class FinanceTrackerApiTest {
         api(204).resendEmailCode(EmailResendRequest("v-token"))
         assertEquals("/api/users/email/resend", lastRequest!!.url.encodedPath)
         assertEquals("""{"verificationToken":"v-token"}""", lastBody)
+    }
+
+    @Test
+    fun `forgot and reset password post to their endpoints`() = runBlocking {
+        api(204).forgotPassword(ForgotPasswordRequest("a@test.com"))
+        assertEquals("/api/users/password/forgot", lastRequest!!.url.encodedPath)
+        assertEquals("""{"email":"a@test.com"}""", lastBody)
+
+        api(204).resetPassword(ResetPasswordRequest("a@test.com", "123456", "una-clave-nueva-larga"))
+        assertEquals("/api/users/password/reset", lastRequest!!.url.encodedPath)
+        assertEquals(
+            """{"email":"a@test.com","code":"123456","newPassword":"una-clave-nueva-larga"}""",
+            lastBody
+        )
     }
 
     @Test

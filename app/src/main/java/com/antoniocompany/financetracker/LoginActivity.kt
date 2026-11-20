@@ -106,6 +106,11 @@ class LoginActivity : BaseActivity() {
         binding.createAccountLink.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+
+        // Igual que el registro: al terminar se cierra y se vuelve aqui.
+        binding.forgotPasswordLink.setOnClickListener {
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
+        }
     }
 
     private fun signIn(email: String, password: String) {

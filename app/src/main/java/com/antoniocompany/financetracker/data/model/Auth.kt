@@ -76,6 +76,18 @@ data class EmailResendRequest(
     val verificationToken: String
 )
 
+/** Cuerpo de POST /api/users/password/forgot. */
+data class ForgotPasswordRequest(
+    val email: String
+)
+
+/** Cuerpo de POST /api/users/password/reset: el codigo del correo y la contraseña nueva. */
+data class ResetPasswordRequest(
+    val email: String,
+    val code: String,
+    val newPassword: String
+)
+
 data class UserDto(
     val id: Int,
     val name: String?,
