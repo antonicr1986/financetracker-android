@@ -99,6 +99,9 @@ jobs:
           {
             echo "## FinanceTracker Android $VERSION_NAME"
             echo
+            echo '<details open>'
+            echo '<summary><b>🇬🇧 English</b> <sub>· 🇪🇸 Versión en español más abajo</sub></summary>'
+            echo
             echo "Android client of FinanceTracker, a personal finance app (income, expenses and monthly balance) backed by a .NET API on Azure."
             echo
             echo "### Install (about a minute)"
@@ -113,11 +116,32 @@ jobs:
             echo "- The first sign-in of the day can take a few seconds while the API wakes up."
             echo "- Language (Spanish or English) and light or dark theme can be changed inside the app."
             echo
+            echo '</details>'
+            echo
+            echo '<details>'
+            echo '<summary><b>🇪🇸 Español</b></summary>'
+            echo
+            echo "Cliente Android de FinanceTracker, una app de finanzas personales (ingresos, gastos y balance mensual) con una API .NET en Azure."
+            echo
+            echo "### Instalar (un minuto)"
+            echo
+            echo "1. En un móvil Android (7.0 o superior), descarga **\`financetracker.apk\`** en *Assets*, abajo. \`financetracker-v$VERSION_NAME.apk\` es el mismo archivo con la versión en el nombre."
+            echo "2. Abre el archivo descargado. La primera vez, Android pide permitir que el navegador *instale apps desconocidas*: permítelo y vuelve atrás."
+            echo "3. Pulsa **Instalar**. La app solo necesita acceso a internet."
+            echo
+            echo "### Pruébala"
+            echo
+            echo "- En la pantalla de acceso, pulsa **Entrar con la cuenta demo** (\`demo@financetracker.app\` / \`Demo1234!\`), o crea tu propia cuenta." # gitleaks:allow
+            echo "- El primer acceso del día puede tardar unos segundos mientras la API arranca."
+            echo "- El idioma (español o inglés) y el tema claro u oscuro se cambian dentro de la app."
+            echo
+            echo '</details>'
+            echo
             if [ -n "$previous" ]; then
-              echo "### Changes since $previous"
+              echo "## Changes since $previous · Cambios desde $previous"
               range="$previous..$GITHUB_REF_NAME"
             else
-              echo "### Changes"
+              echo "## Changes · Cambios"
               range="$GITHUB_REF_NAME"
             fi
             echo
