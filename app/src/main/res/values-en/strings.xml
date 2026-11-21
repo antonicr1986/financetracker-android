@@ -105,6 +105,7 @@
     <string name="password_reset_done">Password changed. For your security, all your sessions have been closed: sign in with your new password.</string>
     <string name="password_reset_go_to_login">Sign in</string>
     <string name="password_reset_failed">The password could not be changed.</string>
+    <string name="password_reset_google_hint">If you sign in with Google, use \"Continue with Google\" on the sign-in screen.</string>
     <string name="error_reset_code_invalid">The code is not correct.</string>
     <string name="error_reset_code_expired">The code has expired or has been tried too many times. Ask for a new one.</string>
     <string name="error_mfa_not_available">Two-step verification is not available for this account (Google accounts and the demo account).</string>

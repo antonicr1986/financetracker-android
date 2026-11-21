@@ -107,6 +107,7 @@
     <string name="password_reset_done">Contraseña cambiada. Por seguridad se han cerrado todas tus sesiones: entra con la contraseña nueva.</string>
     <string name="password_reset_go_to_login">Iniciar sesión</string>
     <string name="password_reset_failed">No se ha podido cambiar la contraseña.</string>
+    <string name="password_reset_google_hint">Si entras con Google, usa «Continuar con Google» en la pantalla de acceso.</string>
     <string name="error_reset_code_invalid">El código no es correcto.</string>
     <string name="error_reset_code_expired">El código ha caducado o se ha intentado demasiadas veces. Pide uno nuevo.</string>
     <string name="error_mfa_not_available">La verificación en dos pasos no está disponible para esta cuenta (cuentas de Google y cuenta de demostración).</string>
