@@ -22,3 +22,10 @@ con `[x]` y se anota la fecha o el commit.
 
 - [x] Job `mobsf`: análisis de seguridad del APK release con MobSF en cada push y PR (de momento solo informa).
 - [x] `permissions` globales de solo lectura y `timeout-minutes` en todos los jobs.
+
+## Cobertura de tests
+
+- [ ] **Medir la cobertura en el CI** con Kover (plugin de JetBrains para Kotlin): informe
+  de los tests unitarios en el resumen del job y un % mínimo, igual que en la API (excluyendo
+  clases generadas como `databinding` y `BuildConfig`). Fijar el mínimo con la cobertura
+  medida menos 5 puntos.

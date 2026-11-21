@@ -109,8 +109,48 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      # Con el informe de cobertura de los tests de la variante debug (JaCoCo).
       - name: Test
-        run: ./gradlew test
+        run: ./gradlew test createDebugUnitTestCoverageReport
+
+      # % de lineas cubiertas por los tests, en el resumen de la ejecucion. Sin
+      # contar el codigo que genera Android (ViewBinding, BuildConfig, R). Si
+      # COVERAGE_MIN tiene valor, falla por debajo de ese minimo.
+      - name: Coverage
+        if: always() && hashFiles('app/build/reports/coverage/test/debug/report.xml') != ''
+        run: |
+          python3 - <<'PY'
+          import os, xml.etree.ElementTree as ET
+          report = ET.parse("app/build/reports/coverage/test/debug/report.xml").getroot()
+          covered = missed = 0
+          for package in report.iter("package"):
+              if package.get("name", "").endswith("/databinding"):
+                  continue
+              for cls in package.iter("class"):
+                  name = cls.get("name", "").rsplit("/", 1)[-1]
+                  if name in ("BuildConfig", "R") or name.startswith("R$"):
+                      continue
+                  for counter in cls.findall("counter"):
+                      if counter.get("type") == "LINE":
+                          covered += int(counter.get("covered"))
+                          missed += int(counter.get("missed"))
+          total = covered + missed
+          pct = 100 * covered / total if total else 0
+          minimum = float(os.environ.get("COVERAGE_MIN") or 0)
+          line = f"Cobertura de lineas: {pct:.1f} % ({covered} / {total})"
+          if minimum:
+              line += f" (minimo: {minimum:.0f} %)"
+          print(line)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write(f"### Cobertura de tests\n\n{line}\n")
+          if pct < minimum:
+              print(f"::error::Cobertura {pct:.1f} % por debajo del minimo {minimum:.0f} %")
+              raise SystemExit(1)
+          PY
+        env:
+          # Vacio de momento: primero se mide y despues se fija (la medida menos
+          # 5 puntos, redondeada a multiplo de 5).
+          COVERAGE_MIN: ""
 
       # Gradle dice "BUILD SUCCESSFUL" tanto si las pruebas pasan como si no se
       # llegaron a ejecutar. Esto cuenta lo que hay en los informes y lo escribe

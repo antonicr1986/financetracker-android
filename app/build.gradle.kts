@@ -56,6 +56,13 @@ android {
     }
 
     buildTypes {
+        // Cobertura de los tests unitarios con JaCoCo, el que trae el propio
+        // plugin de Android: ./gradlew createDebugUnitTestCoverageReport deja el
+        // informe en app/build/reports/coverage/test/debug/. Sin plugins aparte
+        // (Kover aun no se integra bien con el Kotlin incluido en AGP 9).
+        debug {
+            enableUnitTestCoverage = true
+        }
         release {
             if (keystorePath != null) {
                 signingConfig = signingConfigs.getByName("release")
