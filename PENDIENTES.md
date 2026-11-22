@@ -25,7 +25,11 @@ con `[x]` y se anota la fecha o el commit.
 
 ## Cobertura de tests
 
-- [ ] **Medir la cobertura en el CI** con Kover (plugin de JetBrains para Kotlin): informe
+- [x] **Medir la cobertura en el CI** con Kover (plugin de JetBrains para Kotlin): informe
   de los tests unitarios en el resumen del job y un % mínimo, igual que en la API (excluyendo
   clases generadas como `databinding` y `BuildConfig`). Fijar el mínimo con la cobertura
-  medida menos 5 puntos.
+  medida menos 5 puntos. Hecho (nov 2026) con JaCoCo, el que trae el plugin de Android (Kover no se integra bien con el Kotlin de AGP 9): 12,6 % de líneas; con los tests de las pantallas de acceso, 37,3 % y mínimo 30 %.
+- [x] **Tests de las pantallas de acceso** (Robolectric con una API falsa): login, registro y
+  recuperar contraseña (72-88 % de líneas cada una). Hecho (nov 2026).
+- [ ] **Tests del resto de pantallas**: panel (`MainActivity`), movimiento, presupuesto y
+  Seguridad (`MfaActivity`), todas al 0 %; después, subir el mínimo.

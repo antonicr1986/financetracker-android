@@ -148,9 +148,9 @@ jobs:
               raise SystemExit(1)
           PY
         env:
-          # Vacio de momento: primero se mide y despues se fija (la medida menos
-          # 5 puntos, redondeada a multiplo de 5).
-          COVERAGE_MIN: ""
+          # La medida con los tests de las pantallas de acceso (37,3 %) menos 5
+          # puntos, redondeada a multiplo de 5.
+          COVERAGE_MIN: "30"
 
       # Gradle dice "BUILD SUCCESSFUL" tanto si las pruebas pasan como si no se
       # llegaron a ejecutar. Esto cuenta lo que hay en los informes y lo escribe

@@ -33,6 +33,14 @@ object ApiClient {
         return instance ?: build(context.applicationContext).also { instance = it }
     }
 
+    /**
+     * Solo para los tests de las pantallas: sustituye la API por una falsa
+     * (null vuelve a la real). Asi se prueban sin red ni servidor.
+     */
+    internal fun replaceForTests(api: FinanceTrackerApi?) {
+        instance = api
+    }
+
     private fun build(context: Context): FinanceTrackerApi {
         val session = SessionStore(context)
 

@@ -1,3 +1,5 @@
+import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -89,6 +91,17 @@ android {
     // real en la JVM: asi SessionStore y ThemePreference se prueban sin emulador.
     testOptions {
         unitTests.isIncludeAndroidResources = true
+
+        // Robolectric carga las clases de la app con su propio cargador, y
+        // JaCoCo por defecto no mide las clases cargadas asi: las pantallas
+        // salian al 0 % aunque los tests las recorrian. includeNoLocationClasses
+        // las incluye; jdk.internal se deja fuera porque no se puede instrumentar.
+        unitTests.all {
+            it.extensions.configure(JacocoTaskExtension::class.java) {
+                isIncludeNoLocationClasses = true
+                excludes = listOf("jdk.internal.*")
+            }
+        }
     }
 }
 
