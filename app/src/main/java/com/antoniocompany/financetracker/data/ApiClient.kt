@@ -8,7 +8,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Construye el cliente de la API, una sola vez por proceso.
@@ -119,25 +118,23 @@ object ApiClient {
 
     /**
      * Dice a la API que app y que version son (X-Client-Platform y
-     * X-Client-Version), para que pueda exigir una version minima. Si responde
-     * 426, avisa una sola vez: varias peticiones en vuelo no abren varios avisos.
+     * X-Client-Version), para que pueda exigir una version minima. Avisa en
+     * cada 426: si el usuario cierra el aviso y vuelve a intentarlo, lo ve otra
+     * vez. Que no se abran varios a la vez lo controla FinanceTrackerApp.
      *
      * Interno y no privado para poder probarlo (ApiClientVersionTest).
      */
     internal fun clientVersionInterceptor(
         version: String,
         onUpgradeRequired: () -> Unit = {},
-    ): Interceptor {
-        val notified = AtomicBoolean(false)
-        return Interceptor { chain ->
-            val request = chain.request().newBuilder()
-                .header("X-Client-Platform", "android")
-                .header("X-Client-Version", version)
-                .build()
+    ) = Interceptor { chain ->
+        val request = chain.request().newBuilder()
+            .header("X-Client-Platform", "android")
+            .header("X-Client-Version", version)
+            .build()
 
-            val response = chain.proceed(request)
-            if (response.code == 426 && notified.compareAndSet(false, true)) onUpgradeRequired()
-            response
-        }
+        val response = chain.proceed(request)
+        if (response.code == 426) onUpgradeRequired()
+        response
     }
 }

@@ -2,6 +2,7 @@ package com.antoniocompany.financetracker
 
 import android.app.Activity
 import android.app.Application
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -20,6 +21,9 @@ class FinanceTrackerApp : Application() {
 
     /** La pantalla visible, para mostrar sobre ella el aviso de actualizar. */
     private var visibleActivity: Activity? = null
+
+    /** El aviso de actualizar abierto, para no abrir otro encima. */
+    private var updateDialog: Dialog? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -46,13 +50,16 @@ class FinanceTrackerApp : Application() {
     }
 
     private fun showUpdateRequired(activity: Activity) {
-        MaterialAlertDialogBuilder(activity)
+        if (updateDialog?.isShowing == true) return
+
+        updateDialog = MaterialAlertDialogBuilder(activity)
             .setTitle(R.string.update_title)
             .setMessage(R.string.update_message)
             .setPositiveButton(R.string.update_download) { _, _ ->
                 activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(LATEST_APK_URL)))
             }
             .setNegativeButton(android.R.string.cancel, null)
+            .setOnDismissListener { updateDialog = null }
             .show()
     }
 

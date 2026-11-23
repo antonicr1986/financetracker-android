@@ -47,11 +47,11 @@ class ApiClientVersionTest {
     }
 
     @Test
-    fun `a 426 reports the upgrade once`() {
+    fun `every 426 reports the upgrade`() {
         send(426)
         send(426)
 
-        assertEquals(1, upgrades)
+        assertEquals(2, upgrades)
     }
 
     @Test
