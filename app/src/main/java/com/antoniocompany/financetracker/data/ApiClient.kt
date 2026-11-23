@@ -8,6 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Construye el cliente de la API, una sola vez por proceso.
@@ -29,6 +30,13 @@ object ApiClient {
     @Volatile
     var onSessionRejected: (() -> Unit)? = null
 
+    /**
+     * Que hacer cuando la API responde 426: esta version ya no esta soportada.
+     * Lo fija FinanceTrackerApp para mostrar el aviso de actualizar.
+     */
+    @Volatile
+    var onUpgradeRequired: (() -> Unit)? = null
+
     fun get(context: Context): FinanceTrackerApi {
         return instance ?: build(context.applicationContext).also { instance = it }
     }
@@ -48,6 +56,7 @@ object ApiClient {
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(authInterceptor(session) { onSessionRejected?.invoke() })
+            .addInterceptor(clientVersionInterceptor(BuildConfig.VERSION_NAME) { onUpgradeRequired?.invoke() })
             .apply {
                 // Solo en depuracion: en una release esto escribiria el token
                 // en los logs del dispositivo, donde cualquier aplicacion con
@@ -106,5 +115,29 @@ object ApiClient {
         }
 
         response
+    }
+
+    /**
+     * Dice a la API que app y que version son (X-Client-Platform y
+     * X-Client-Version), para que pueda exigir una version minima. Si responde
+     * 426, avisa una sola vez: varias peticiones en vuelo no abren varios avisos.
+     *
+     * Interno y no privado para poder probarlo (ApiClientVersionTest).
+     */
+    internal fun clientVersionInterceptor(
+        version: String,
+        onUpgradeRequired: () -> Unit = {},
+    ): Interceptor {
+        val notified = AtomicBoolean(false)
+        return Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .header("X-Client-Platform", "android")
+                .header("X-Client-Version", version)
+                .build()
+
+            val response = chain.proceed(request)
+            if (response.code == 426 && notified.compareAndSet(false, true)) onUpgradeRequired()
+            response
+        }
     }
 }

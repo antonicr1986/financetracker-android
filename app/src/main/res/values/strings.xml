@@ -39,6 +39,9 @@
     <string name="error_google_sign_in">No se ha podido iniciar sesión con Google.</string>
     <string name="error_server">Error del servidor. Inténtalo más tarde.</string>
     <string name="error_too_many_requests">Demasiados intentos. Espera un minuto y vuelve a probar.</string>
+    <string name="update_title">Actualiza para continuar</string>
+    <string name="update_message">Hay una versión nueva de FinanceTracker y esta ya no es compatible. Descarga la última versión para seguir usándola.</string>
+    <string name="update_download">Descargar actualización</string>
     <string name="top_bar_settings">Configuración</string>
     <string name="top_bar_home">Volver al resumen</string>
     <string name="security_title">Seguridad</string>
