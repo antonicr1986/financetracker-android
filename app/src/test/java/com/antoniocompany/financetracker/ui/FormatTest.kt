@@ -50,6 +50,14 @@ class FormatTest {
     }
 
     @Test
+    fun `the chart month label is short, with the year`() {
+        assertEquals("Dic 25", formatShortMonthYear("2025-12", SPANISH_LOCALE))
+        assertEquals("Ene 26", formatShortMonthYear("2026-01", SPANISH_LOCALE))
+        assertEquals("Dec 25", formatShortMonthYear("2025-12", ENGLISH_LOCALE))
+        assertEquals("Jan 26", formatShortMonthYear("2026-01", ENGLISH_LOCALE))
+    }
+
+    @Test
     fun `short dates ignore the time the API sends`() {
         val date = formatShortDate("2026-09-22T00:00:00", ENGLISH_LOCALE)
         assertTrue(date, date.startsWith("22 Sep"))

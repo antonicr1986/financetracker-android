@@ -2,4 +2,8 @@
 <resources>
     <!-- Cabe "Sign out", el texto mas largo de los dos idiomas. -->
     <dimen name="top_bar_sign_out_width">84dp</dimen>
+    <!-- Alto de las barras del grafico de evolucion mensual (el 100 % del eje). -->
+    <dimen name="trend_chart_height">120dp</dimen>
+    <!-- Ancho minimo de cada mes del grafico: con mas meses de los que caben, se desplaza. -->
+    <dimen name="trend_month_min_width">48dp</dimen>
 </resources>

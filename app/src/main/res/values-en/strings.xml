@@ -143,6 +143,10 @@
     <string name="breakdown_summary">Largest: %1$s (%2$s)</string>
     <string name="breakdown_no_expenses">No expenses</string>
     <string name="breakdown_empty">No expenses recorded this month.</string>
+    <string name="trend_title">Monthly trend</string>
+    <string name="trend_toggle">Show or hide the monthly trend</string>
+    <string name="trend_hint">Tap a month to see its amounts.</string>
+    <string name="trend_detail">%1$s · Income: %2$s · Expenses: %3$s</string>
     <plurals name="dashboard_showing">
         <item quantity="one">Showing %1$d of %2$d transaction this month.</item>
         <item quantity="other">Showing %1$d of %2$d transactions this month.</item>

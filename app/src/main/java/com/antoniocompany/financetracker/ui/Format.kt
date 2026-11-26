@@ -111,6 +111,12 @@ fun formatShortMonth(monthKey: String, locale: Locale = uiLocale()): String {
         .replaceFirstChar { it.uppercase(f.locale) }
 }
 
+/** "2025-12" -> "Dic 25" / "Dec 25". Para el eje del grafico, donde el historico pasa de un año. */
+fun formatShortMonthYear(monthKey: String, locale: Locale = uiLocale()): String {
+    if (monthParser.parseOrNull(monthKey) == null) return monthKey
+    return "${formatShortMonth(monthKey, locale)} ${monthKey.substring(2, 4)}"
+}
+
 /** "2026-09" -> "Septiembre 2026" / "September 2026". */
 fun formatMonth(monthKey: String, locale: Locale = uiLocale()): String {
     val parsed = monthParser.parseOrNull(monthKey) ?: return monthKey

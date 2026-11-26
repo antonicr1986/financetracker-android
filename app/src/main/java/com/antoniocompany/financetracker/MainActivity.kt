@@ -2,6 +2,7 @@ package com.antoniocompany.financetracker
 
 import android.content.Intent
 import android.os.Bundle
+import android.graphics.Typeface
 import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,9 +21,12 @@ import com.antoniocompany.financetracker.data.model.TransactionDto
 import com.antoniocompany.financetracker.data.model.TransactionType
 import com.antoniocompany.financetracker.databinding.ItemBreakdownBinding
 import com.antoniocompany.financetracker.databinding.ItemBudgetBinding
+import com.antoniocompany.financetracker.databinding.ItemTrendMonthBinding
 import com.antoniocompany.financetracker.databinding.ActivityMainBinding
 import com.antoniocompany.financetracker.domain.BudgetTone
 import com.antoniocompany.financetracker.domain.availableMonths
+import com.antoniocompany.financetracker.domain.axisMax
+import com.antoniocompany.financetracker.domain.barPercent
 import com.antoniocompany.financetracker.domain.breakdownOf
 import com.antoniocompany.financetracker.domain.budgetPercentage
 import com.antoniocompany.financetracker.domain.budgetTone
@@ -30,6 +34,7 @@ import com.antoniocompany.financetracker.domain.budgetsOfMonth
 import com.antoniocompany.financetracker.domain.budgetsWithinLimit
 import com.antoniocompany.financetracker.domain.categoryNamesOf
 import com.antoniocompany.financetracker.domain.filterTransactions
+import com.antoniocompany.financetracker.domain.monthlySeries
 import com.antoniocompany.financetracker.domain.summaryOf
 import com.antoniocompany.financetracker.domain.transactionsOfMonth
 import com.antoniocompany.financetracker.ui.TransactionAdapter
@@ -37,6 +42,7 @@ import com.antoniocompany.financetracker.ui.bind
 import com.antoniocompany.financetracker.ui.formatCurrency
 import com.antoniocompany.financetracker.ui.formatMonth
 import com.antoniocompany.financetracker.ui.formatShortMonth
+import com.antoniocompany.financetracker.ui.formatShortMonthYear
 import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.launch
@@ -171,6 +177,12 @@ class MainActivity : BaseActivity() {
             applyBreakdownExpanded()
         }
         applyBreakdownExpanded()
+
+        binding.trendHeader.setOnClickListener {
+            DashboardCache.trendExpanded = !DashboardCache.trendExpanded
+            applyTrendExpanded()
+        }
+        applyTrendExpanded()
 
         binding.filtersHeader.setOnClickListener {
             DashboardCache.filtersExpanded = !DashboardCache.filtersExpanded
@@ -363,6 +375,78 @@ class MainActivity : BaseActivity() {
         binding.breakdownChevron.rotation = if (expanded) 0f else 180f
     }
 
+    /**
+     * "Evolucion mensual": ingresos y gastos de cada mes de todo el historico,
+     * con el mes elegido sombreado. Cada barra es proporcional al tope del eje
+     * (un numero redondo por encima del mayor importe). Tocar un mes muestra
+     * sus importes exactos debajo, el equivalente al tooltip de la web.
+     */
+    private fun renderTrend(selected: String) {
+        val series = monthlySeries(allTransactions)
+        binding.trendCard.visibility = if (series.isEmpty()) View.GONE else View.VISIBLE
+        if (series.isEmpty()) return
+
+        val top = axisMax(series.maxOf { maxOf(it.income, it.expense) })
+        val chartHeight = resources.getDimensionPixelSize(R.dimen.trend_chart_height)
+
+        val first = formatShortMonthYear(series.first().month)
+        val last = formatShortMonthYear(series.last().month)
+        binding.trendSummary.text = if (series.size == 1) first else "$first – $last"
+        binding.trendAxisMax.text = formatCurrency(top)
+        binding.trendDetail.text = getString(R.string.trend_hint)
+
+        binding.trendBars.removeAllViews()
+        series.forEach { point ->
+            val column = ItemTrendMonthBinding.inflate(layoutInflater, binding.trendBars, false)
+            val isSelected = point.month == selected
+            val detail = getString(
+                R.string.trend_detail,
+                formatMonth(point.month),
+                formatCurrency(point.income),
+                formatCurrency(point.expense)
+            )
+
+            column.trendIncomeBar.layoutParams.height = chartHeight * barPercent(point.income, top) / 100
+            column.trendExpenseBar.layoutParams.height = chartHeight * barPercent(point.expense, top) / 100
+            column.trendMonthLabel.text = formatShortMonthYear(point.month)
+            column.trendMonthLabel.setTypeface(null, if (isSelected) Typeface.BOLD else Typeface.NORMAL)
+            column.root.isSelected = isSelected
+            column.root.contentDescription = detail
+            column.root.setOnClickListener { binding.trendDetail.text = detail }
+            binding.trendBars.addView(column.root)
+        }
+
+        // El ancho de la tarjeta solo se conoce tras pintarla: entonces se
+        // reparte entre los meses (sin bajar del minimo) y se lleva el scroll
+        // al mes elegido, igual que con los chips.
+        val selectedIndex = series.indexOfFirst { it.month == selected }
+        binding.trendScroll.post { fitTrendColumns(selectedIndex) }
+    }
+
+    private fun fitTrendColumns(selectedIndex: Int) {
+        val available = binding.trendScroll.width
+        val count = binding.trendBars.childCount
+        if (available <= 0 || count == 0) return
+
+        val minWidth = resources.getDimensionPixelSize(R.dimen.trend_month_min_width)
+        val columnWidth = maxOf(minWidth, available / count)
+        for (i in 0 until count) {
+            binding.trendBars.getChildAt(i).layoutParams.width = columnWidth
+        }
+        binding.trendBars.requestLayout()
+
+        if (selectedIndex >= 0) {
+            val target = selectedIndex * columnWidth - (available - columnWidth) / 2
+            binding.trendScroll.scrollTo(target.coerceAtLeast(0), 0)
+        }
+    }
+
+    private fun applyTrendExpanded() {
+        val expanded = DashboardCache.trendExpanded
+        binding.trendBody.visibility = if (expanded) View.VISIBLE else View.GONE
+        binding.trendChevron.rotation = if (expanded) 0f else 180f
+    }
+
     private fun applyFiltersExpanded() {
         val expanded = DashboardCache.filtersExpanded
         binding.filtersBody.visibility = if (expanded) View.VISIBLE else View.GONE
@@ -380,6 +464,7 @@ class MainActivity : BaseActivity() {
             binding.totalsRow.visibility = View.GONE
             binding.budgetsCard.visibility = View.GONE
             binding.breakdownCard.visibility = View.GONE
+            binding.trendCard.visibility = View.GONE
             binding.monthText.visibility = View.GONE
             showMessage(getString(R.string.dashboard_empty))
             return
@@ -456,6 +541,7 @@ class MainActivity : BaseActivity() {
         applyFilters(month)
         renderBudgets(month)
         renderBreakdown(month)
+        renderTrend(month)
     }
 
     /**

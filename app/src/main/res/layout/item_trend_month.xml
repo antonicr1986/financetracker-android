@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Un mes del grafico de evolucion: barra de ingresos y de gastos, pegadas
+     abajo, y la etiqueta del mes. El alto de cada barra lo fija MainActivity
+     en proporcion al tope del eje. Se toca para ver los importes exactos. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/trend_month_min_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/trend_month_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/trend_chart_height"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/trendIncomeBar"
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="2dp"
+            android:background="@color/income" />
+
+        <View
+            android:id="@+id/trendExpenseBar"
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:background="@color/expense" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/trendMonthLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxLines="1"
+        android:textAppearance="?attr/textAppearanceLabelSmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Sept 26" />
+</LinearLayout>

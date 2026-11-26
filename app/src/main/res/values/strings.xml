@@ -149,6 +149,10 @@
     <string name="breakdown_summary">Mayor: %1$s (%2$s)</string>
     <string name="breakdown_no_expenses">Sin gastos</string>
     <string name="breakdown_empty">No hay gastos registrados este mes.</string>
+    <string name="trend_title">Evolución mensual</string>
+    <string name="trend_toggle">Mostrar u ocultar la evolución mensual</string>
+    <string name="trend_hint">Toca un mes para ver sus importes.</string>
+    <string name="trend_detail">%1$s · Ingresos: %2$s · Gastos: %3$s</string>
     <!-- El plural depende del total (%2$d): "Mostrando 1 de 1 movimiento". -->
     <plurals name="dashboard_showing">
         <item quantity="one">Mostrando %1$d de %2$d movimiento del mes.</item>

@@ -337,6 +337,144 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
+                    <!-- Evolucion mensual, como en la web: ingresos y gastos de cada mes
+                         de todo el historico, con el mes elegido sombreado. Dibujado con
+                         vistas (item_trend_month.xml), sin libreria de graficos. Se toca
+                         un mes para ver sus importes exactos. -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/trendCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/trendHeader"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?attr/selectableItemBackground"
+                                android:contentDescription="@string/trend_toggle"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:padding="16dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/trend_title"
+                                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/trendSummary"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="8dp"
+                                    android:gravity="end"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant"
+                                    tools:text="Abr 26 – Sept 26" />
+
+                                <ImageView
+                                    android:id="@+id/trendChevron"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginStart="8dp"
+                                    android:importantForAccessibility="no"
+                                    android:src="@drawable/ic_chevron"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/trendBody"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="16dp"
+                                android:paddingBottom="12dp">
+
+                                <!-- Leyenda y, a la derecha, el tope del eje -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <View
+                                        android:layout_width="10dp"
+                                        android:layout_height="10dp"
+                                        android:background="@color/income" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="6dp"
+                                        android:layout_marginEnd="16dp"
+                                        android:text="@string/dashboard_income"
+                                        android:textAppearance="?attr/textAppearanceBodySmall"
+                                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                                    <View
+                                        android:layout_width="10dp"
+                                        android:layout_height="10dp"
+                                        android:background="@color/expense" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:layout_marginStart="6dp"
+                                        android:text="@string/dashboard_expenses"
+                                        android:textAppearance="?attr/textAppearanceBodySmall"
+                                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                                    <TextView
+                                        android:id="@+id/trendAxisMax"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                                        android:textColor="?attr/colorOnSurfaceVariant"
+                                        tools:text="Máx. 3.000 €" />
+                                </LinearLayout>
+
+                                <!-- Un hueco por mes (item_trend_month.xml). Si caben, se reparten
+                                     todo el ancho; si no, cada uno mide su minimo y se desplaza
+                                     de lado, como los chips de meses. -->
+                                <HorizontalScrollView
+                                    android:id="@+id/trendScroll"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:fillViewport="true"
+                                    android:scrollbars="none">
+
+                                    <LinearLayout
+                                        android:id="@+id/trendBars"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal" />
+                                </HorizontalScrollView>
+
+                                <TextView
+                                    android:id="@+id/trendDetail"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:text="@string/trend_hint"
+                                    android:textAppearance="?attr/textAppearanceBodySmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
                     <!-- Filtros de la lista de movimientos, en cliente sobre los del mes ya
                          cargado, igual que en la web. Plegable como los presupuestos: el
                          desplegable de categoria nunca ocupa mas de una linea (ellipsize). -->
